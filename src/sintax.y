@@ -99,7 +99,6 @@ condicion1: | SINO LBR bloque RBR
 
 escritura: IMPRIME LPA escritura1 RPA SEM
 escritura1: exp escritura2 
-	  | CTE_TEXTO escritura2
 escritura2: DOT escritura1
  	  |
 

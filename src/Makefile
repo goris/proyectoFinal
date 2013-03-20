@@ -1,5 +1,5 @@
 quack: quack.tab.c lex.c
-	gcc quack.tab.c lex.c -o quack
+	g++ quack.tab.c lex.c -o quack
 quack.tab.c :
 	bison sintax.y -d -v -o quack.tab.c
 lex : lex.c

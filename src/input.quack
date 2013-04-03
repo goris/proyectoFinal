@@ -1,20 +1,21 @@
 programa quacking {
 
-	var var_1 num;
-	var variable1, lala num;
+	var variable1, lala, var1 num;
 	var var2_ texto;
+	var var_1 num;
 	var logica bool;
 	var hola[10] num;
 
 
 	si ( 3 > 4 )
 	{
-		lala = -3 * 2.5;
+		hola[10] = -3 * 2.5;
 	}
 	sino 
 	{
 		variable1 = variable1 + 57;
 		logica = verdadero;
+		logica = falso;
 		si(logica){
 			imprime("lalal"."lalala" . 3+2);
 
@@ -40,9 +41,21 @@ programa quacking {
 
 	
 	funcion num func1 {
-		var_1 = 56.871;
+		
+		var verdaaawh num;
+		var sivervaah texto;
+		var var1 num;		
+
+		var1 = 56.871;
 		lala = 56 / 8;
-		variable1 = lala - var_1;
-		regresa var_1;
+		variable1 = lala - var1;
+		regresa var1;
+	}
+ 
+	funcion texto func2 {
+		var ultima texto;
+		var lala num;
+
+		regresa "hola";
 	}
 }

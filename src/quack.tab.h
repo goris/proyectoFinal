@@ -57,31 +57,32 @@
      CUADRADO = 273,
      TRIANGULO = 274,
      CIRCULO = 275,
-     ID = 276,
-     CTE_NUM = 277,
-     CTE_BOOL = 278,
+     VERDADERO = 276,
+     FALSO = 277,
+     CTE_NUM = 278,
      CTE_TEXTO = 279,
-     SUM = 280,
-     MIN = 281,
-     PRO = 282,
-     DIV = 283,
-     EQU = 284,
-     LT = 285,
-     GT = 286,
-     LTE = 287,
-     GTE = 288,
-     DIF = 289,
-     LPA = 290,
-     RPA = 291,
-     LBR = 292,
-     RBR = 293,
-     LSQ = 294,
-     RSQ = 295,
-     SEM = 296,
-     DOU = 297,
-     COM = 298,
-     DOT = 299,
-     DEQ = 300
+     ID = 280,
+     SUM = 281,
+     MIN = 282,
+     PRO = 283,
+     DIV = 284,
+     EQU = 285,
+     LT = 286,
+     GT = 287,
+     LTE = 288,
+     GTE = 289,
+     DIF = 290,
+     LPA = 291,
+     RPA = 292,
+     LBR = 293,
+     RBR = 294,
+     LSQ = 295,
+     RSQ = 296,
+     SEM = 297,
+     DOU = 298,
+     COM = 299,
+     DOT = 300,
+     DEQ = 301
    };
 #endif
 /* Tokens.  */
@@ -103,45 +104,46 @@
 #define CUADRADO 273
 #define TRIANGULO 274
 #define CIRCULO 275
-#define ID 276
-#define CTE_NUM 277
-#define CTE_BOOL 278
+#define VERDADERO 276
+#define FALSO 277
+#define CTE_NUM 278
 #define CTE_TEXTO 279
-#define SUM 280
-#define MIN 281
-#define PRO 282
-#define DIV 283
-#define EQU 284
-#define LT 285
-#define GT 286
-#define LTE 287
-#define GTE 288
-#define DIF 289
-#define LPA 290
-#define RPA 291
-#define LBR 292
-#define RBR 293
-#define LSQ 294
-#define RSQ 295
-#define SEM 296
-#define DOU 297
-#define COM 298
-#define DOT 299
-#define DEQ 300
+#define ID 280
+#define SUM 281
+#define MIN 282
+#define PRO 283
+#define DIV 284
+#define EQU 285
+#define LT 286
+#define GT 287
+#define LTE 288
+#define GTE 289
+#define DIF 290
+#define LPA 291
+#define RPA 292
+#define LBR 293
+#define RBR 294
+#define LSQ 295
+#define RSQ 296
+#define SEM 297
+#define DOU 298
+#define COM 299
+#define DOT 300
+#define DEQ 301
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 55 "sintax.y"
+#line 67 "sintax.y"
 {
-	int int_val;
+	int int_val;	
 	float float_val;
 	char* text;
 }
 /* Line 1529 of yacc.c.  */
-#line 145 "quack.tab.h"
+#line 147 "quack.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

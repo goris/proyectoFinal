@@ -35,7 +35,6 @@
  *    along with strmap.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "strmap.h"
-#include <string.h>
 
 typedef struct Pair Pair;
 
@@ -43,7 +42,7 @@ typedef struct Bucket Bucket;
 
 struct Pair {
 	char *key;
-	Node *nodee;
+	char *value;
 };
 
 struct Bucket {
@@ -55,12 +54,6 @@ struct StrMap {
 	unsigned int count;
 	Bucket *buckets;
 };
-
-struct Node {
-    char *nombre;
-    int tipo;
-    char *scope;
-}
 
 static Pair * get_pair(Bucket *bucket, const char *key);
 static unsigned long hash(const char *str);
@@ -101,8 +94,7 @@ void sm_delete(StrMap *map)
 		j = 0;
 		while(j < m) {
 			free(pair->key);
-			free(pair->nodee
-);
+			free(pair->value);
 			pair++;
 			j++;
 		}
@@ -114,7 +106,7 @@ void sm_delete(StrMap *map)
 	free(map);
 }
 
-int sm_get(const StrMap *map, const char *key, Node *nodee, unsigned int n_out_buf)
+int sm_get(const StrMap *map, const char *key, char *out_buf, unsigned int n_out_buf)
 {
 	unsigned int index;
 	Bucket *bucket;
@@ -132,16 +124,16 @@ int sm_get(const StrMap *map, const char *key, Node *nodee, unsigned int n_out_b
 	if (pair == NULL) {
 		return 0;
 	}
-	if (nodee == NULL && n_out_buf == 0) {
-		return sizeof(pair->nodee) + 1;
+	if (out_buf == NULL && n_out_buf == 0) {
+		return strlen(pair->value) + 1;
 	}
 	if (out_buf == NULL) {
 		return 0;
 	}
-	if (sizeof(pair->nodee) >= n_out_buf) {
+	if (strlen(pair->value) >= n_out_buf) {
 		return 0;
 	}
-	strcpy(out_buf, pair->nodee);
+	strcpy(out_buf, pair->value);
 	return 1;
 }
 
@@ -166,22 +158,22 @@ int sm_exists(const StrMap *map, const char *key)
 	return 1;
 }
 
-int sm_put(StrMap *map, const char *key, Node *nodee)
+int sm_put(StrMap *map, const char *key, const char *value)
 {
 	unsigned int key_len, value_len, index;
 	Bucket *bucket;
 	Pair *tmp_pairs, *pair;
-	Node *tmp_value, *new_nodee;
+	char *tmp_value;
 	char *new_key, *new_value;
 
 	if (map == NULL) {
 		return 0;
 	}
-	if (key == NULL || nodee == NULL) {
+	if (key == NULL || value == NULL) {
 		return 0;
 	}
 	key_len = strlen(key);
-	value_len = sizeof(nodee);
+	value_len = strlen(value);
 	/* Get a pointer to the bucket the key string hashes to */
 	index = hash(key) % map->count;
 	bucket = &(map->buckets[index]);
@@ -192,18 +184,18 @@ int sm_put(StrMap *map, const char *key, Node *nodee)
 		/* The bucket contains a pair that matches the provided key,
 		 * change the value for that pair to the new value.
 		 */
-		if (sizeof(pair->nodee) < value_len) {
+		if (strlen(pair->value) < value_len) {
 			/* If the new value is larger than the old value, re-allocate
 			 * space for the new larger value.
 			 */
-			tmp_value = realloc(pair->nodee,(value_len + 1) * sizeof(Node*));
+			tmp_value = realloc(pair->value, (value_len + 1) * sizeof(char));
 			if (tmp_value == NULL) {
 				return 0;
 			}
-			pair->nodee = tmp_value;
+			pair->value = tmp_value;
 		}
 		/* Copy the new value into the pair that matches the key */
-		memcpy(pair->nodee, nodee);
+		strcpy(pair->value, value);
 		return 1;
 	}
 	/* Allocate space for a new key and value */
@@ -216,12 +208,6 @@ int sm_put(StrMap *map, const char *key, Node *nodee)
 		free(new_key);
 		return 0;
 	}
-    new_nodee = malloc((Value_len + 1) * sizeof(Node*));
-    if (new_nodee == NULL) {
-		free(new_nodee);
-		return 0;
-	}
-
 	/* Create a key-value pair */
 	if (bucket->count == 0) {
 		/* The bucket is empty, lazily allocate space for a single
@@ -251,10 +237,10 @@ int sm_put(StrMap *map, const char *key, Node *nodee)
 	/* Get the last pair in the chain for the bucket */
 	pair = &(bucket->pairs[bucket->count - 1]);
 	pair->key = new_key;
-	pair->nodee = new_nodee;
+	pair->value = new_value;
 	/* Copy the key and its value into the key-value pair */
 	strcpy(pair->key, key);
-	memcpy(pair->nodee, nodee);
+	strcpy(pair->value, value);
 	return 1;
 }
 

@@ -9,6 +9,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include "quack.tab.h"
+	#include <string>
 	
 	int contlin = 1;
 	int yyerror (char *s);
@@ -41,10 +42,11 @@ linea { return (LINEA);}
 cuadrado { return (CUADRADO);}
 triangulo { return (TRIANGULO);}
 circulo { return (CIRCULO);}
-[a-z]+[a-zA-Z0-9_]* { return (ID);}
+verdadero { return (VERDADERO);}
+falso { return (FALSO);}
 [0-9]+[\.]?+[0-9]* { return (CTE_NUM);}
-[verdadero|falso] { return (CTE_BOOL);}
 \".*\" { return  (CTE_TEXTO);}
+[a-z]+[a-zA-Z0-9_]*(\[[0-9]+\])* { return (ID);}
 "\n" { contlin++; }
 [ \t\r\f] {}
 

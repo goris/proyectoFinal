@@ -6,9 +6,7 @@
 *
 */
 
-	#include <stdio.h>
-	#include <string>
-	#include <stdlib.h>
+	#include <stdlib>
 	#include <string>
 	#include <iostream>
 	#include "utilities/strmap.h"
@@ -177,7 +175,7 @@ triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 %%
 void imprimeCubo();
 
-int main(int argc, char *argv[])
+int main(int argc, const char * argv[])
 {
 
 	

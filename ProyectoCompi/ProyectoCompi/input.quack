@@ -1,0 +1,48 @@
+programa quacking {
+
+	var var_1 num;
+	var variable1, lala num;
+	var var2_ texto;
+	var logica bool;
+	var hola[10] num;
+
+
+	si ( 3 > 4 )
+	{
+		lala = -3 * 2.5;
+	}
+	sino 
+	{
+		variable1 = variable1 + 57;
+		logica = verdadero;
+		si(logica){
+			imprime("lalal"."lalala" . 3+2);
+
+		} sino {}
+	}
+
+	var2_ = 3;
+
+	si(3 != 4){
+		haz {
+			lala = lala + 1;
+		} mientras ( 1 < 2 );
+	} sino {
+		var_1 = 0;
+		por(var_1 == lala : var_1 = var_1 + 1){
+			
+		}
+	}
+
+	mientras( logica != falso ) {
+		logica = falso;
+	}
+
+	
+	funcion num func1 {
+		var_1 = 56.871;
+		lala = 56 / 8;
+		variable1 = lala - var_1;
+		regresa var_1;
+	}
+}

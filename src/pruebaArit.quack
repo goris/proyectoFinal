@@ -1,0 +1,14 @@
+programa quack {
+
+	var var1 num;
+	var var2 num;
+	var a, b, c num;
+
+	b = 5;
+	c = 10;
+	var1 = 10 * 20;
+	var2 = c - b;
+	a = b + c;
+
+
+}

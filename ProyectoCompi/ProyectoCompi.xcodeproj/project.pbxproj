@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F305861916FBFB82003A79D7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F305861816FBFB82003A79D7 /* main.cpp */; };
 		F305861B16FBFB82003A79D7 /* ProyectoCompi.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = F305861A16FBFB82003A79D7 /* ProyectoCompi.1 */; };
+		F305862916FBFBCC003A79D7 /* lex.c in Sources */ = {isa = PBXBuildFile; fileRef = F305862216FBFBCC003A79D7 /* lex.c */; };
+		F305862A16FBFBCC003A79D7 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = F305862316FBFBCC003A79D7 /* Makefile */; };
+		F305862B16FBFBCC003A79D7 /* quack.tab.c in Sources */ = {isa = PBXBuildFile; fileRef = F305862416FBFBCC003A79D7 /* quack.tab.c */; };
+		F305862C16FBFBCC003A79D7 /* sintax.y in Sources */ = {isa = PBXBuildFile; fileRef = F305862616FBFBCC003A79D7 /* sintax.y */; };
+		F305862D16FBFBCC003A79D7 /* tokens.l in Sources */ = {isa = PBXBuildFile; fileRef = F305862716FBFBCC003A79D7 /* tokens.l */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,8 +30,15 @@
 
 /* Begin PBXFileReference section */
 		F305861416FBFB82003A79D7 /* ProyectoCompi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ProyectoCompi; sourceTree = BUILT_PRODUCTS_DIR; };
-		F305861816FBFB82003A79D7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F305861A16FBFB82003A79D7 /* ProyectoCompi.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ProyectoCompi.1; sourceTree = "<group>"; };
+		F305862116FBFBCC003A79D7 /* input.quack */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = input.quack; sourceTree = "<group>"; };
+		F305862216FBFBCC003A79D7 /* lex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lex.c; sourceTree = "<group>"; };
+		F305862316FBFBCC003A79D7 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		F305862416FBFBCC003A79D7 /* quack.tab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = quack.tab.c; sourceTree = "<group>"; };
+		F305862516FBFBCC003A79D7 /* quack.tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quack.tab.h; sourceTree = "<group>"; };
+		F305862616FBFBCC003A79D7 /* sintax.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = sintax.y; sourceTree = "<group>"; };
+		F305862716FBFBCC003A79D7 /* tokens.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = tokens.l; sourceTree = "<group>"; };
+		F305862816FBFBCC003A79D7 /* utilities */ = {isa = PBXFileReference; lastKnownFileType = folder; path = utilities; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +59,7 @@
 				F305861516FBFB82003A79D7 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		F305861516FBFB82003A79D7 /* Products */ = {
 			isa = PBXGroup;
@@ -60,7 +72,14 @@
 		F305861716FBFB82003A79D7 /* ProyectoCompi */ = {
 			isa = PBXGroup;
 			children = (
-				F305861816FBFB82003A79D7 /* main.cpp */,
+				F305862116FBFBCC003A79D7 /* input.quack */,
+				F305862216FBFBCC003A79D7 /* lex.c */,
+				F305862316FBFBCC003A79D7 /* Makefile */,
+				F305862416FBFBCC003A79D7 /* quack.tab.c */,
+				F305862516FBFBCC003A79D7 /* quack.tab.h */,
+				F305862616FBFBCC003A79D7 /* sintax.y */,
+				F305862716FBFBCC003A79D7 /* tokens.l */,
+				F305862816FBFBCC003A79D7 /* utilities */,
 				F305861A16FBFB82003A79D7 /* ProyectoCompi.1 */,
 			);
 			path = ProyectoCompi;
@@ -117,7 +136,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F305861916FBFB82003A79D7 /* main.cpp in Sources */,
+				F305862916FBFBCC003A79D7 /* lex.c in Sources */,
+				F305862A16FBFBCC003A79D7 /* Makefile in Sources */,
+				F305862B16FBFBCC003A79D7 /* quack.tab.c in Sources */,
+				F305862C16FBFBCC003A79D7 /* sintax.y in Sources */,
+				F305862D16FBFBCC003A79D7 /* tokens.l in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,14 +150,17 @@
 		F305861C16FBFB82003A79D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -150,20 +176,22 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
 		F305861D16FBFB82003A79D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -173,13 +201,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx;
+				SDKROOT = "";
 			};
 			name = Release;
 		};
 		F305861F16FBFB82003A79D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = /Users/Tuye/Documents/8voSemestre/Compiladores/proyecto/ProyectoCompi/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -187,6 +217,8 @@
 		F305862016FBFB82003A79D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = /Users/Tuye/Documents/8voSemestre/Compiladores/proyecto/ProyectoCompi/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

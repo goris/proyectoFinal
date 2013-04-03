@@ -45,6 +45,8 @@ extern "C"
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct Node Node;
+
 typedef struct StrMap StrMap;
 
 /*
@@ -64,7 +66,7 @@ typedef struct StrMap StrMap;
  *
  * Return value: None.
  */
-typedef void(*sm_enum_func)(const char *key, const char *value, const void *obj);
+typedef void(*sm_enum_func)(const char *key, Node *nodee, const void *obj);
 
 /*
  * Creates a string map.
@@ -113,7 +115,7 @@ void sm_delete(StrMap *map);
  * is 1 if an associated value was found and completely copied into the output buffer,
  * 0 otherwise.
  */
-int sm_get(const StrMap *map, const char *key, char *out_buf, unsigned int n_out_buf);
+int sm_get(const StrMap *map, const char *key, Node *nodee, unsigned int n_out_buf);
 
 /*
  * Queries the existence of a key.
@@ -147,7 +149,7 @@ int sm_exists(const StrMap *map, const char *key);
  *
  * Return value: 1 if the association succeeded, 0 otherwise.
  */
-int sm_put(StrMap *map, const char *key, const char *value);
+int sm_put(StrMap *map, const char *key, Node *nodee);
 
 /*
  * Returns the number of associations between keys and values.

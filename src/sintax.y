@@ -11,6 +11,8 @@
 	#include <map>
 	#include <iostream>
 	
+	#include "utilities/Cuadruplo.h"
+	
 	struct Node {
 		int tipo;
 		float valor_num;
@@ -36,6 +38,7 @@
 	std::stack<Node*> pilaO;
 	std::stack<Node*> pOper;
 	std::stack<Node*> pTipos;
+	std::stack<Cuadruplo> vec_cuadruplos;
 	MapType map_vars;
 	
 	
@@ -204,6 +207,7 @@ triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 int main(int argc, char *argv[]){
 	
 	creaCubo();
+
 
 	if (argc > 1)	{
 	

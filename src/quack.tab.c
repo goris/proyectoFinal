@@ -176,6 +176,8 @@
 	#include <map>
 	#include <iostream>
 	
+	#include "utilities/Cuadruplo.h"
+	
 	struct Node {
 		int tipo;
 		float valor_num;
@@ -249,14 +251,14 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 67 "sintax.y"
+#line 69 "sintax.y"
 {
 	int int_val;	
 	float float_val;
 	char* text;
 }
 /* Line 193 of yacc.c.  */
-#line 260 "quack.tab.c"
+#line 262 "quack.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -269,7 +271,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 273 "quack.tab.c"
+#line 275 "quack.tab.c"
 
 #ifdef short
 # undef short
@@ -586,14 +588,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   108,   108,   107,   112,   111,   114,   116,   115,   118,
-     119,   120,   122,   123,   124,   126,   127,   128,   129,   131,
-     132,   133,   135,   135,   138,   139,   139,   141,   142,   143,
-     144,   146,   147,   148,   150,   151,   152,   153,   153,   153,
-     153,   153,   153,   154,   155,   156,   157,   158,   159,   160,
-     161,   162,   163,   164,   165,   166,   167,   168,   169,   170,
-     172,   173,   176,   175,   178,   180,   181,   182,   183,   185,
-     187,   189,   191,   193,   195,   197
+       0,   110,   110,   109,   114,   113,   116,   118,   117,   120,
+     121,   122,   124,   125,   126,   128,   129,   130,   131,   133,
+     134,   135,   137,   137,   140,   141,   141,   143,   144,   145,
+     146,   148,   149,   150,   152,   153,   154,   155,   155,   155,
+     155,   155,   155,   156,   157,   158,   159,   160,   161,   162,
+     163,   164,   165,   166,   167,   168,   169,   170,   171,   172,
+     174,   175,   178,   177,   180,   182,   183,   184,   185,   187,
+     189,   191,   193,   195,   197,   199
 };
 #endif
 
@@ -1598,53 +1600,53 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 108 "sintax.y"
+#line 110 "sintax.y"
     { scope_actual = "global"; actualizaScope("global"); ;}
     break;
 
   case 4:
-#line 112 "sintax.y"
+#line 114 "sintax.y"
     {tipo_actual = yytext; actualizaTipoVariables(); ;}
     break;
 
   case 7:
-#line 116 "sintax.y"
+#line 118 "sintax.y"
     {var_actual.push(yytext); ;}
     break;
 
   case 8:
-#line 117 "sintax.y"
+#line 119 "sintax.y"
     { creaVariable(); ;}
     break;
 
   case 22:
-#line 135 "sintax.y"
+#line 137 "sintax.y"
     { meterPilaO(); ;}
     break;
 
   case 57:
-#line 168 "sintax.y"
+#line 170 "sintax.y"
     { creaConstanteNum(); ;}
     break;
 
   case 58:
-#line 169 "sintax.y"
+#line 171 "sintax.y"
     { creaConstanteStr(); ;}
     break;
 
   case 59:
-#line 170 "sintax.y"
+#line 172 "sintax.y"
     { meterPilaO(); ;}
     break;
 
   case 62:
-#line 176 "sintax.y"
+#line 178 "sintax.y"
     { scope_actual = yytext; actualizaScope("funcion"); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1648 "quack.tab.c"
+#line 1650 "quack.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1858,7 +1860,7 @@ yyreturn:
 }
 
 
-#line 199 "sintax.y"
+#line 201 "sintax.y"
 
 
 
@@ -1866,7 +1868,11 @@ yyreturn:
 
 int main(int argc, char *argv[]){
 	
+	Cuadruplo::Cuadruplo cuad(1,2,3,4);
 	creaCubo();
+
+
+	cuad.print();
 
 	if (argc > 1)	{
 	

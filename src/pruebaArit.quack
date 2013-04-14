@@ -4,14 +4,17 @@ programa quack {
 	var var2 bool;
 	var a, b, c num;
 	
-	b = 5;
-	c = 10;
-	var1 = 14;
-	si (verdadero) {}
-	sino {
-		 si (falso) {}
-		 sino {}
+	si (verdadero) {
+		var1 = 14;
 	}
-	var2 = (c - b) > ( 2 / var1);
+	si (falso){
+		b = 5;
+		si (falso) {
+			c = 10;
+			c = 10;
+		} sino {
+			var2 = (c - b) > ( 2 / var1);
+		}
+	}
 	a = b + c;
 }

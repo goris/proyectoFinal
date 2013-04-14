@@ -42,7 +42,7 @@
 	std::stack<Node*> aux_vars;
 	std::stack<Node*> pilaO;
 	std::stack<int> pOper;
-	std::stack<Node*> pTipos;
+	std::stack<int> pSaltos;
 	std::vector<Cuadruplo> vec_cuadruplos;
 	MapType map_vars;
 
@@ -54,7 +54,8 @@
 	*
 	* 0 num 1 bool 2 text  [indices]
 	* 1 num 2 bool 3 text 0 ERRROR
-	* 0+ 1- 2* 3/ 4= 5< 6> 7<= 8>= 9!= 10== 11( 12) 13gotoV 14gotoF
+	* 0+ 1- 2* 3/ 4= 5< 6> 7<= 8>= 9!= 10== 11( 12) 13goto 14gotoV
+	* 15gotoF 
 	* [tipo1] [tipo2] [operador] 
 	*/
 	int cubo_sem [3][3][11] = { 0 };
@@ -72,7 +73,10 @@
 	void imprimePila(std::stack<Node*>);
 	void imprimePila(int a);
 	void generaCuadruplo(int, int, int, int, int);
+	void generaCuadruploEstatuto(int, int, int, int);
 	void checaOperador(int);
+	void cuadruploEstatuto(int);
+	void imprimeVector(std::vector<Cuadruplo>);
 
 %}
 
@@ -147,8 +151,11 @@ estatutos: asignacion
 asignacion: ID { meterPilaO(); }
 		  EQU { meterPilaOper(4); } sexp SEM 
 
-condicion: SI LPA sexp RPA LBR bloque RBR condicion1	 
-		 condicion1: | SINO LBR bloque RBR
+condicion: SI LPA sexp RPA 
+		LBR { cuadruploEstatuto(0); } bloque RBR
+		 condicion1 { cuadruploEstatuto(2); } 
+condicion1: SINO { cuadruploEstatuto(1); }LBR bloque RBR 
+ 			| 
 
 escritura: IMPRIME LPA escritura1 RPA SEM
 		 escritura1: exp escritura2 
@@ -160,7 +167,7 @@ ciclos: mientras
 	  | por
 
 sexp: exp expresion1 { checaOperador(4); }
-	expresion1: operadores exp   
+expresion1: operadores exp   
 	  | 
 operadores: LT { meterPilaOper(5); } 
 		| GT  { meterPilaOper(6); } 
@@ -218,22 +225,22 @@ triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
 int main(int argc, char *argv[]){
 
-creaCubo();
+	creaCubo();
 
+	if (argc > 1)	{
 
-if (argc > 1)	{
-
-FILE *fp = fopen(argv[1], "r");
+		FILE *fp = fopen(argv[1], "r");
 		if (fp == NULL)	{
 			printf("Error reading from %s\n", argv[1]);
 			return -1;
 		}
 
-yyin = fp;
+		yyin = fp;
 	} else {}
 
-int a = yyparse();
+	int a = yyparse();
 	//imprimePila(1);
+	imprimeVector(vec_cuadruplos);
 	if (!a) printf("Eres un campeon\n");
 
 /*	Node *tmp = new Node();
@@ -251,23 +258,66 @@ for(MapType::const_iterator it = map_vars.begin() ;
 
 }
 
+void cuadruploEstatuto(int tipo) {
+
+	std::string nombre;
+	std::stringstream sstm;
+
+	switch(tipo) {
+
+		case 0: {
+			int a;
+			Node *resultado;
+			resultado = pilaO.top();
+			a = resultado->tipo;
+			if (!a == 2 ) {
+				std::cout << "Error de tipo: " << resultado->nombre << std::endl;
+			} else {
+				Cuadruplo::Cuadruplo cuad1(15, resultado->nombre, " ", "___");
+				vec_cuadruplos.push_back(cuad1);
+				cuad_actual++;
+				pSaltos.push(cuad_actual - 1);
+			}
+			break; 
+		}
+		
+		case 1: {
+			Cuadruplo::Cuadruplo cuad3(13, "", "", "___");
+			vec_cuadruplos.push_back(cuad3);
+			cuad_actual++;
+			int falso = pSaltos.top();
+			pSaltos.pop();
+			cuad3 = vec_cuadruplos[falso];
+			sstm << "" << cuad_actual;
+			nombre = sstm.str();
+			cuad3.setAvail_s(nombre);
+			vec_cuadruplos[falso] = cuad3;
+			pSaltos.push(cuad_actual-1);
+			break;
+		}
+		
+		case 2: {
+			int salto = pSaltos.top();
+			pSaltos.pop();
+			Cuadruplo::Cuadruplo cuad2;
+			cuad2 = vec_cuadruplos[salto];
+			sstm << "" << cuad_actual;
+			nombre = sstm.str();
+			cuad2.setAvail_s(nombre);
+			vec_cuadruplos[salto] = cuad2;
+			break;
+		}
+	} 
+
+}
+
+
 /**
 *
 * La función sirve para generar un cuadruplo de acuerdo a la operacion que 
 * se vaya a realizar.
 *
-*
 **/
-void generaCuadruplo(int esp, int op, int op1, int op2, int res){
-	switch (esp) {
-		case 1 : 
-				if(esp) 
-		break;
-		default:
-				std::cout << "Error de cuadruplo" << std::endl;	
-				exit(1);
-	}
-}
 
 void checaOperador(int a) {
 	Node* tmp1 = new Node();
@@ -297,7 +347,8 @@ void checaOperador(int a) {
 					meterPilaO();
 					tmp_actual++;
 					pOper.pop();
-					cuad.print();
+					vec_cuadruplos.push_back(cuad);
+					cuad_actual++;
 					//imprimePila(1);
 				} else {
 					std::cout << "Error: " << tmp1->tipo - 1 << tmp2->tipo - 1
@@ -314,7 +365,8 @@ void checaOperador(int a) {
 					Cuadruplo::Cuadruplo cuad(operador, tmp2->nombre, 
 						" ", tmp1->nombre);
 					pOper.pop();
-					cuad.print();
+					vec_cuadruplos.push_back(cuad);
+					cuad_actual++;
 				} else {
 					std::cout  << tmp1->tipo - 1 << tmp2->tipo - 1
 					<< operador	<< std::endl;
@@ -340,8 +392,9 @@ void checaOperador(int a) {
 					yytext = strdup(avail.c_str());
 					meterPilaO();
 					tmp_actual++;
+					cuad_actual++;
 					pOper.pop();
-					cuad.print();
+					vec_cuadruplos.push_back(cuad);
 					//imprimePila(1);
 				} else {
 					std::cout << "Error: " << tmp1->tipo - 1 << tmp2->tipo - 1
@@ -478,6 +531,18 @@ while(!tmp.empty()) {
 
 	std::cout << "----------------------------------------" << std::endl;
 
+}
+
+void imprimeVector(std::vector<Cuadruplo> vec) {
+	Cuadruplo::Cuadruplo cuad;
+
+	for (int i = 0; i < vec.size(); i++) {
+		cuad = vec[i];
+		std::cout << i << ": ";
+		cuad.print();
+		
+	}
+	
 }
 
 void creaCubo(){

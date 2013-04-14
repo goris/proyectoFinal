@@ -31,6 +31,10 @@ Cuadruplo::Cuadruplo(int oper, std::string op1, std::string op2,
 
 }
 
+void Cuadruplo::setAvail_s(std::string str){
+		avail_s = str;
+}
+
 void Cuadruplo::print (){
 //	std::cout << "Cuadruplo: "<< ope << ", " << ope1 << ", " <<
 //				 	ope2 << ", " << avail << std::endl; 

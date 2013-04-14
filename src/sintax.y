@@ -4,18 +4,19 @@
 * D E C L A R A C I O N E S
 *
 */
-
 	#include <string>
 	#include <stack>
 	#include <vector>
 	#include <map>
 	#include <iostream>
-	
+	#include <sstream>
+
 	#include "utilities/Cuadruplo.h"
-	
+
 	struct Node {
 		int tipo;
-		float valor_num;
+		int valor_num;
+		int id;
 		std::string nombre;
 		std::string valor_str;
 		std::string scope;
@@ -30,40 +31,48 @@
 	extern int yyparse();
 	extern char * yytext;
 	void imprimeCubo();
+	int id_actual;
+	int tmp_actual;
+	int cuad_actual;
+	std::string avail;
 	std::stack <std::string> var_actual;
 	std::string tipo_actual;
 	std::string scope_actual;
 	std::vector<std::string> scopes;	
 	std::stack<Node*> aux_vars;
 	std::stack<Node*> pilaO;
-	std::stack<Node*> pOper;
+	std::stack<int> pOper;
 	std::stack<Node*> pTipos;
-	std::stack<Cuadruplo> vec_cuadruplos;
+	std::vector<Cuadruplo> vec_cuadruplos;
 	MapType map_vars;
-	
-	
-	/*
+
+
+/*
 	*
 	* 
 	*	C U B O    S E M A N T I C O
 	*
 	* 0 num 1 bool 2 text  [indices]
 	* 1 num 2 bool 3 text 0 ERRROR
-	* 0+ 1- 2* 3/ 4= 5< 6> 7<= 8>= 9!= 10==
-	*
+	* 0+ 1- 2* 3/ 4= 5< 6> 7<= 8>= 9!= 10== 11( 12) 13gotoV 14gotoF
+	* [tipo1] [tipo2] [operador] 
 	*/
 	int cubo_sem [3][3][11] = { 0 };
 
 	void creaCubo();
 	void manipulaStack();
-	void actualizaScope(std::string str);
+	void actualizaScope(std::string);
 	void creaVariable();
 	void creaConstanteNum();
-	void creaConstanteStr();
+	void creaConstanteBool(int);
+	void creaConstanteStr(const char *);
 	void actualizaTipoVariables();
 	void meterPilaO();
-	void imprimePila(std::stack<Node*> pila);
-
+	void meterPilaOper(int);
+	void imprimePila(std::stack<Node*>);
+	void imprimePila(int a);
+	void generaCuadruplo(int, int, int, int, int);
+	void checaOperador(int);
 
 %}
 
@@ -98,8 +107,8 @@
 %token <double> CTE_NUM
 %token <string*> CTE_TEXTO 
 %token <string*> ID
-%token SUM MIN PRO DIV EQU LT GT LTE GTE DIF LPA RPA LBR RBR LSQ RSQ SEM DOU COM DOT DEQ
-
+%token SUM MIN PRO DIV EQU LT GT LTE GTE DIF LPA RPA LBR RBR LSQ RSQ 
+SEM DOU COM DOT DEQ
 %left SUM MIN 
 %left PRO DIV
 
@@ -108,143 +117,251 @@
 %%
 
 program: PROGRAMA ID 
- { scope_actual = "global"; actualizaScope("global"); }
+	   { scope_actual = "global"; actualizaScope("global"); }
  LBR vars bloque funciones RBR
-       
+
 vars: VAR vars2 tipo 
- {tipo_actual = yytext; actualizaTipoVariables(); }
+	{tipo_actual = yytext; actualizaTipoVariables(); }
  SEM vars
-    |
+	|
 vars2: ID 
- {var_actual.push(yytext); }
+	 {var_actual.push(yytext); }
  vars3 { creaVariable(); }
 vars3: LSQ CTE_NUM RSQ vars3
-     | COM vars2
-     |
+	 | COM vars2
+	 |
 
 tipo: NUM
-    | TEXTO
-    | BOOL 
+	| TEXTO
+	| BOOL 
 
 bloque: estatutos bloque
-      | ciclos bloque
-      | dibuja bloque
-      |
+	  | ciclos bloque
+	  | dibuja bloque
+	  |
 
 estatutos: asignacion
-	 | condicion
+		 | condicion
 	 | escritura
 
 asignacion: ID { meterPilaO(); }
-				 	EQU sexp SEM 
-	  
+		  EQU { meterPilaOper(4); } sexp SEM 
+
 condicion: SI LPA sexp RPA LBR bloque RBR condicion1	 
-condicion1: | SINO LBR bloque RBR
-	  
+		 condicion1: | SINO LBR bloque RBR
+
 escritura: IMPRIME LPA escritura1 RPA SEM
-escritura1: exp escritura2 
+		 escritura1: exp escritura2 
 escritura2: DOT escritura1
-	  |
+		  |
 
 ciclos: mientras
-      | haz
-      | por
+	  | haz
+	  | por
 
-sexp: exp expresion1
-expresion1: operadores exp 
+sexp: exp expresion1 { checaOperador(4); }
+	expresion1: operadores exp   
 	  | 
-operadores: LT | GT | DIF | LTE | GTE | DEQ
-exp: termino exp1
-exp1: SUM exp
-    | MIN exp
-    | EQU exp
-    |
-termino: factor termino1
-termino1: PRO termino
-	| DIV termino
+operadores: LT { meterPilaOper(5); } 
+		| GT  { meterPilaOper(6); } 
+		| DIF { meterPilaOper(9); } 
+		| LTE { meterPilaOper(7); } 
+		| GTE { meterPilaOper(8); } 
+		| DEQ { meterPilaOper(10); }
+		| EQU { meterPilaOper(4); } 
+exp: termino { checaOperador(0); } exp1
+   exp1: SUM { meterPilaOper(0); } exp
+	| MIN { meterPilaOper(1); }  exp
+		|
+termino: factor { checaOperador(2); } termino1 
+termino1: PRO { meterPilaOper(2); } termino
+	| DIV { meterPilaOper(3); }  termino
 	|
-factor: LPA sexp RPA
-       | SUM var_cte
-       | MIN var_cte
-       | var_cte
-var_cte: cte_bool 
-        | CTE_NUM { creaConstanteNum(); }
-        | CTE_TEXTO { creaConstanteStr(); }
+factor: LPA { meterPilaOper(11); } sexp RPA { pOper.pop(); }
+	  | var_cte
+var_cte: cte_bool  
+	   | CTE_NUM { creaConstanteNum(); }
+		| CTE_TEXTO { creaConstanteStr(yytext); }
 	| ID { meterPilaO(); }
 
-cte_bool: VERDADERO
-	| FALSO
+cte_bool: VERDADERO { creaConstanteBool(1); }
+		| FALSO { creaConstanteBool(0); }
 
 funciones: FUNCION tipo ID
- { scope_actual = yytext; actualizaScope("funcion"); }
+		 { scope_actual = yytext; actualizaScope("funcion"); }
  LBR vars bloque REGRESA var_cte SEM RBR funciones
- 	 | 
+	 | 
 
 dibuja: triangulo
-      | cuadrado
-      | circulo
-      | linea
+	  | cuadrado
+	  | circulo
+	  | linea
 
 por: POR LPA sexp DOU sexp RPA LBR bloque RBR
 
 haz: HAZ LBR bloque RBR MIENTRAS LPA sexp RPA SEM 
-   
+
 mientras: MIENTRAS LPA sexp RPA LBR bloque RBR
-       	
+
 cuadrado: CUADRADO LPA CTE_NUM RPA SEM
-	
+
 circulo: CIRCULO LPA CTE_NUM RPA SEM
-       
+
 linea: LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
 
 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
-	 
+
 %%
 
 
 
 
 int main(int argc, char *argv[]){
-	
-	creaCubo();
+
+creaCubo();
 
 
-	if (argc > 1)	{
-	
-		FILE *fp = fopen(argv[1], "r");
+if (argc > 1)	{
+
+FILE *fp = fopen(argv[1], "r");
 		if (fp == NULL)	{
 			printf("Error reading from %s\n", argv[1]);
 			return -1;
 		}
 
-		yyin = fp;
+yyin = fp;
 	} else {}
 
-	int a = yyparse();
-
-	imprimePila(pilaO);
+int a = yyparse();
+	//imprimePila(1);
 	if (!a) printf("Eres un campeon\n");
-	
-/*	Node *tmp = new Node();
-	
-	MapType::const_iterator end = map_vars.end();
 
-	for(MapType::const_iterator it = map_vars.begin() ;
-	    it != end; ++it) {
+/*	Node *tmp = new Node();
+
+MapType::const_iterator end = map_vars.end();
+
+for(MapType::const_iterator it = map_vars.begin() ;
+		it != end; ++it) {
 			std::cout << "llave: " << it->first << std::endl;
 			tmp = it->second;
 			std::cout << "nombre: " << tmp->nombre << std::endl;
 			std::cout << "tipo: " << tmp->tipo << std::endl;
 			std::cout << "scope: " << tmp->scope << std::endl;
 	}*/
-	
+
+}
+
+/**
+*
+* La función sirve para generar un cuadruplo de acuerdo a la operacion que 
+* se vaya a realizar.
+*
+*
+**/
+void generaCuadruplo(int esp, int op, int op1, int op2, int res){
+	switch (esp) {
+		case 1 : 
+				if(esp) 
+		break;
+		default:
+				std::cout << "Error de cuadruplo" << std::endl;	
+				exit(1);
+	}
+}
+
+void checaOperador(int a) {
+	Node* tmp1 = new Node();
+	Node* tmp2 = new Node();
+
+	if (!pilaO.empty() && !pOper.empty()) {
+		int operador = pOper.top();
+		if(operador == a || operador == a + 1 ){
+
+			if(operador != 4) {
+				tmp2 = pilaO.top();
+				pilaO.pop();
+				tmp1 = pilaO.top();
+				pilaO.pop();
+				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
+					std::stringstream sstm;
+					sstm << "t" << tmp_actual;
+					avail = sstm.str();
+					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
+						tmp2->nombre, avail);
+					var_actual.push(avail);
+					tipo_actual = "num";
+					scope_actual = "global";
+					creaVariable();
+					actualizaTipoVariables();
+					yytext = strdup(avail.c_str());
+					meterPilaO();
+					tmp_actual++;
+					pOper.pop();
+					cuad.print();
+					//imprimePila(1);
+				} else {
+					std::cout << "Error: " << tmp1->tipo - 1 << tmp2->tipo - 1
+					<< operador	<< std::endl;
+				}
+
+			} else if (operador == 4) { 
+				tmp2 = pilaO.top();
+				pilaO.pop();
+				tmp1 = pilaO.top();
+				pilaO.pop();
+				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
+					std::stringstream sstm;
+					Cuadruplo::Cuadruplo cuad(operador, tmp2->nombre, 
+						" ", tmp1->nombre);
+					pOper.pop();
+					cuad.print();
+				} else {
+					std::cout  << tmp1->tipo - 1 << tmp2->tipo - 1
+					<< operador	<< std::endl;
+				}
+			}
+		} else if( operador == 11) {
+		} else if(operador >= 5 ) {
+				tmp2 = pilaO.top();
+				pilaO.pop();
+				tmp1 = pilaO.top();
+				pilaO.pop();
+				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
+					std::stringstream sstm;
+					sstm << "t" << tmp_actual;
+					avail = sstm.str();
+					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
+						tmp2->nombre, avail);
+					var_actual.push(avail);
+					tipo_actual = "bool";
+					scope_actual = "global";
+					creaVariable();
+					actualizaTipoVariables();
+					yytext = strdup(avail.c_str());
+					meterPilaO();
+					tmp_actual++;
+					pOper.pop();
+					cuad.print();
+					//imprimePila(1);
+				} else {
+					std::cout << "Error: " << tmp1->tipo - 1 << tmp2->tipo - 1
+					<< operador	<< std::endl;
+				}
+		}
+	}
+}
+
+void meterPilaOper(int esp) {
+
+	pOper.push(esp);
+	//std::cout << "Guardé: " << esp << std::endl;
 }
 
 void meterPilaO() {
 	const char *aux;
 	Node *var = new Node();
 	std::string llave;
-	
+
 	llave = std::string(yytext) + "&" + scope_actual;
 	aux = llave.c_str();
 	MapType::const_iterator it = map_vars.find(aux);
@@ -262,7 +379,7 @@ void meterPilaO() {
 			pilaO.push(it->second);
 	}
 
-	
+
 }
 
 void creaConstanteNum(){
@@ -272,11 +389,26 @@ void creaConstanteNum(){
 	var->tipo = 1;
 	var->scope = "global";
 	var->valor_num = ::atof(yytext);
+	var->id = id_actual++;
 	pilaO.push(var);
-	
+
 }
 
-void creaConstanteStr(){
+void creaConstanteBool(int a) {
+	Node *var = new Node();
+	std::string aux;
+	if(!a) aux = "cB0"; 
+	else aux = "cB1";
+	var->nombre = aux;
+	var->tipo = 2;
+	var->scope = scope_actual ;
+	var->valor_num = a;
+	var->id = id_actual++;
+	pilaO.push(var);
+
+}
+
+void creaConstanteStr(const char *){
 
 }
 
@@ -291,7 +423,7 @@ void actualizaTipoVariables () {
 	else if(tipo_actual == "bool") tipo = 2;
 	else if(tipo_actual == "texto") tipo = 3;
 	else std::cout << std::endl << " E R R O R " << std::endl;
-	
+
 	while (!aux_vars.empty()) {
 		var = aux_vars.top();
 		aux_vars.pop();
@@ -307,10 +439,10 @@ void creaVariable() {
 	var->nombre = var_actual.top();
 	var->tipo = -1;
 	var->scope = scope_actual;
-
+	var->id = id_actual++;
 	var_actual.pop();
 	aux_vars.push(var);
-	
+
 }
 
 void actualizaScope(std::string str){
@@ -322,15 +454,31 @@ void imprimePila(std::stack<Node*> pila) {
 	Node* var = new Node();
 	tmp = pila;
 
-	while(!pila.empty()) {
-		var = pila.top();
+while(!tmp.empty()) {
+		var = tmp.top();
 		std::cout << "Nombre: " << var->nombre << std::endl;
-		pila.pop();
+		tmp.pop();
 	}
 
 	std::cout << "----------------------------------------" << std::endl;
-}
+   }
 
+void imprimePila(int a) {
+	std::stack<int> tmp;
+	int var;
+	tmp = pOper;
+
+while(!tmp.empty()) {
+	std::cout << "----------------------------------------" << std::endl;
+
+		var = tmp.top();
+		std::cout << "Operador: " << var << std::endl;
+		tmp.pop();
+	}
+
+	std::cout << "----------------------------------------" << std::endl;
+
+}
 
 void creaCubo(){
 	cubo_sem[0][0][0] = 1;
@@ -361,9 +509,13 @@ void creaCubo(){
 	cubo_sem[2][2][9] = 3;
 	cubo_sem[2][2][10] = 3;
 
-/*	std::cout << "         + - * / = < > < > ! ==";
-	
-	for(int i =0; i < 3; i++) {
+	id_actual = 0;
+	cuad_actual = 0;
+	tmp_actual = 0;
+/*
+	std::cout << "         + - * / = < > < > ! ==";
+
+for(int i =0; i < 3; i++) {
 		for(int j =0; j < 3; j++) {
 			std::cout << std::endl;
 			std::cout << "[" << i << "]" << "[" << j << "]:  ";
@@ -373,8 +525,10 @@ void creaCubo(){
 		}
 	}
 
-	std::cout << std::endl;	
-	std::cout << std::endl; */
+std::cout << std::endl;	
+   std::cout << std::endl; 
+*/
+
 }
 
 int yyerror(char* s) {

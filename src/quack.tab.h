@@ -136,7 +136,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 69 "sintax.y"
+#line 78 "sintax.y"
 {
 	int int_val;	
 	float float_val;

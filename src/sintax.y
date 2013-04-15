@@ -206,9 +206,11 @@ dibuja: triangulo
 
 por: POR LPA sexp DOU sexp RPA LBR bloque RBR
 
-haz: HAZ LBR bloque RBR MIENTRAS LPA sexp RPA SEM 
+haz: HAZ { cuadruploEstatuto(3); } LBR bloque RBR 
+   MIENTRAS LPA sexp RPA { cuadruploEstatuto(5); } SEM 
 
-mientras: MIENTRAS LPA sexp RPA LBR bloque RBR
+mientras: MIENTRAS { cuadruploEstatuto(3); } LPA sexp RPA 
+	   { cuadruploEstatuto(0); } LBR bloque RBR { cuadruploEstatuto(4); }
 
 cuadrado: CUADRADO LPA CTE_NUM RPA SEM
 
@@ -261,19 +263,21 @@ for(MapType::const_iterator it = map_vars.begin() ;
 void cuadruploEstatuto(int tipo) {
 
 	std::string nombre;
-	std::stringstream sstm;
-
 	switch(tipo) {
-
+		/*
+		* Del case 0 al 2 son para la implementacion de los if y los if/else,
+		* del case 3 al 4 son para la implementacion del while,
+		* del case 4 al 5 son para el do while
+		*/
 		case 0: {
 			int a;
 			Node *resultado;
 			resultado = pilaO.top();
 			a = resultado->tipo;
-			if (!a == 2 ) {
+			if (a == -1 || a == 3  ) {
 				std::cout << "Error de tipo: " << resultado->nombre << std::endl;
 			} else {
-				Cuadruplo::Cuadruplo cuad1(15, resultado->nombre, " ", "___");
+				Cuadruplo::Cuadruplo cuad1(15, resultado->nombre, "", "___");
 				vec_cuadruplos.push_back(cuad1);
 				cuad_actual++;
 				pSaltos.push(cuad_actual - 1);
@@ -282,33 +286,80 @@ void cuadruploEstatuto(int tipo) {
 		}
 		
 		case 1: {
+			std::stringstream sstm1;
 			Cuadruplo::Cuadruplo cuad3(13, "", "", "___");
 			vec_cuadruplos.push_back(cuad3);
 			cuad_actual++;
 			int falso = pSaltos.top();
 			pSaltos.pop();
-			cuad3 = vec_cuadruplos[falso];
-			sstm << "" << cuad_actual;
-			nombre = sstm.str();
+			cuad3 = vec_cuadruplos[falso-1];
+			sstm1 << "" << cuad_actual;
+			nombre = sstm1.str();
 			cuad3.setAvail_s(nombre);
-			vec_cuadruplos[falso] = cuad3;
+			vec_cuadruplos[falso-1] = cuad3;
 			pSaltos.push(cuad_actual-1);
 			break;
 		}
 		
 		case 2: {
+			std::stringstream sstm2;
 			int salto = pSaltos.top();
 			pSaltos.pop();
 			Cuadruplo::Cuadruplo cuad2;
-			cuad2 = vec_cuadruplos[salto];
-			sstm << "" << cuad_actual;
-			nombre = sstm.str();
+			cuad2 = vec_cuadruplos[salto-1];
+			sstm2 << "" << cuad_actual;
+			nombre = sstm2.str();
 			cuad2.setAvail_s(nombre);
-			vec_cuadruplos[salto] = cuad2;
+			vec_cuadruplos[salto-1] = cuad2;
+			break;
+		}
+
+		case 3: {
+			pSaltos.push(cuad_actual);
+			break;
+		}
+		
+		case 4: {
+			std::stringstream sstm3;
+			std::stringstream sstm4;
+			int falso, retorno;
+			falso = pSaltos.top();
+			pSaltos.pop();
+			retorno = pSaltos.top();
+			pSaltos.pop();
+			sstm3 << "" << retorno;
+			nombre = sstm3.str();
+			Cuadruplo::Cuadruplo cuad4(13, "", "", nombre);
+			vec_cuadruplos.push_back(cuad4);
+			cuad_actual++;
+			cuad4 = vec_cuadruplos[falso-1];
+			sstm4 << "" << cuad_actual;
+			nombre = sstm4.str();
+			cuad4.setAvail_s(nombre);
+			vec_cuadruplos[falso-1] = cuad4;
+			break;
+		}
+		
+		case 5: {
+			int a, retorno;
+			Node *resultado;
+			std::stringstream sstm5;
+			resultado = pilaO.top();
+			a = resultado->tipo;
+			if (a == 3 || a == -1 ) {
+				std::cout << "Error de tipo: " << resultado->nombre << std::endl;
+			} else {
+				retorno = pSaltos.top();
+				pSaltos.pop();
+				sstm5 << "" << retorno;
+				nombre = sstm5.str();
+				Cuadruplo::Cuadruplo cuad5(15, resultado->nombre, "", nombre);
+				vec_cuadruplos.push_back(cuad5);
+				cuad_actual++;
+			}
 			break;
 		}
 	} 
-
 }
 
 
@@ -322,12 +373,67 @@ void cuadruploEstatuto(int tipo) {
 void checaOperador(int a) {
 	Node* tmp1 = new Node();
 	Node* tmp2 = new Node();
+	int aux = -1;
 
 	if (!pilaO.empty() && !pOper.empty()) {
 		int operador = pOper.top();
-		if(operador == a || operador == a + 1 ){
 
-			if(operador != 4) {
+		if (operador == 0 && a == 0) aux = a;
+		else if (operador == 1 && a == 0) aux = a;
+		else if (operador == 2 && a == 2) aux = a;
+		else if (operador == 3 && a == 2) aux = a;
+		else if (operador == 4 && a == 4) aux = a;
+		else if (operador >= 5 && a == 4) aux = a;
+
+		if(aux == a){
+			
+			if (operador == 11 || operador == 12){
+			} else if (operador == 4) { 
+				tmp2 = pilaO.top();
+				pilaO.pop();
+				tmp1 = pilaO.top();
+				pilaO.pop();
+				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
+					std::stringstream sstm;
+					Cuadruplo::Cuadruplo cuad(operador, tmp2->nombre, 
+						" ", tmp1->nombre);
+					pOper.pop();
+					vec_cuadruplos.push_back(cuad);
+					cuad_actual++;
+				} else {
+					std::cout << "Error2: " << tmp1->tipo - 1 << tmp2->tipo - 1
+					<< operador	<< std::endl;
+					imprimeVector(vec_cuadruplos);
+				}
+			}  else if(operador >= 5 ) {
+				tmp2 = pilaO.top();
+				pilaO.pop();
+				tmp1 = pilaO.top();
+				pilaO.pop();
+				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
+					std::stringstream sstm;
+					sstm << "t" << tmp_actual;
+					avail = sstm.str();
+					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
+						tmp2->nombre, avail);
+					var_actual.push(avail);
+					tipo_actual = "num";
+					scope_actual = "global";
+					creaVariable();
+					actualizaTipoVariables();
+					yytext = strdup(avail.c_str());
+					meterPilaO();
+					tmp_actual++;
+					cuad_actual++;
+					pOper.pop();
+					vec_cuadruplos.push_back(cuad);
+					//imprimePila(1);
+				} else {
+					std::cout << "Error3: " << tmp1->tipo - 1 << tmp2->tipo - 1
+					<< operador	<< std::endl;
+					imprimeVector(vec_cuadruplos);
+				} 
+			} else if (operador != 4) {
 				tmp2 = pilaO.top();
 				pilaO.pop();
 				tmp1 = pilaO.top();
@@ -351,55 +457,11 @@ void checaOperador(int a) {
 					cuad_actual++;
 					//imprimePila(1);
 				} else {
-					std::cout << "Error: " << tmp1->tipo - 1 << tmp2->tipo - 1
+					std::cout << "Error1: " << tmp1->tipo - 1 << tmp2->tipo - 1
 					<< operador	<< std::endl;
-				}
-
-			} else if (operador == 4) { 
-				tmp2 = pilaO.top();
-				pilaO.pop();
-				tmp1 = pilaO.top();
-				pilaO.pop();
-				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
-					std::stringstream sstm;
-					Cuadruplo::Cuadruplo cuad(operador, tmp2->nombre, 
-						" ", tmp1->nombre);
-					pOper.pop();
-					vec_cuadruplos.push_back(cuad);
-					cuad_actual++;
-				} else {
-					std::cout  << tmp1->tipo - 1 << tmp2->tipo - 1
-					<< operador	<< std::endl;
+					imprimeVector(vec_cuadruplos);
 				}
 			}
-		} else if( operador == 11) {
-		} else if(operador >= 5 ) {
-				tmp2 = pilaO.top();
-				pilaO.pop();
-				tmp1 = pilaO.top();
-				pilaO.pop();
-				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
-					std::stringstream sstm;
-					sstm << "t" << tmp_actual;
-					avail = sstm.str();
-					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
-						tmp2->nombre, avail);
-					var_actual.push(avail);
-					tipo_actual = "bool";
-					scope_actual = "global";
-					creaVariable();
-					actualizaTipoVariables();
-					yytext = strdup(avail.c_str());
-					meterPilaO();
-					tmp_actual++;
-					cuad_actual++;
-					pOper.pop();
-					vec_cuadruplos.push_back(cuad);
-					//imprimePila(1);
-				} else {
-					std::cout << "Error: " << tmp1->tipo - 1 << tmp2->tipo - 1
-					<< operador	<< std::endl;
-				}
 		}
 	}
 }
@@ -496,6 +558,7 @@ void creaVariable() {
 	var_actual.pop();
 	aux_vars.push(var);
 
+
 }
 
 void actualizaScope(std::string str){
@@ -538,7 +601,7 @@ void imprimeVector(std::vector<Cuadruplo> vec) {
 
 	for (int i = 0; i < vec.size(); i++) {
 		cuad = vec[i];
-		std::cout << i << ": ";
+		std::cout << i+1 << ": ";
 		cuad.print();
 		
 	}
@@ -559,7 +622,7 @@ void creaCubo(){
 	cubo_sem[0][0][10] = 2; 
 	cubo_sem[0][1][4] = 2;
 	cubo_sem[0][1][9] = 2;
-	cubo_sem[0][1][10] = 2;	
+	cubo_sem[0][1][10] = 2;
 	cubo_sem[1][0][4] = 2;
 	cubo_sem[1][0][9] = 2;
 	cubo_sem[1][0][10] = 2;
@@ -574,9 +637,9 @@ void creaCubo(){
 	cubo_sem[2][2][9] = 3;
 	cubo_sem[2][2][10] = 3;
 
-	id_actual = 0;
-	cuad_actual = 0;
-	tmp_actual = 0;
+	id_actual = 1;
+	cuad_actual = 1;
+	tmp_actual = 1;
 /*
 	std::cout << "         + - * / = < > < > ! ==";
 

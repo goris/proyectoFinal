@@ -500,16 +500,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   147
+#define YYLAST   150
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  47
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  49
+#define YYNNTS  53
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  83
+#define YYNRULES  87
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  175
+#define YYNSTATES  179
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -557,7 +557,7 @@ static const yytype_uint8 yytranslate[] =
 #if YYDEBUG
 /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
    YYRHS.  */
-static const yytype_uint8 yyprhs[] =
+static const yytype_uint16 yyprhs[] =
 {
        0,     0,     3,     4,    13,    14,    21,    22,    23,    27,
       32,    35,    36,    38,    40,    42,    45,    48,    51,    52,
@@ -566,8 +566,8 @@ static const yytype_uint8 yyprhs[] =
      112,   114,   116,   118,   120,   122,   124,   126,   127,   131,
      132,   136,   137,   141,   142,   143,   147,   148,   152,   153,
      157,   158,   159,   164,   166,   168,   170,   172,   174,   176,
-     178,   179,   192,   193,   195,   197,   199,   201,   211,   221,
-     229,   235,   241,   249
+     178,   179,   192,   193,   195,   197,   199,   201,   211,   212,
+     213,   225,   226,   227,   237,   243,   249,   257
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -582,7 +582,7 @@ static const yytype_int8 yyrhs[] =
       25,    59,    30,    60,    69,    42,    -1,    -1,    12,    36,
       69,    37,    38,    62,    56,    39,    63,    -1,    -1,    13,
       64,    38,    56,    39,    -1,    -1,     4,    36,    66,    37,
-      42,    -1,    72,    67,    -1,    45,    66,    -1,    -1,    91,
+      42,    -1,    72,    67,    -1,    45,    66,    -1,    -1,    93,
       -1,    90,    -1,    89,    -1,    72,    70,    -1,    71,    72,
       -1,    -1,    31,    -1,    32,    -1,    35,    -1,    33,    -1,
       34,    -1,    46,    -1,    30,    -1,    -1,    77,    73,    74,
@@ -592,13 +592,14 @@ static const yytype_int8 yyrhs[] =
       83,    69,    37,    -1,    84,    -1,    85,    -1,    23,    -1,
       24,    -1,    25,    -1,    21,    -1,    22,    -1,    -1,     6,
       55,    25,    87,    38,    50,    56,     7,    84,    42,    39,
-      86,    -1,    -1,    95,    -1,    92,    -1,    93,    -1,    94,
+      86,    -1,    -1,    99,    -1,    96,    -1,    97,    -1,    98,
       -1,    15,    36,    69,    43,    69,    37,    38,    56,    39,
-      -1,    14,    38,    56,    39,    16,    36,    69,    37,    42,
-      -1,    16,    36,    69,    37,    38,    56,    39,    -1,    18,
-      36,    23,    37,    42,    -1,    20,    36,    23,    37,    42,
-      -1,    17,    36,    23,    44,    23,    37,    42,    -1,    19,
-      36,    24,    44,    23,    37,    42,    -1
+      -1,    -1,    -1,    14,    91,    38,    56,    39,    16,    36,
+      69,    37,    92,    42,    -1,    -1,    -1,    16,    94,    36,
+      69,    37,    95,    38,    56,    39,    -1,    18,    36,    23,
+      37,    42,    -1,    20,    36,    23,    37,    42,    -1,    17,
+      36,    23,    44,    23,    37,    42,    -1,    19,    36,    24,
+      44,    23,    37,    42,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
@@ -611,8 +612,8 @@ static const yytype_uint8 yyrline[] =
      172,   173,   174,   175,   176,   177,   178,   179,   179,   180,
      180,   181,   181,   182,   183,   183,   184,   184,   185,   185,
      186,   187,   187,   188,   189,   190,   191,   192,   194,   195,
-     198,   197,   200,   202,   203,   204,   205,   207,   209,   211,
-     213,   215,   217,   219
+     198,   197,   200,   202,   203,   204,   205,   207,   209,   210,
+     209,   212,   213,   212,   215,   217,   219,   221
 };
 #endif
 
@@ -632,8 +633,8 @@ static const char *const yytname[] =
   "@7", "escritura", "escritura1", "escritura2", "ciclos", "sexp",
   "expresion1", "operadores", "exp", "@8", "exp1", "@9", "@10", "termino",
   "@11", "termino1", "@12", "@13", "factor", "@14", "var_cte", "cte_bool",
-  "funciones", "@15", "dibuja", "por", "haz", "mientras", "cuadrado",
-  "circulo", "linea", "triangulo", 0
+  "funciones", "@15", "dibuja", "por", "haz", "@16", "@17", "mientras",
+  "@18", "@19", "cuadrado", "circulo", "linea", "triangulo", 0
 };
 #endif
 
@@ -660,8 +661,8 @@ static const yytype_uint8 yyr1[] =
       71,    71,    71,    71,    71,    71,    71,    73,    72,    75,
       74,    76,    74,    74,    78,    77,    80,    79,    81,    79,
       79,    83,    82,    82,    84,    84,    84,    84,    85,    85,
-      87,    86,    86,    88,    88,    88,    88,    89,    90,    91,
-      92,    93,    94,    95
+      87,    86,    86,    88,    88,    88,    88,    89,    91,    92,
+      90,    94,    95,    93,    96,    97,    98,    99
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -674,8 +675,8 @@ static const yytype_uint8 yyr2[] =
        1,     1,     1,     1,     1,     1,     1,     0,     3,     0,
        3,     0,     3,     0,     0,     3,     0,     3,     0,     3,
        0,     0,     4,     1,     1,     1,     1,     1,     1,     1,
-       0,    12,     0,     1,     1,     1,     1,     9,     9,     7,
-       5,     5,     7,     7
+       0,    12,     0,     1,     1,     1,     1,     9,     0,     0,
+      11,     0,     0,     9,     5,     5,     7,     7
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -684,68 +685,70 @@ static const yytype_uint8 yyr2[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     2,     1,     0,     6,     0,    18,     7,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    78,     0,    81,     0,     0,     0,     0,
       22,    72,    18,    19,    20,    21,    18,    18,    36,    35,
       34,    74,    75,    76,    73,    11,    14,    12,    13,     4,
-       0,     0,    18,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,    15,    16,    17,     0,     0,     8,     0,    68,
       69,    65,    66,    67,    61,     0,    33,    47,    54,    63,
-      64,     0,    39,     0,     0,     0,     0,     0,     0,     0,
+      64,     0,    39,    18,     0,     0,     0,     0,     0,     0,
       23,     0,     3,     0,    10,     6,     0,     0,     0,    31,
       53,    60,     0,    46,    40,    41,    43,    44,    42,    45,
       37,     0,     0,     0,     0,     0,     0,     0,     0,     0,
       70,    11,     5,     0,    30,    32,    49,    51,    48,    56,
-      58,    55,    25,    38,     0,     0,    18,     0,    80,     0,
-      81,     0,     0,     9,    62,     0,     0,     0,     0,    18,
+      58,    55,    25,    38,     0,     0,    82,     0,    84,     0,
+      85,     0,     0,     9,    62,     0,     0,     0,     0,    18,
        0,     0,     0,     0,     0,    24,     6,    50,    52,    57,
-      59,     0,     0,    18,    79,    82,    83,    18,    29,     0,
-       0,     0,    27,    26,    78,    77,     0,     0,     0,    18,
-       0,     0,    72,    28,    71
+      59,     0,     0,    18,    18,    86,    87,    18,    29,     0,
+       0,     0,     0,    27,    26,    79,    77,    83,     0,     0,
+       0,     0,    18,    80,     0,     0,    72,    28,    71
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
       -1,     2,     5,     8,    58,    10,    35,    57,    39,    21,
-      22,    23,    49,   109,    24,   139,   163,   167,    25,    65,
+      22,    23,    49,   109,    24,   139,   164,   169,    25,    65,
       89,    26,    71,   100,   101,    72,    90,   118,   135,   136,
       67,    91,   121,   137,   138,    68,    86,    69,    70,    51,
-     132,    27,    28,    29,    30,    31,    32,    33,    34
+     132,    27,    28,    29,    42,   170,    30,    44,   142,    31,
+      32,    33,    34
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -89
+#define YYPACT_NINF -90
 static const yytype_int8 yypact[] =
 {
-      15,    18,    47,   -89,   -89,    13,    44,    28,     7,   -89,
-      20,    21,    22,    16,    23,    24,    26,    27,    29,    30,
-     -89,    50,     7,   -89,   -89,   -89,     7,     7,   -89,   -89,
-     -89,   -89,   -89,   -89,   -89,   -34,   -89,   -89,   -89,   -89,
-      12,    12,     7,    12,    12,    46,    48,    49,    51,    40,
-      20,    33,   -89,   -89,   -89,    52,    28,   -89,    34,   -89,
-     -89,   -89,   -89,   -89,   -89,    41,    32,   -89,   -89,   -89,
-     -89,    42,   -18,    43,    37,    53,    39,    54,    45,    55,
-     -89,    56,   -89,    58,   -89,    44,    12,    59,    12,   -89,
-      19,   -20,    57,   -89,   -89,   -89,   -89,   -89,   -89,   -89,
-     -89,    12,    68,    12,    62,    63,    64,    65,    66,    12,
-     -89,   -34,   -89,    60,   -89,   -89,   -89,   -89,   -89,   -89,
-     -89,   -89,   -89,   -89,    69,    70,     7,    72,   -89,    73,
-     -89,    71,    74,   -89,   -89,    12,    12,    12,    12,     7,
-      12,    76,    77,    78,    79,   -89,    44,   -89,   -89,   -89,
-     -89,    80,    81,     7,   -89,   -89,   -89,     7,    83,    82,
-      84,    86,   -89,   -89,   -89,   -89,    17,    87,    85,     7,
-      89,    90,    50,   -89,   -89
+      10,   -10,    42,   -90,   -90,    14,    45,    29,     2,   -90,
+      15,    19,    21,   -90,    22,   -90,    23,    24,    26,    30,
+     -90,    50,     2,   -90,   -90,   -90,     2,     2,   -90,   -90,
+     -90,   -90,   -90,   -90,   -90,     1,   -90,   -90,   -90,   -90,
+       7,     7,    27,     7,    32,    46,    47,    48,    51,    41,
+      15,    34,   -90,   -90,   -90,    52,    29,   -90,    35,   -90,
+     -90,   -90,   -90,   -90,   -90,    39,    33,   -90,   -90,   -90,
+     -90,    43,   -23,     2,    36,     7,    37,    49,    38,    53,
+     -90,    58,   -90,    44,   -90,    45,     7,    54,     7,   -90,
+      20,    11,    55,   -90,   -90,   -90,   -90,   -90,   -90,   -90,
+     -90,     7,    56,     7,    57,    61,    59,    64,    60,     7,
+     -90,     1,   -90,    62,   -90,   -90,   -90,   -90,   -90,   -90,
+     -90,   -90,   -90,   -90,    72,    63,   -90,    66,   -90,    67,
+     -90,    65,    68,   -90,   -90,     7,     7,     7,     7,     2,
+      69,    70,    71,    73,    74,   -90,    45,   -90,   -90,   -90,
+     -90,    75,     7,     2,     2,   -90,   -90,     2,    76,    81,
+      80,    82,    84,   -90,   -90,   -90,   -90,   -90,    13,    85,
+      78,    83,     2,   -90,    87,    88,    50,   -90,   -90
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -89,   -89,   -89,   -82,   -89,    31,   -89,   -26,    61,   -22,
-     -89,   -89,   -89,   -89,   -89,   -89,   -89,   -89,   -89,     6,
-     -89,   -89,   -42,   -89,   -89,   -33,   -89,   -89,   -89,   -89,
-     -88,   -89,   -89,   -89,   -89,   -89,   -89,   -51,   -89,   -50,
-     -89,   -89,   -89,   -89,   -89,   -89,   -89,   -89,   -89
+     -90,   -90,   -90,   -82,   -90,    77,   -90,   -19,    79,   -22,
+     -90,   -90,   -90,   -90,   -90,   -90,   -90,   -90,   -90,    25,
+     -90,   -90,   -42,   -90,   -90,   -38,   -90,   -90,   -90,   -90,
+     -89,   -90,   -90,   -90,   -90,   -90,   -90,   -57,   -90,   -64,
+     -90,   -90,   -90,   -90,   -90,   -90,   -90,   -90,   -90,   -90,
+     -90,   -90,   -90
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -755,40 +758,42 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      52,    74,    75,   112,    53,    54,    55,    66,   119,   120,
-      56,    11,    93,    94,    95,    96,    97,    98,     1,    12,
-      73,    13,    14,    15,    16,    17,    18,    19,    99,    36,
-      37,    38,    20,    59,    60,    61,    62,    63,    59,    60,
-      61,    62,    63,     3,   113,   116,   117,     4,    64,   149,
-     150,     6,     7,     9,    42,    66,    50,    40,    41,    43,
-      44,   125,    45,    46,   157,    47,    48,   131,   123,    76,
-      80,    77,    82,    78,    79,    83,    85,    88,    87,    92,
-     103,   110,   102,   105,   124,   133,   127,    84,   129,   107,
-     104,   106,   108,   166,   115,   122,   162,   134,   152,   111,
-     126,   114,   147,   148,   142,   140,   128,   141,   130,   143,
-     144,    81,   146,   145,   153,   168,   154,   151,   159,   158,
-     155,   156,   174,   165,   164,   169,     0,   170,   172,   173,
-       0,   160,     0,     0,     0,   161,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   171
+      52,    74,    66,   112,    53,    54,    11,    93,    94,    95,
+      96,    97,    98,     1,    12,     3,    13,    14,    15,    16,
+      17,    18,    19,    99,    36,    37,    38,    20,    59,    60,
+      61,    62,    63,   104,    59,    60,    61,    62,    63,   119,
+     120,    55,     4,    64,   113,    56,   116,   117,   149,   150,
+      66,   102,     6,     7,     9,    40,    50,    41,    43,    45,
+      46,   125,    47,   123,   157,    73,    48,   131,    75,    76,
+      77,    80,    78,    82,    79,    83,    87,    85,    88,   103,
+      92,   105,   107,   110,   127,   111,   106,   129,   140,   163,
+     108,   168,   133,   122,   126,   124,   114,   147,   148,   134,
+     141,   128,   130,   143,   144,   152,   146,   145,   153,   154,
+     159,   171,   178,   115,   158,   155,   156,   151,   165,   166,
+     173,   167,     0,   172,     0,   174,   176,   177,     0,    81,
+       0,   160,   161,    84,     0,   162,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     175
 };
 
 static const yytype_int16 yycheck[] =
 {
-      22,    43,    44,    85,    26,    27,    40,    40,    28,    29,
-      44,     4,    30,    31,    32,    33,    34,    35,     3,    12,
-      42,    14,    15,    16,    17,    18,    19,    20,    46,     9,
-      10,    11,    25,    21,    22,    23,    24,    25,    21,    22,
-      23,    24,    25,    25,    86,    26,    27,     0,    36,   137,
-     138,    38,     8,    25,    38,    88,     6,    36,    36,    36,
-      36,   103,    36,    36,   146,    36,    36,   109,   101,    23,
-      30,    23,    39,    24,    23,    23,    42,    45,    37,    37,
-      43,    25,    39,    44,    16,   111,    23,    56,    23,    44,
-      37,    37,    37,     7,    88,    38,    13,    37,   140,    41,
-      38,    42,   135,   136,   126,    36,    42,    37,    42,    37,
-      37,    50,    38,    42,    38,   166,    39,   139,    37,    39,
-      42,    42,   172,    39,    42,    38,    -1,    42,    39,    39,
-      -1,   153,    -1,    -1,    -1,   157,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   169
+      22,    43,    40,    85,    26,    27,     4,    30,    31,    32,
+      33,    34,    35,     3,    12,    25,    14,    15,    16,    17,
+      18,    19,    20,    46,     9,    10,    11,    25,    21,    22,
+      23,    24,    25,    75,    21,    22,    23,    24,    25,    28,
+      29,    40,     0,    36,    86,    44,    26,    27,   137,   138,
+      88,    73,    38,     8,    25,    36,     6,    36,    36,    36,
+      36,   103,    36,   101,   146,    38,    36,   109,    36,    23,
+      23,    30,    24,    39,    23,    23,    37,    42,    45,    43,
+      37,    44,    44,    25,    23,    41,    37,    23,    16,    13,
+      37,     7,   111,    38,    37,    39,    42,   135,   136,    37,
+      37,    42,    42,    37,    37,    36,    38,    42,    38,    38,
+     152,   168,   176,    88,    39,    42,    42,   139,    37,    39,
+      42,    39,    -1,    38,    -1,    42,    39,    39,    -1,    50,
+      -1,   153,   154,    56,    -1,   157,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+     172
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -798,21 +803,21 @@ static const yytype_uint8 yystos[] =
        0,     3,    48,    25,     0,    49,    38,     8,    50,    25,
       52,     4,    12,    14,    15,    16,    17,    18,    19,    20,
       25,    56,    57,    58,    61,    65,    68,    88,    89,    90,
-      91,    92,    93,    94,    95,    53,     9,    10,    11,    55,
-      36,    36,    38,    36,    36,    36,    36,    36,    36,    59,
+      93,    96,    97,    98,    99,    53,     9,    10,    11,    55,
+      36,    36,    91,    36,    94,    36,    36,    36,    36,    59,
        6,    86,    56,    56,    56,    40,    44,    54,    51,    21,
       22,    23,    24,    25,    36,    66,    72,    77,    82,    84,
-      85,    69,    72,    56,    69,    69,    23,    23,    24,    23,
+      85,    69,    72,    38,    69,    36,    23,    23,    24,    23,
       30,    55,    39,    23,    52,    42,    83,    37,    45,    67,
       73,    78,    37,    30,    31,    32,    33,    34,    35,    46,
-      70,    71,    39,    43,    37,    44,    37,    44,    37,    60,
+      70,    71,    56,    43,    69,    44,    37,    44,    37,    60,
       25,    41,    50,    69,    42,    66,    26,    27,    74,    28,
-      29,    79,    38,    72,    16,    69,    38,    23,    42,    23,
+      29,    79,    38,    72,    39,    69,    37,    23,    42,    23,
       42,    69,    87,    54,    37,    75,    76,    80,    81,    62,
-      36,    37,    56,    37,    37,    42,    38,    72,    72,    77,
-      77,    56,    69,    38,    39,    42,    42,    50,    39,    37,
-      56,    56,    13,    63,    42,    39,     7,    64,    84,    38,
-      42,    56,    39,    39,    86
+      16,    37,    95,    37,    37,    42,    38,    72,    72,    77,
+      77,    56,    36,    38,    38,    42,    42,    50,    39,    69,
+      56,    56,    56,    13,    63,    37,    39,    39,     7,    64,
+      92,    84,    38,    42,    42,    56,    39,    39,    86
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1781,9 +1786,34 @@ yyreduce:
     { scope_actual = yytext; actualizaScope("funcion"); ;}
     break;
 
+  case 78:
+#line 209 "sintax.y"
+    { cuadruploEstatuto(3); ;}
+    break;
+
+  case 79:
+#line 210 "sintax.y"
+    { cuadruploEstatuto(5); ;}
+    break;
+
+  case 81:
+#line 212 "sintax.y"
+    { cuadruploEstatuto(3); ;}
+    break;
+
+  case 82:
+#line 213 "sintax.y"
+    { cuadruploEstatuto(0); ;}
+    break;
+
+  case 83:
+#line 213 "sintax.y"
+    { cuadruploEstatuto(4); ;}
+    break;
+
 
 /* Line 1267 of yacc.c.  */
-#line 1787 "quack.tab.c"
+#line 1817 "quack.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1997,7 +2027,7 @@ yyreturn:
 }
 
 
-#line 221 "sintax.y"
+#line 223 "sintax.y"
 
 
 
@@ -2041,19 +2071,21 @@ for(MapType::const_iterator it = map_vars.begin() ;
 void cuadruploEstatuto(int tipo) {
 
 	std::string nombre;
-	std::stringstream sstm;
-
 	switch(tipo) {
-
+		/*
+		* Del case 0 al 2 son para la implementacion de los if y los if/else,
+		* del case 3 al 4 son para la implementacion del while,
+		* del case 4 al 5 son para el do while
+		*/
 		case 0: {
 			int a;
 			Node *resultado;
 			resultado = pilaO.top();
 			a = resultado->tipo;
-			if (!a == 2 ) {
+			if (a == -1 || a == 3  ) {
 				std::cout << "Error de tipo: " << resultado->nombre << std::endl;
 			} else {
-				Cuadruplo::Cuadruplo cuad1(15, resultado->nombre, " ", "___");
+				Cuadruplo::Cuadruplo cuad1(15, resultado->nombre, "", "___");
 				vec_cuadruplos.push_back(cuad1);
 				cuad_actual++;
 				pSaltos.push(cuad_actual - 1);
@@ -2062,33 +2094,80 @@ void cuadruploEstatuto(int tipo) {
 		}
 		
 		case 1: {
+			std::stringstream sstm1;
 			Cuadruplo::Cuadruplo cuad3(13, "", "", "___");
 			vec_cuadruplos.push_back(cuad3);
 			cuad_actual++;
 			int falso = pSaltos.top();
 			pSaltos.pop();
-			cuad3 = vec_cuadruplos[falso];
-			sstm << "" << cuad_actual;
-			nombre = sstm.str();
+			cuad3 = vec_cuadruplos[falso-1];
+			sstm1 << "" << cuad_actual;
+			nombre = sstm1.str();
 			cuad3.setAvail_s(nombre);
-			vec_cuadruplos[falso] = cuad3;
+			vec_cuadruplos[falso-1] = cuad3;
 			pSaltos.push(cuad_actual-1);
 			break;
 		}
 		
 		case 2: {
+			std::stringstream sstm2;
 			int salto = pSaltos.top();
 			pSaltos.pop();
 			Cuadruplo::Cuadruplo cuad2;
-			cuad2 = vec_cuadruplos[salto];
-			sstm << "" << cuad_actual;
-			nombre = sstm.str();
+			cuad2 = vec_cuadruplos[salto-1];
+			sstm2 << "" << cuad_actual;
+			nombre = sstm2.str();
 			cuad2.setAvail_s(nombre);
-			vec_cuadruplos[salto] = cuad2;
+			vec_cuadruplos[salto-1] = cuad2;
+			break;
+		}
+
+		case 3: {
+			pSaltos.push(cuad_actual);
+			break;
+		}
+		
+		case 4: {
+			std::stringstream sstm3;
+			std::stringstream sstm4;
+			int falso, retorno;
+			falso = pSaltos.top();
+			pSaltos.pop();
+			retorno = pSaltos.top();
+			pSaltos.pop();
+			sstm3 << "" << retorno;
+			nombre = sstm3.str();
+			Cuadruplo::Cuadruplo cuad4(13, "", "", nombre);
+			vec_cuadruplos.push_back(cuad4);
+			cuad_actual++;
+			cuad4 = vec_cuadruplos[falso-1];
+			sstm4 << "" << cuad_actual;
+			nombre = sstm4.str();
+			cuad4.setAvail_s(nombre);
+			vec_cuadruplos[falso-1] = cuad4;
+			break;
+		}
+		
+		case 5: {
+			int a, retorno;
+			Node *resultado;
+			std::stringstream sstm5;
+			resultado = pilaO.top();
+			a = resultado->tipo;
+			if (a == 3 || a == -1 ) {
+				std::cout << "Error de tipo: " << resultado->nombre << std::endl;
+			} else {
+				retorno = pSaltos.top();
+				pSaltos.pop();
+				sstm5 << "" << retorno;
+				nombre = sstm5.str();
+				Cuadruplo::Cuadruplo cuad5(15, resultado->nombre, "", nombre);
+				vec_cuadruplos.push_back(cuad5);
+				cuad_actual++;
+			}
 			break;
 		}
 	} 
-
 }
 
 
@@ -2102,12 +2181,67 @@ void cuadruploEstatuto(int tipo) {
 void checaOperador(int a) {
 	Node* tmp1 = new Node();
 	Node* tmp2 = new Node();
+	int aux = -1;
 
 	if (!pilaO.empty() && !pOper.empty()) {
 		int operador = pOper.top();
-		if(operador == a || operador == a + 1 ){
 
-			if(operador != 4) {
+		if (operador == 0 && a == 0) aux = a;
+		else if (operador == 1 && a == 0) aux = a;
+		else if (operador == 2 && a == 2) aux = a;
+		else if (operador == 3 && a == 2) aux = a;
+		else if (operador == 4 && a == 4) aux = a;
+		else if (operador >= 5 && a == 4) aux = a;
+
+		if(aux == a){
+			
+			if (operador == 11 || operador == 12){
+			} else if (operador == 4) { 
+				tmp2 = pilaO.top();
+				pilaO.pop();
+				tmp1 = pilaO.top();
+				pilaO.pop();
+				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
+					std::stringstream sstm;
+					Cuadruplo::Cuadruplo cuad(operador, tmp2->nombre, 
+						" ", tmp1->nombre);
+					pOper.pop();
+					vec_cuadruplos.push_back(cuad);
+					cuad_actual++;
+				} else {
+					std::cout << "Error2: " << tmp1->tipo - 1 << tmp2->tipo - 1
+					<< operador	<< std::endl;
+					imprimeVector(vec_cuadruplos);
+				}
+			}  else if(operador >= 5 ) {
+				tmp2 = pilaO.top();
+				pilaO.pop();
+				tmp1 = pilaO.top();
+				pilaO.pop();
+				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
+					std::stringstream sstm;
+					sstm << "t" << tmp_actual;
+					avail = sstm.str();
+					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
+						tmp2->nombre, avail);
+					var_actual.push(avail);
+					tipo_actual = "num";
+					scope_actual = "global";
+					creaVariable();
+					actualizaTipoVariables();
+					yytext = strdup(avail.c_str());
+					meterPilaO();
+					tmp_actual++;
+					cuad_actual++;
+					pOper.pop();
+					vec_cuadruplos.push_back(cuad);
+					//imprimePila(1);
+				} else {
+					std::cout << "Error3: " << tmp1->tipo - 1 << tmp2->tipo - 1
+					<< operador	<< std::endl;
+					imprimeVector(vec_cuadruplos);
+				} 
+			} else if (operador != 4) {
 				tmp2 = pilaO.top();
 				pilaO.pop();
 				tmp1 = pilaO.top();
@@ -2131,55 +2265,11 @@ void checaOperador(int a) {
 					cuad_actual++;
 					//imprimePila(1);
 				} else {
-					std::cout << "Error: " << tmp1->tipo - 1 << tmp2->tipo - 1
+					std::cout << "Error1: " << tmp1->tipo - 1 << tmp2->tipo - 1
 					<< operador	<< std::endl;
-				}
-
-			} else if (operador == 4) { 
-				tmp2 = pilaO.top();
-				pilaO.pop();
-				tmp1 = pilaO.top();
-				pilaO.pop();
-				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
-					std::stringstream sstm;
-					Cuadruplo::Cuadruplo cuad(operador, tmp2->nombre, 
-						" ", tmp1->nombre);
-					pOper.pop();
-					vec_cuadruplos.push_back(cuad);
-					cuad_actual++;
-				} else {
-					std::cout  << tmp1->tipo - 1 << tmp2->tipo - 1
-					<< operador	<< std::endl;
+					imprimeVector(vec_cuadruplos);
 				}
 			}
-		} else if( operador == 11) {
-		} else if(operador >= 5 ) {
-				tmp2 = pilaO.top();
-				pilaO.pop();
-				tmp1 = pilaO.top();
-				pilaO.pop();
-				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] > 0) {
-					std::stringstream sstm;
-					sstm << "t" << tmp_actual;
-					avail = sstm.str();
-					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
-						tmp2->nombre, avail);
-					var_actual.push(avail);
-					tipo_actual = "bool";
-					scope_actual = "global";
-					creaVariable();
-					actualizaTipoVariables();
-					yytext = strdup(avail.c_str());
-					meterPilaO();
-					tmp_actual++;
-					cuad_actual++;
-					pOper.pop();
-					vec_cuadruplos.push_back(cuad);
-					//imprimePila(1);
-				} else {
-					std::cout << "Error: " << tmp1->tipo - 1 << tmp2->tipo - 1
-					<< operador	<< std::endl;
-				}
 		}
 	}
 }
@@ -2276,6 +2366,7 @@ void creaVariable() {
 	var_actual.pop();
 	aux_vars.push(var);
 
+
 }
 
 void actualizaScope(std::string str){
@@ -2318,7 +2409,7 @@ void imprimeVector(std::vector<Cuadruplo> vec) {
 
 	for (int i = 0; i < vec.size(); i++) {
 		cuad = vec[i];
-		std::cout << i << ": ";
+		std::cout << i+1 << ": ";
 		cuad.print();
 		
 	}
@@ -2339,7 +2430,7 @@ void creaCubo(){
 	cubo_sem[0][0][10] = 2; 
 	cubo_sem[0][1][4] = 2;
 	cubo_sem[0][1][9] = 2;
-	cubo_sem[0][1][10] = 2;	
+	cubo_sem[0][1][10] = 2;
 	cubo_sem[1][0][4] = 2;
 	cubo_sem[1][0][9] = 2;
 	cubo_sem[1][0][10] = 2;
@@ -2354,9 +2445,9 @@ void creaCubo(){
 	cubo_sem[2][2][9] = 3;
 	cubo_sem[2][2][10] = 3;
 
-	id_actual = 0;
-	cuad_actual = 0;
-	tmp_actual = 0;
+	id_actual = 1;
+	cuad_actual = 1;
+	tmp_actual = 1;
 /*
 	std::cout << "         + - * / = < > < > ! ==";
 

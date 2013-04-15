@@ -2,19 +2,23 @@ programa quack {
 
 	var var1 num;
 	var var2 bool;
-	var a, b, c num;
+	var a, b, c, d num;
 	
-	si (verdadero) {
-		var1 = 14;
-	}
-	si (falso){
-		b = 5;
-		si (falso) {
-			c = 10;
-			c = 10;
-		} sino {
-			var2 = (c - b) > ( 2 / var1);
+	mientras (a+b*c<d) {
+		si(a + b < c) {
+			a = b + c;
+			haz {
+				a = a - 1;
+			}mientras(a > b + c);
+		}
+		sino  
+		{
+			mientras (b > c + d) {
+				a = b + c * d;
+				b = a - d;
+			}
 		}
 	}
-	a = b + c;
+	a = b*c;
+	c=0;	
 }

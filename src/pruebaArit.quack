@@ -1,24 +1,36 @@
 programa quack {
 
-	var var1 num;
-	var var2 bool;
-	var a, b, c, d num;
+	var a, b num;
+	var f num;
 	
-	mientras (a+b*c<d) {
-		si(a + b < c) {
-			a = b + c;
-			haz {
-				a = a - 1;
-			}mientras(a > b + c);
-		}
-		sino  
-		{
-			mientras (b > c + d) {
-				a = b + c * d;
-				b = a - d;
-			}
+	num funcion uno (num a) {
+		a = a + b * a + uno(a);
+		b = 0;
+		b = 3;
+		a = a + b;
+		a = a;
+		regresa a;
+	}	
+	
+	num funcion dos (num a, num b, num f){
+		var i num;
+		i = b;
+
+		mientras ( i > 0 ) {
+			a = a + b * i + b;
+			uno (i * 2);
+			a=a;
+			i = i - 1;
 		}
 	}
-	a = b*c;
-	c=0;	
+	
+	a = 3;
+	b = a + 1;
+	a = b;
+	a = a;
+	f = 3.14;
+	dos( a + b * 2, b, f * 3 );
+	a = a + dos(b +1);
+	a = b;
+	a = f * 2 + 1;
 }

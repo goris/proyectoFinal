@@ -5,6 +5,25 @@ programa quacking {
 	var logica bool;
 	var hola[10] num;
 
+	num funcion func1 (num hola, texto mama, bool jaja[3]) {
+		
+		var verdaaawh num;
+		var sivervaah texto;
+		var var1 num;		
+
+		var_1 = 54;
+		var1 = 56.871;
+		lala = 56 / 8;
+		variable1 = lala - var1;
+		regresa var1;
+	}
+ 
+	 texto funcion func2 () {
+		var ultima texto;
+		var lala num;
+
+		regresa "hola";
+	}
 
 	si ( 3 > 4 )
 	{
@@ -20,8 +39,6 @@ programa quacking {
 
 		} sino {}
 	}
-
-
 	si(3 != 4){
 		haz {
 			lala = lala + 1;
@@ -32,28 +49,7 @@ programa quacking {
 			
 		}
 	}
-
 	mientras( logica != falso ) {
 		logica = falso;
-	}
-
-	
-	funcion num func1 {
-		
-		var verdaaawh num;
-		var sivervaah texto;
-		var var1 num;		
-
-		var1 = 56.871;
-		lala = 56 / 8;
-		variable1 = lala - var1;
-		regresa var1;
-	}
- 
-	funcion texto func2 {
-		var ultima texto;
-		var lala num;
-
-		regresa "hola";
 	}
 }

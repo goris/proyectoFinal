@@ -48,41 +48,42 @@
      BOOL = 264,
      NUM = 265,
      TEXTO = 266,
-     SI = 267,
-     SINO = 268,
-     HAZ = 269,
-     POR = 270,
-     MIENTRAS = 271,
-     LINEA = 272,
-     CUADRADO = 273,
-     TRIANGULO = 274,
-     CIRCULO = 275,
-     VERDADERO = 276,
-     FALSO = 277,
-     CTE_NUM = 278,
-     CTE_TEXTO = 279,
-     ID = 280,
-     SUM = 281,
-     MIN = 282,
-     PRO = 283,
-     DIV = 284,
-     EQU = 285,
-     LT = 286,
-     GT = 287,
-     LTE = 288,
-     GTE = 289,
-     DIF = 290,
-     LPA = 291,
-     RPA = 292,
-     LBR = 293,
-     RBR = 294,
-     LSQ = 295,
-     RSQ = 296,
-     SEM = 297,
-     DOU = 298,
-     COM = 299,
-     DOT = 300,
-     DEQ = 301
+     LIBRE = 267,
+     SI = 268,
+     SINO = 269,
+     HAZ = 270,
+     POR = 271,
+     MIENTRAS = 272,
+     LINEA = 273,
+     RECTANGULO = 274,
+     TRIANGULO = 275,
+     ELIPSE = 276,
+     VERDADERO = 277,
+     FALSO = 278,
+     CTE_NUM = 279,
+     CTE_TEXTO = 280,
+     ID = 281,
+     SUM = 282,
+     MIN = 283,
+     PRO = 284,
+     DIV = 285,
+     EQU = 286,
+     LT = 287,
+     GT = 288,
+     LTE = 289,
+     GTE = 290,
+     DIF = 291,
+     LPA = 292,
+     RPA = 293,
+     LBR = 294,
+     RBR = 295,
+     LSQ = 296,
+     RSQ = 297,
+     SEM = 298,
+     DOU = 299,
+     COM = 300,
+     DOT = 301,
+     DEQ = 302
    };
 #endif
 /* Tokens.  */
@@ -95,55 +96,56 @@
 #define BOOL 264
 #define NUM 265
 #define TEXTO 266
-#define SI 267
-#define SINO 268
-#define HAZ 269
-#define POR 270
-#define MIENTRAS 271
-#define LINEA 272
-#define CUADRADO 273
-#define TRIANGULO 274
-#define CIRCULO 275
-#define VERDADERO 276
-#define FALSO 277
-#define CTE_NUM 278
-#define CTE_TEXTO 279
-#define ID 280
-#define SUM 281
-#define MIN 282
-#define PRO 283
-#define DIV 284
-#define EQU 285
-#define LT 286
-#define GT 287
-#define LTE 288
-#define GTE 289
-#define DIF 290
-#define LPA 291
-#define RPA 292
-#define LBR 293
-#define RBR 294
-#define LSQ 295
-#define RSQ 296
-#define SEM 297
-#define DOU 298
-#define COM 299
-#define DOT 300
-#define DEQ 301
+#define LIBRE 267
+#define SI 268
+#define SINO 269
+#define HAZ 270
+#define POR 271
+#define MIENTRAS 272
+#define LINEA 273
+#define RECTANGULO 274
+#define TRIANGULO 275
+#define ELIPSE 276
+#define VERDADERO 277
+#define FALSO 278
+#define CTE_NUM 279
+#define CTE_TEXTO 280
+#define ID 281
+#define SUM 282
+#define MIN 283
+#define PRO 284
+#define DIV 285
+#define EQU 286
+#define LT 287
+#define GT 288
+#define LTE 289
+#define GTE 290
+#define DIF 291
+#define LPA 292
+#define RPA 293
+#define LBR 294
+#define RBR 295
+#define LSQ 296
+#define RSQ 297
+#define SEM 298
+#define DOU 299
+#define COM 300
+#define DOT 301
+#define DEQ 302
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 98 "sintax.y"
+#line 116 "sintax.y"
 {
 	int int_val;	
 	float float_val;
 	char* text;
 }
 /* Line 1529 of yacc.c.  */
-#line 147 "quack.tab.h"
+#line 149 "quack.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

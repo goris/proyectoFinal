@@ -4,12 +4,14 @@
 * D E C L A R A C I O N E S
 *
 */
-	#include <string>
-	#include <stack>
-	#include <vector>
 	#include <map>
-	#include <iostream>
+	#include <stack>
+	#include <string>
+	#include <vector>
+	#include <cstdlib>
+	#include <fstream>
 	#include <sstream>
+	#include <iostream>
 
 	#include "utilities/Cuadruplo.h"
 
@@ -26,7 +28,8 @@
 
 	struct Node {
 		int tipo;
-		int valor_num;
+		double valor_num;
+		int loc_mem;
 		int id;
 		std::string nombre;
 		std::string valor_str;
@@ -40,6 +43,7 @@
 		int cuad_ini;
 		EspacioMemoria *memoria;
 		std::string nombre;
+		std::stack<std::string> pTipoParams;
 		MapType variables;
 	};
 	
@@ -53,10 +57,28 @@
 	extern int yyparse();
 	extern char * yytext;
 
+	/*
+	* 
+	*	C U B O    S E M A N T I C O
+	*
+	* 0 num 1 bool 2 text  [indices]
+	* 1 num 2 bool 3 text 0 ERRROR
+	* 0+ 1- 2* 3/ 4= 5< 6> 7<= 8>= 9!= 10== 11( 12) 13goto 14gotoV
+	* 15gotoF 16Era 17GoSub 18Ret 19Param
+	* [tipo1] [tipo2] [operador] 
+	*
+	*/
+	int cubo_sem[3][3][11] = { 0 };
+	int mem_num_global;
+	int mem_num_local;
+	int mem_num_constante;
+	int mem_bool_global;
+	int mem_bool_local;
+	int mem_bool_constante;
+	int cuad_actual;
 	int id_actual;
 	int param_count;
 	int tmp_actual;
-	int cuad_actual;
 	std::string avail;
 	std::stack <std::string> var_actual;
 	std::string tipo_actual;
@@ -73,20 +95,9 @@
 	MapType map_vars;
 	MapFunc map_func;
 
-	/*
-	*
-	* 
-	*	C U B O    S E M A N T I C O
-	*
-	* 0 num 1 bool 2 text  [indices]
-	* 1 num 2 bool 3 text 0 ERRROR
-	* 0+ 1- 2* 3/ 4= 5< 6> 7<= 8>= 9!= 10== 11( 12) 13goto 14gotoV
-	* 15gotoF 16Era 17GoSub 18Ret 19 Param
-	* [tipo1] [tipo2] [operador] 
-	*/
-	int cubo_sem [3][3][11] = { 0 };
 
 	int convierteTipo(std::string);
+	int memoriaAUsar(int, std::string); 
 	void actualizaScope(std::string);
 	void actualizaTipoVariables();
 	void agregaFuncion();
@@ -180,32 +191,34 @@ bloque: estatutos bloque
 estatutos: condicion
 		 | asig_llamada
 	 	 | escritura
-asig_llamada: ID { meterPilaO(); func_actual = yytext; } llamada_
+asig_llamada: ID { meterPilaO();  } llamada_
 llamada_: asignacion 
 		| llamada SEM
 llamada: LPA 
 	   { cuadruploEstatuto(7); param_count = 0; } varsss RPA 
-	   { /*finParametros();  */ cuadruploEstatuto(9); }
+	   { /*finParametros();*/ cuadruploEstatuto(9); }
 
 varsss: sexp { param_count++; cuadruploEstatuto(8); } varsss2 
 varsss2: COM varsss
-		| LSQ RSQ varsss2
+		| LSQ CTE_NUM RSQ varsss2
 		|
 
 funciones: tipo { tipo_actual = yytext; tipo_func = yytext; } FUNCION ID 
-		{ scope_actual = yytext; actualizaScope("funcion");
+		{ scope_actual = yytext; func_actual= yytext; actualizaScope("funcion");
 		agregaFuncion(); } LPA { param_count = 0; } varss RPA LBR 
 		vars bloque funciones1 RBR { cuadruploEstatuto(6); } funciones
 		|
 funciones1: REGRESA sexp SEM
 	 	| 
 
-varss: varss2
+varss: varss2 {}
 	 |
-varss2: tipo { tipo_actual = yytext; pTipoParams.push(yytext); } ID 
-	  	{ var_actual.push(yytext); actualizaTipoVariables();
+varss2: tipo { tipo_actual = yytext; pTipoParams.push(yytext); 
+		Funcion *func = map_func[func_actual]; func->pTipoParams = pTipoParams;
+		map_func[func_actual] = func; } ID 
+	  	{actualizaTipoVariables(); var_actual.push(yytext);  
 			modificaMemoria(scope_actual); param_count++; } 
-		varss3 { creaVariable(); }
+		varss3 { creaVariable(); actualizaTipoVariables(); }
 varss3: COM varss2
 	  	| LSQ CTE_NUM RSQ varss3
 		|
@@ -318,6 +331,47 @@ for(MapType::const_iterator it = map_vars.begin() ;
 	}*/
 
 }
+
+/**
+* Devuelve la memoria que se tiene que usar de acuerdo al tipo de la  
+* variable
+**/
+int memoriaAUsar (int tipo, std::string str) {
+	//std::cout << "memoriaAUsar" << std::endl;
+	int memset = 0;
+	int scope = -1;
+	if (str == "global") scope = 0;
+	else if (str == "constante") scope = 1;
+	else scope = 2;
+	switch (tipo) {
+		case 1:
+			if(scope == 0) {
+				memset = ++mem_num_global;
+			} else if (scope == 1) {
+				memset = ++mem_num_constante;	
+			} else if (scope == 2) {
+				memset = ++mem_num_local;
+			}
+			break;
+		case 2:
+			if(scope == 0) {
+				memset = ++mem_bool_global;
+			} else if (scope == 1) {
+				memset = ++mem_bool_constante;	
+			} else if (scope == 2) {
+				memset = ++mem_bool_local;
+			}
+			break;
+		case 3:
+			break;
+	}
+	//std::cout << "Memset: " << memset << std::endl;
+	return memset;
+	
+}
+
+
+
 /**
 * Simplemente devuelve la tabla de variables que contiene TODAS las variables
 **/
@@ -337,7 +391,7 @@ void cuadruploMain() {
 	std::string str;
 	sstm << "" << cuad_actual;
 	str = sstm.str();
-	Cuadruplo::Cuadruplo cuad(16, "", "", str);
+	Cuadruplo::Cuadruplo cuad(13, -1, -1, str);
 	vec_cuadruplos[0] = cuad;
 	
 }
@@ -379,7 +433,7 @@ EspacioMemoria* inicializaMemoria(EspacioMemoria *memory) {
 * Va agregando la cantidad de variables necesarias para la funcion
 **/ 
 void modificaMemoria (std::string str) {
-	//std::cout << "modificaMemoria" << std::endl;
+//	std::cout << "modificaMemoria" << std::endl;
 	MapFunc::iterator it = map_func.find(std::string(str));
 	if(it ==  map_func.end()) {
 		std::cout << "Funcion no encontrada: " << str 
@@ -406,8 +460,8 @@ void modificaMemoria (std::string str) {
 
 		}
 		func->memoria->total++;
-		//std::cout << func->memoria->nump << func->memoria->boolp
-		//	 << func->memoria->boolp << std::endl;
+//		std::cout << "mem:" << func->memoria->nump << func->memoria->boolp
+//			 << func->memoria->boolp << std::endl;
 		map_func[str] = func;	
 	
 	}
@@ -417,7 +471,7 @@ void modificaMemoria (std::string str) {
 * Inicializa una funcion y le asigna ciertos parametros
 **/
 void agregaFuncion (){
-	//std::cout << "AgregaFuncion" << std::endl;
+//	std::cout << "AgregaFuncion" << std::endl;
 	Funcion *func =  new Funcion();
 	EspacioMemoria *memset;
 	memset = inicializaMemoria(memset);
@@ -437,7 +491,7 @@ void agregaFuncion (){
 * ya predefinidas por el lenguaje.
 **/
 void cuadruploEstatuto(int tipo) {
-	//std::cout << "CuadruploEstatuto" << std::endl;
+//	std::cout << "CuadruploEstatuto" << std::endl;
 	std::string nombre;
 	switch(tipo) {
 		/*
@@ -451,6 +505,7 @@ void cuadruploEstatuto(int tipo) {
 		+ el case 10 es el primer GOTO y busca el MAIN
 		*/
 		case 0: {
+	//		std::cout << "Case0" << std::endl;
 			int a;
 			Node *resultado;
 			if(!pilaO.empty())resultado = pilaO.top();
@@ -460,8 +515,9 @@ void cuadruploEstatuto(int tipo) {
 				std::cout << "Error de tipo: " << resultado->nombre 
 				<< std::endl;
 			} else {
-				Cuadruplo::Cuadruplo cuad1(15, resultado->nombre,
-					 "", "___");
+				std::cout << "15, " << resultado->nombre << ", -1, ____\n";
+				Cuadruplo::Cuadruplo cuad1(15, resultado->loc_mem,
+					 -1, "___");
 				vec_cuadruplos.push_back(cuad1);
 				cuad_actual++;
 				pSaltos.push(cuad_actual - 1);
@@ -470,10 +526,13 @@ void cuadruploEstatuto(int tipo) {
 		}
 		
 		case 1: {
+	//		std::cout << "Case1" << std::endl;
 			std::stringstream sstm1;
-			Cuadruplo::Cuadruplo cuad3(13, "", "", "___");
+			std::cout << "13, " << "-1" << ", -1, ___\n";
+			Cuadruplo::Cuadruplo cuad3(13, -1, -1, "___");
 			vec_cuadruplos.push_back(cuad3);
 			cuad_actual++;
+			if(pSaltos.empty()) std::cout << "EY" << std::endl;
 			int falso = pSaltos.top();
 			pSaltos.pop();
 			cuad3 = vec_cuadruplos[falso-1];
@@ -486,7 +545,9 @@ void cuadruploEstatuto(int tipo) {
 		}
 		
 		case 2: {
+	//		std::cout << "Case2" << std::endl;
 			std::stringstream sstm2;
+			if(pSaltos.empty()) std::cout << "EY" << std::endl;
 			int salto = pSaltos.top();
 			pSaltos.pop();
 			Cuadruplo::Cuadruplo cuad2;
@@ -499,21 +560,26 @@ void cuadruploEstatuto(int tipo) {
 		}
 
 		case 3: {
+			std::cout << "Case3" << std::endl;
 			pSaltos.push(cuad_actual);
 			break;
 		}
 		
 		case 4: {
+	//		std::cout << "Case4" << std::endl;
 			std::stringstream sstm3;
 			std::stringstream sstm4;
+			if(pSaltos.empty()) std::cout << "EY" << std::endl;
 			int falso, retorno;
 			falso = pSaltos.top();
 			pSaltos.pop();
+			if(pSaltos.empty()) std::cout << "EY2" << std::endl;
 			retorno = pSaltos.top();
 			pSaltos.pop();
 			sstm3 << "" << retorno;
 			nombre = sstm3.str();
-			Cuadruplo::Cuadruplo cuad4(13, "", "", nombre);
+			std::cout << "13, " << "-1" << ", -1, " << nombre << "\n";
+			Cuadruplo::Cuadruplo cuad4(13, -1, -1, nombre);
 			vec_cuadruplos.push_back(cuad4);
 			cuad_actual++;
 			cuad4 = vec_cuadruplos[falso-1];
@@ -525,6 +591,7 @@ void cuadruploEstatuto(int tipo) {
 		}
 		
 		case 5: {
+	//		std::cout << "Case5" << std::endl;
 			int a, retorno;
 			Node *resultado;
 			std::stringstream sstm5;
@@ -534,18 +601,21 @@ void cuadruploEstatuto(int tipo) {
 				std::cout << "Error de tipo: " << resultado->nombre
 				<< std::endl;
 			} else {
+				if(pSaltos.empty()) std::cout << "EY" << std::endl;
 				retorno = pSaltos.top();
 				pSaltos.pop();
 				sstm5 << "" << retorno;
 				nombre = sstm5.str();
-				Cuadruplo::Cuadruplo cuad5(15, resultado->nombre,
-					 "", nombre);
+				std::cout << "15, " << resultado->nombre << ", -1, " << nombre <<"\n";
+				Cuadruplo::Cuadruplo cuad5(15, resultado->loc_mem,
+					 -1, nombre);
 				vec_cuadruplos.push_back(cuad5);
 				cuad_actual++;
 			}
 			break;
 		}
 		case 6: {
+	//		std::cout << "Case6" << std::endl;
 			if(tipo_func != "libre") {
 				Node *retorno = new Node();
 				if (!pilaO.empty()) {
@@ -555,66 +625,96 @@ void cuadruploEstatuto(int tipo) {
 						std::cout << "Error tipos" << std::endl;
 						exit(1);
 					} else {
+						std::cout << "18, " << retorno->nombre << ", -1, " << "" << "\n";
 						Cuadruplo::Cuadruplo cuad6(18,
-							retorno->nombre, "", "");
+							retorno->loc_mem, -1, " ");
 						vec_cuadruplos.push_back(cuad6);
 						cuad_actual++; 
 					}
 				} else {}
 			} else {
-				Cuadruplo::Cuadruplo cuad6(18, "", "", "");
+				std::cout << "18, " << "-1" << ", -1, " << "" << "\n";
+				Cuadruplo::Cuadruplo cuad6(18, -1, -1, " ");
 				vec_cuadruplos.push_back(cuad6);
 				cuad_actual++;
 			}
 			break;
 		}
 		case 7: {
-			Cuadruplo::Cuadruplo cuad7(16, func_actual, "", "");
+	//		std::cout << "Case7" << std::endl;		
+			std::cout << "16, " << func_actual << ", w, " << "" << "\n";
+			Cuadruplo::Cuadruplo cuad7(16, func_actual, "w", " ");
 			vec_cuadruplos.push_back(cuad7);
 			cuad_actual++;
 			break;
 		}
 		case 8: {
-			if (!pilaO.empty() && !pTipoParams.empty()) {
-				Node *var = pilaO.top();
-				std::string str = pTipoParams.top();
-				pTipoParams.pop();
-				int b = convierteTipo(str);
-				//std::cout << var->nombre << std::endl;
+	//		std::cout << "Case8" << std::endl;
+			std::string str;
+			Node *var = pilaO.top();
+			Funcion *func = new Funcion();
+			func = map_func[func_actual];
+			if (pilaO.empty() ) {
+				std::cout << "PilaO vacia" << std::endl;
+			} else  if (func->pTipoParams.empty()) {
+				std::cout << "pTipoParams vacia" << std:: endl;
+			} else {
+				int b;
 				int a = var->tipo;
+				str = func->pTipoParams.top();
+				b = convierteTipo(str);
+				//std::cout << var->nombre << std::endl;
 				if(a == b) {
 					//std::cout << "generando..." << std::endl;
 					std::stringstream sstm;
 					sstm << "param" << param_count;
 					str = sstm.str();
-					Cuadruplo::Cuadruplo cuad8(19, var->nombre,
-						 "", str);
+					std::cout << "19, " << var->nombre << ", -1, " << str << "\n";
+					Cuadruplo::Cuadruplo cuad8(19, var->loc_mem,
+						 -1, str);
 					vec_cuadruplos.push_back(cuad8);
 					cuad_actual++;
+				} else {
+					std::cout << "No coinciden los tipos PARAM" <<std::endl;
+					std::cout << var->tipo << " <> " << str << std::endl;
+					std::cout << var->nombre << std::endl;
 				}	
-			}
+			} 
 			break;
 		}
 		case 9: {
+	//		std::cout << "Case9" << std::endl;
+	//		std::cout << func_actual << std::endl;
 			MapFunc::iterator it = map_func.find(func_actual);
-			Funcion *func = it->second;
-			std::string str;
-			std::stringstream sstm;
-			sstm << "" << func->cuad_ini;
-			str = sstm.str();
-			Cuadruplo::Cuadruplo cuad9(17, func_actual, "", str);
-			vec_cuadruplos.push_back(cuad9);
-			cuad_actual++;
+			if(it == map_func.end()) {
+				//meterPilaO();
+				//std::cout << "Error en encontrar funcion: " << func_actual 
+				//	<< std::endl;
+				//exit(1);
+			} else {
+				Funcion *func = it->second;
+				std::string str;
+				std::stringstream sstm;
+				sstm << "" << func->cuad_ini;
+				str = sstm.str();	
+				std::cout << "17, " << func_actual << ", w, " << str << "\n";
+				Cuadruplo::Cuadruplo cuad9(17, func_actual, "w", str);
+				vec_cuadruplos.push_back(cuad9);
+				cuad_actual++;
+			}	
 			break;
 		}
 
 		case 10: {
-			Cuadruplo::Cuadruplo cuad0(13, "", "", "___");
+		//	std::cout << "Case10" << std::endl;		
+			std::cout << "13, " << "-1" << ", -1, " << "___" << "\n";
+			Cuadruplo::Cuadruplo cuad0(13, -1, -1, "___");
 			vec_cuadruplos.push_back(cuad0);
 			cuad_actual++;
 			break;
 		}
-	} 
+	}
+//	std::cout << "sali cuadruploEstatuto" << std::endl; 
 }
 
 
@@ -625,7 +725,7 @@ void cuadruploEstatuto(int tipo) {
 *
 **/
 void checaOperador(int a) {
-	//std::cout << "checaOperador" << std::endl;
+//	std::cout << "checaOperador" << std::endl;
 	Node* tmp1 = new Node();
 	Node* tmp2 = new Node();
 	int aux = -1;
@@ -654,12 +754,15 @@ void checaOperador(int a) {
 				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador]
 					> 0) {
 					std::stringstream sstm;
-					Cuadruplo::Cuadruplo cuad(operador, tmp2->nombre, 
-						" ", tmp1->nombre);
-					pOper.pop();
+					std::string str;
+					sstm << "" << tmp2->loc_mem;
+					str = sstm.str();
+					std::cout << operador << ", " << tmp2->nombre << ", -1, " << tmp1->nombre << "\n";
+					Cuadruplo::Cuadruplo cuad(operador, tmp2->loc_mem, 
+						-1, tmp1->loc_mem);
 					vec_cuadruplos.push_back(cuad);
-					//cuad.print();
 					cuad_actual++;
+					pOper.pop();
 				} else {
 					std::cout << "Error2: " << tmp1->tipo - 1 
 						<< tmp2->tipo - 1
@@ -673,21 +776,24 @@ void checaOperador(int a) {
 				pilaO.pop();
 				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador]
 					> 0) {
+					Node *var = new Node();
 					std::stringstream sstm;
 					sstm << "t" << tmp_actual;
 					avail = sstm.str();
-					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
-						tmp2->nombre, avail);
 					var_actual.push(avail);
-					tipo_actual = "num";
+					tipo_actual = "bool";
 					creaVariable();
 					actualizaTipoVariables();
 					yytext = strdup(avail.c_str());
 					meterPilaO();
 					tmp_actual++;
+					var = pilaO.top();
+					std::cout << operador << ", " << tmp1->nombre << ", " << tmp2->nombre << ", " << var->nombre << "\n";
+					Cuadruplo::Cuadruplo cuad(operador, tmp1->loc_mem, 
+						tmp2->loc_mem, var->loc_mem);
 					cuad_actual++;
-					pOper.pop();
 					vec_cuadruplos.push_back(cuad);
+					pOper.pop();
 					//imprimePila(1);
 				} else {
 					std::cout << "Error3: " << tmp1->tipo - 1 
@@ -703,11 +809,10 @@ void checaOperador(int a) {
 				pilaO.pop();
 				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] 
 					> 0) {
+					Node *var = new Node();
 					std::stringstream sstm;
 					sstm << "t" << tmp_actual;
 					avail = sstm.str();
-					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
-						tmp2->nombre, avail);
 					var_actual.push(avail);
 					tipo_actual = "num";
 					creaVariable();
@@ -715,8 +820,12 @@ void checaOperador(int a) {
 					yytext = strdup(avail.c_str());
 					meterPilaO();
 					tmp_actual++;
+					var = pilaO.top();
 					if(!pOper.empty()) pOper.pop();
 					else {std::cout << "Error mil" << std::endl;}
+					std::cout << operador << ", " << tmp1->nombre << ", " << tmp2->nombre << ", " << var->nombre << "\n";
+					Cuadruplo::Cuadruplo cuad(operador, tmp1->loc_mem, 
+						tmp2->loc_mem, var->loc_mem);
 					vec_cuadruplos.push_back(cuad);
 					cuad_actual++;
 					//imprimePila(1);
@@ -744,7 +853,7 @@ void meterPilaOper(int esp) {
 * Mete a la pila de operandos las variables que se va encontrando
 **/
 void meterPilaO() {
-	//std::cout << "meterPilaO" << std::endl;
+//	std::cout << "meterPilaO" << std::endl;
 	
 	const char *aux;
 	Node *var = new Node();
@@ -752,16 +861,17 @@ void meterPilaO() {
 	llave = std::string(yytext) + "&" + scope_actual;
 	aux = llave.c_str();
 	MapType::const_iterator it = map_vars.find(aux);
-	
+	//std::cout << llave << std::endl;
 	if(it == map_vars.end()) { 
 		llave = std::string(yytext) + "&global";
 		aux = llave.c_str();
 		it = map_vars.find(llave);
 		if(it != map_vars.end()) pilaO.push(it->second);
 		else {
+			func_actual = yytext;
 			MapFunc::iterator it = map_func.find(std::string(yytext));
 			if(it ==  map_func.end()) {
-				std::cout << "Variable no encontrada: " << yytext 
+				std::cout << "Variable no encontrada:: " << yytext 
 					<< std::endl;
 				std::cout << contlin << std::endl;
 				exit(1);
@@ -773,7 +883,7 @@ void meterPilaO() {
 }
 
 /**
-* 
+* Crea una variable para las constantes numericas
 **/
 void creaConstanteNum(){
 	//std::cout << "creaConstateNum" << std::endl;	
@@ -781,15 +891,17 @@ void creaConstanteNum(){
 	std::string aux = std::string(yytext);
 	var->nombre = "cN" + aux;
 	var->tipo = 1;
-	var->scope = "global";
+	var->scope = "constante";
 	var->valor_num = ::atof(yytext);
 	var->id = id_actual++;
+	var->loc_mem = memoriaAUsar(1, "constante");
+	//std::cout << var->nombre << "\t\t\tmem: " << var->loc_mem << std::endl;
 	pilaO.push(var);
 
 }
 
 /**
-* 
+* Crea una variable para las constantes booleanas
 **/
 void creaConstanteBool(int a) {
 	//std::cout << "CreaConstanteBool" << std::endl;
@@ -799,9 +911,11 @@ void creaConstanteBool(int a) {
 	else aux = "cB1";
 	var->nombre = aux;
 	var->tipo = 2;
-	var->scope = scope_actual ;
+	var->scope = "constante";
 	var->valor_num = a;
 	var->id = id_actual++;
+	var->loc_mem = memoriaAUsar(2, "constante");
+	//std::cout << var->nombre << "\t\tmem: " << var->loc_mem << std::endl;
 	pilaO.push(var);
 
 }
@@ -810,10 +924,13 @@ void creaConstanteStr(const char *){
 
 }
 
-
+/**
+* Actualiza el tipo de las variables que han sido declaradas 
+**/
 void actualizaTipoVariables () {
-	//std::cout << "ActualizaTipoVariables" << std::endl;	
+//	std::cout << "ActualizaTipoVariables" << std::endl;	
 	int tipo = -1;
+	int memset = 0;
 	std::string aux;
 	const char  *llave; 
 	Node *var = new Node();
@@ -821,17 +938,24 @@ void actualizaTipoVariables () {
 	tipo = convierteTipo(tipo_actual);	
 	
 	if (tipo<0) std::cout << std::endl << " E R R O R " << std::endl;
-
+	
 	while (!aux_vars.empty()) {
+		memset = memoriaAUsar(tipo, scope_actual);
 		var = aux_vars.top();
 		aux_vars.pop();
 		aux =  std::string(var->nombre) + "&" + scope_actual;
 		llave = aux.c_str();
 		var->tipo = tipo;
+		var->loc_mem = memset++;
 		map_vars[llave] = var;
+//		std::cout << var->nombre << " scope: " << var->scope << " tipo: " 
+//			<< var->tipo << " llave: " << llave << std::endl;
 	}
 }
 
+/**
+* Cambia el tipo de String a int
+**/
 int convierteTipo(std::string str) {
 	//std::cout << "convierteTipo" << std::endl;	
 	if(str == "num") return (1);
@@ -841,11 +965,15 @@ int convierteTipo(std::string str) {
 	else return (-1);
 }
 
+/**
+* Inicializa una variable con la informacion disponible
+**/
 void creaVariable() {
-	//std::cout << "CreaVariable" << std::endl;	
+//	std::cout << "CreaVariable" << std::endl;	
 	Node *var = new Node();
 	var->nombre = var_actual.top();
 	var->tipo = -1;
+	var->loc_mem = 999999;
 	var->scope = scope_actual;
 	var->id = id_actual++;
 	var_actual.pop();
@@ -856,12 +984,18 @@ void creaVariable() {
 
 }
 
+/**
+* Actualiza el scope global para las variables y funciones
+**/
 void actualizaScope(std::string str){
 	//std::cout << "ActualizaScope" << std::endl;
 	scopes.push_back(str);
 	tmp_actual = 1;
 }
 
+/**
+* Imprime una pila de variables
+**/
 void imprimePila(std::stack<Node*> pila) {
 	//std::cout << "imprimePila" << std::endl;	
 	std::stack<Node*> tmp;
@@ -877,6 +1011,9 @@ void imprimePila(std::stack<Node*> pila) {
 	std::cout << "----------------------------------------" << std::endl;
    }
 
+/**
+* imprime la pila de operadores
+**/
 void imprimePila(int a) {
 	//std::cout << "ImprimePila2" << std::endl;
 	std::stack<int> tmp;
@@ -895,20 +1032,33 @@ void imprimePila(int a) {
 
 }
 
+/**
+* Imprime el vector de cuadruplos 
+**/
 void imprimeVector(std::vector<Cuadruplo> vec) {
 	//std::cout << "imprimeVector" << std::endl;
-
+	std::ofstream myfile;
+  	myfile.open ("cuacks.cuads");
+	std::string str;
 	Cuadruplo::Cuadruplo cuad;
 
 	for (int i = 0; i < vec.size(); i++) {
 		cuad = vec[i];
 		std::cout << i+1 << ": ";
+		myfile << i+1 << ": ";
 		cuad.print();
-		
+		str = cuad.cuadruploStr();
+		myfile << str ;
 	}
+  	myfile.close();
 }
 
+/**
+* inicializa el cubo con las combinaciones posibles e inicializa los
++ contadores de algunas variables.
+**/
 void creaCubo(){
+	//std::cout << "creaCubo" << std::endl;
 	cubo_sem[0][0][0] = 1;
 	cubo_sem[0][0][1] = 1;
 	cubo_sem[0][0][2] = 1;
@@ -941,6 +1091,13 @@ void creaCubo(){
 	cuad_actual = 1;
 	tmp_actual = 1;
 	param_count = 0;
+	mem_num_global = 999;
+	mem_num_local = 3000;
+	mem_num_constante = 7000;
+	mem_bool_global = 9000;
+	mem_bool_local = 10000;
+	mem_bool_constante = 11000;
+	
 /*
 	std::cout << "         + - * / = < > < > ! ==";
 
@@ -960,6 +1117,9 @@ std::cout << std::endl;
 
 }
 
+/**
+* Genera un error si falla la lectura de algun simbolo (sintaxis)
+**/
 int yyerror(char* s) {
   extern char *yytext;	// defined and maintained in lex.c  
   printf("ERROR: %s at symbol  %s  on line %d\n",s,yytext,contlin);

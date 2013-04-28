@@ -13,10 +13,12 @@ class Cuadruplo {
 		std::string avail_s;
 	
 		Cuadruplo (); 
-		Cuadruplo(int, int, int, int);
 		Cuadruplo(int, std::string, std::string, std::string);
+		Cuadruplo(int, int, int, std::string);
+		Cuadruplo(int, int, int, int);
 
 		void setAvail_s(std::string);
 		void print();
+		std::string cuadruploStr();
 
 };

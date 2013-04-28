@@ -171,12 +171,14 @@
 * D E C L A R A C I O N E S
 *
 */
-	#include <string>
-	#include <stack>
-	#include <vector>
 	#include <map>
-	#include <iostream>
+	#include <stack>
+	#include <string>
+	#include <vector>
+	#include <cstdlib>
+	#include <fstream>
 	#include <sstream>
+	#include <iostream>
 
 	#include "utilities/Cuadruplo.h"
 
@@ -193,7 +195,8 @@
 
 	struct Node {
 		int tipo;
-		int valor_num;
+		double valor_num;
+		int loc_mem;
 		int id;
 		std::string nombre;
 		std::string valor_str;
@@ -207,6 +210,7 @@
 		int cuad_ini;
 		EspacioMemoria *memoria;
 		std::string nombre;
+		std::stack<std::string> pTipoParams;
 		MapType variables;
 	};
 	
@@ -220,10 +224,28 @@
 	extern int yyparse();
 	extern char * yytext;
 
+	/*
+	* 
+	*	C U B O    S E M A N T I C O
+	*
+	* 0 num 1 bool 2 text  [indices]
+	* 1 num 2 bool 3 text 0 ERRROR
+	* 0+ 1- 2* 3/ 4= 5< 6> 7<= 8>= 9!= 10== 11( 12) 13goto 14gotoV
+	* 15gotoF 16Era 17GoSub 18Ret 19Param
+	* [tipo1] [tipo2] [operador] 
+	*
+	*/
+	int cubo_sem[3][3][11] = { 0 };
+	int mem_num_global;
+	int mem_num_local;
+	int mem_num_constante;
+	int mem_bool_global;
+	int mem_bool_local;
+	int mem_bool_constante;
+	int cuad_actual;
 	int id_actual;
 	int param_count;
 	int tmp_actual;
-	int cuad_actual;
 	std::string avail;
 	std::stack <std::string> var_actual;
 	std::string tipo_actual;
@@ -240,20 +262,9 @@
 	MapType map_vars;
 	MapFunc map_func;
 
-	/*
-	*
-	* 
-	*	C U B O    S E M A N T I C O
-	*
-	* 0 num 1 bool 2 text  [indices]
-	* 1 num 2 bool 3 text 0 ERRROR
-	* 0+ 1- 2* 3/ 4= 5< 6> 7<= 8>= 9!= 10== 11( 12) 13goto 14gotoV
-	* 15gotoF 16Era 17GoSub 18Ret 19 Param
-	* [tipo1] [tipo2] [operador] 
-	*/
-	int cubo_sem [3][3][11] = { 0 };
 
 	int convierteTipo(std::string);
+	int memoriaAUsar(int, std::string); 
 	void actualizaScope(std::string);
 	void actualizaTipoVariables();
 	void agregaFuncion();
@@ -300,14 +311,14 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 116 "sintax.y"
+#line 127 "sintax.y"
 {
 	int int_val;	
 	float float_val;
 	char* text;
 }
 /* Line 193 of yacc.c.  */
-#line 311 "quack.tab.c"
+#line 322 "quack.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -320,7 +331,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 324 "quack.tab.c"
+#line 335 "quack.tab.c"
 
 #ifdef short
 # undef short
@@ -544,7 +555,7 @@ union yyalloc
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  117
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  221
+#define YYNSTATES  222
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -597,15 +608,15 @@ static const yytype_uint16 yyprhs[] =
        0,     0,     3,     4,     5,     6,    17,    18,    25,    26,
       27,    31,    36,    39,    40,    42,    44,    46,    48,    51,
       54,    57,    58,    60,    62,    64,    65,    69,    71,    74,
-      75,    80,    81,    85,    88,    92,    93,    94,    95,    96,
-      97,   114,   115,   119,   120,   122,   123,   124,   125,   131,
-     134,   139,   140,   141,   146,   148,   149,   159,   160,   166,
-     167,   173,   176,   179,   180,   182,   184,   186,   189,   192,
-     193,   195,   197,   199,   201,   203,   205,   207,   208,   212,
-     213,   217,   218,   222,   223,   224,   228,   229,   233,   234,
-     238,   239,   240,   245,   247,   249,   251,   253,   254,   258,
-     260,   261,   263,   265,   267,   269,   271,   273,   283,   284,
-     285,   297,   298,   299,   309,   315,   321,   329
+      75,    80,    81,    85,    88,    93,    94,    95,    96,    97,
+      98,   115,   116,   120,   121,   123,   124,   125,   126,   132,
+     135,   140,   141,   142,   147,   149,   150,   160,   161,   167,
+     168,   174,   177,   180,   181,   183,   185,   187,   190,   193,
+     194,   196,   198,   200,   202,   204,   206,   208,   209,   213,
+     214,   218,   219,   223,   224,   225,   229,   230,   234,   235,
+     239,   240,   241,   246,   248,   250,   252,   254,   255,   259,
+     261,   262,   264,   266,   268,   270,   272,   274,   284,   285,
+     286,   298,   299,   300,   310,   316,   322,   330
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -619,49 +630,49 @@ static const yytype_int8 yyrhs[] =
       -1,    90,    59,    -1,   110,    59,    -1,    -1,    83,    -1,
       61,    -1,    87,    -1,    -1,    26,    62,    63,    -1,    80,
       -1,    64,    43,    -1,    -1,    37,    65,    66,    38,    -1,
-      -1,    91,    67,    68,    -1,    45,    66,    -1,    41,    42,
-      68,    -1,    -1,    -1,    -1,    -1,    -1,    58,    70,     6,
-      26,    71,    37,    72,    75,    38,    39,    53,    59,    74,
-      40,    73,    69,    -1,    -1,     7,    91,    43,    -1,    -1,
-      76,    -1,    -1,    -1,    -1,    58,    77,    26,    78,    79,
-      -1,    45,    76,    -1,    41,    24,    42,    79,    -1,    -1,
-      -1,    31,    81,    82,    43,    -1,    91,    -1,    -1,    13,
-      37,    91,    38,    39,    84,    59,    40,    85,    -1,    -1,
-      14,    86,    39,    59,    40,    -1,    -1,     4,    37,    88,
-      38,    43,    -1,    94,    89,    -1,    46,    88,    -1,    -1,
-     115,    -1,   112,    -1,   111,    -1,    94,    92,    -1,    93,
-      94,    -1,    -1,    32,    -1,    33,    -1,    36,    -1,    34,
-      -1,    35,    -1,    47,    -1,    31,    -1,    -1,    99,    95,
-      96,    -1,    -1,    27,    97,    94,    -1,    -1,    28,    98,
-      94,    -1,    -1,    -1,   104,   100,   101,    -1,    -1,    29,
-     102,    99,    -1,    -1,    30,   103,    99,    -1,    -1,    -1,
-      37,   105,    91,    38,    -1,   106,    -1,   109,    -1,    24,
-      -1,    25,    -1,    -1,    26,   107,   108,    -1,    64,    -1,
-      -1,    22,    -1,    23,    -1,   121,    -1,   118,    -1,   119,
-      -1,   120,    -1,    16,    37,    91,    44,    91,    38,    39,
-      59,    40,    -1,    -1,    -1,    15,   113,    39,    59,    40,
-      17,    37,    91,    38,   114,    43,    -1,    -1,    -1,    17,
-     116,    37,    91,    38,   117,    39,    59,    40,    -1,    19,
-      37,    24,    38,    43,    -1,    21,    37,    24,    38,    43,
-      -1,    18,    37,    24,    45,    24,    38,    43,    -1,    20,
-      37,    25,    45,    24,    38,    43,    -1
+      -1,    91,    67,    68,    -1,    45,    66,    -1,    41,    24,
+      42,    68,    -1,    -1,    -1,    -1,    -1,    -1,    58,    70,
+       6,    26,    71,    37,    72,    75,    38,    39,    53,    59,
+      74,    40,    73,    69,    -1,    -1,     7,    91,    43,    -1,
+      -1,    76,    -1,    -1,    -1,    -1,    58,    77,    26,    78,
+      79,    -1,    45,    76,    -1,    41,    24,    42,    79,    -1,
+      -1,    -1,    31,    81,    82,    43,    -1,    91,    -1,    -1,
+      13,    37,    91,    38,    39,    84,    59,    40,    85,    -1,
+      -1,    14,    86,    39,    59,    40,    -1,    -1,     4,    37,
+      88,    38,    43,    -1,    94,    89,    -1,    46,    88,    -1,
+      -1,   115,    -1,   112,    -1,   111,    -1,    94,    92,    -1,
+      93,    94,    -1,    -1,    32,    -1,    33,    -1,    36,    -1,
+      34,    -1,    35,    -1,    47,    -1,    31,    -1,    -1,    99,
+      95,    96,    -1,    -1,    27,    97,    94,    -1,    -1,    28,
+      98,    94,    -1,    -1,    -1,   104,   100,   101,    -1,    -1,
+      29,   102,    99,    -1,    -1,    30,   103,    99,    -1,    -1,
+      -1,    37,   105,    91,    38,    -1,   106,    -1,   109,    -1,
+      24,    -1,    25,    -1,    -1,    26,   107,   108,    -1,    64,
+      -1,    -1,    22,    -1,    23,    -1,   121,    -1,   118,    -1,
+     119,    -1,   120,    -1,    16,    37,    91,    44,    91,    38,
+      39,    59,    40,    -1,    -1,    -1,    15,   113,    39,    59,
+      40,    17,    37,    91,    38,   114,    43,    -1,    -1,    -1,
+      17,   116,    37,    91,    38,   117,    39,    59,    40,    -1,
+      19,    37,    24,    38,    43,    -1,    21,    37,    24,    38,
+      43,    -1,    18,    37,    24,    45,    24,    38,    43,    -1,
+      20,    37,    25,    45,    24,    38,    43,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   157,   157,   159,   160,   157,   162,   162,   164,   165,
-     165,   166,   167,   168,   170,   171,   172,   173,   175,   176,
-     177,   178,   180,   181,   182,   183,   183,   184,   185,   187,
-     186,   190,   190,   191,   192,   193,   195,   196,   197,   198,
-     195,   199,   200,   201,   203,   204,   205,   206,   205,   209,
-     210,   211,   213,   213,   214,   217,   216,   219,   219,   220,
-     222,   223,   224,   225,   227,   228,   229,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   241,   242,
-     242,   243,   243,   244,   245,   245,   246,   246,   247,   247,
-     248,   249,   249,   250,   251,   252,   253,   254,   254,   255,
-     256,   258,   259,   262,   263,   264,   265,   268,   270,   271,
-     270,   273,   274,   273,   276,   278,   280,   282
+       0,   168,   168,   170,   171,   168,   173,   173,   175,   176,
+     176,   177,   178,   179,   181,   182,   183,   184,   186,   187,
+     188,   189,   191,   192,   193,   194,   194,   195,   196,   198,
+     197,   201,   201,   202,   203,   204,   206,   207,   208,   209,
+     206,   210,   211,   212,   214,   215,   216,   219,   216,   222,
+     223,   224,   226,   226,   227,   230,   229,   232,   232,   233,
+     235,   236,   237,   238,   240,   241,   242,   244,   245,   246,
+     247,   248,   249,   250,   251,   252,   253,   254,   254,   255,
+     255,   256,   256,   257,   258,   258,   259,   259,   260,   260,
+     261,   262,   262,   263,   264,   265,   266,   267,   267,   268,
+     269,   271,   272,   275,   276,   277,   278,   281,   283,   284,
+     283,   286,   287,   286,   289,   291,   293,   295
 };
 #endif
 
@@ -725,7 +736,7 @@ static const yytype_uint8 yyr2[] =
        0,     2,     0,     0,     0,    10,     0,     6,     0,     0,
        3,     4,     2,     0,     1,     1,     1,     1,     2,     2,
        2,     0,     1,     1,     1,     0,     3,     1,     2,     0,
-       4,     0,     3,     2,     3,     0,     0,     0,     0,     0,
+       4,     0,     3,     2,     4,     0,     0,     0,     0,     0,
       16,     0,     3,     0,     1,     0,     0,     0,     5,     2,
        4,     0,     0,     4,     1,     0,     9,     0,     5,     0,
        5,     2,     2,     0,     1,     1,     1,     2,     2,     0,
@@ -760,10 +771,10 @@ static const yytype_uint8 yydefact[] =
        0,     0,    21,     0,     0,     0,     0,     0,    53,    30,
       35,    47,     8,    80,    82,    87,    89,     0,     0,    21,
       21,   116,   117,     0,     0,    32,    51,    21,    59,     0,
-       0,     0,    35,    33,     0,     0,    48,    43,    57,    56,
-     109,   107,   113,    34,     0,    49,     0,     0,     0,     0,
-      51,     0,    39,    21,   110,    50,    42,    41,     0,    40,
-      58
+       0,     0,     0,    33,     0,     0,    48,    43,    57,    56,
+     109,   107,   113,    35,     0,    49,     0,     0,     0,     0,
+      34,    51,     0,    39,    21,   110,    50,    42,    41,     0,
+      40,    58
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -771,7 +782,7 @@ static const yytype_int16 yydefgoto[] =
 {
       -1,     2,     5,    20,    26,     8,    24,    10,    17,    23,
       15,    41,    42,    43,    67,    97,    98,   126,   153,   170,
-     185,    16,    19,    57,   100,   217,   207,   129,   130,   155,
+     185,    16,    19,    57,   100,   218,   207,   129,   130,   155,
      186,   196,    99,   125,   151,    44,   162,   199,   208,    45,
       80,   105,    46,   154,   116,   117,    87,   106,   138,   158,
      159,    82,   107,   141,   160,   161,    83,   102,    84,   101,
@@ -781,45 +792,45 @@ static const yytype_int16 yydefgoto[] =
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -105
+#define YYPACT_NINF -107
 static const yytype_int8 yypact[] =
 {
-       9,    15,    39,  -105,  -105,     6,    46,    32,    13,  -105,
-      13,  -105,  -105,  -105,  -105,  -105,  -105,    -1,  -105,    53,
-    -105,    36,    32,  -105,    18,    37,     0,    22,  -105,    46,
-    -105,    28,    29,  -105,    31,  -105,    33,    34,    35,    38,
-    -105,    40,     0,  -105,  -105,  -105,     0,     0,  -105,  -105,
-    -105,  -105,  -105,  -105,  -105,    -1,  -105,    41,    11,    11,
-      30,    11,    42,    50,    52,    56,    58,   -23,  -105,  -105,
-    -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-      45,    43,  -105,  -105,  -105,  -105,    47,    -4,     0,    44,
-      11,    48,    49,    51,    54,  -105,  -105,  -105,    55,  -105,
-      13,    57,    11,    59,    11,  -105,   -17,    23,    60,  -105,
-    -105,  -105,  -105,  -105,  -105,  -105,  -105,    11,    61,    11,
-      62,    67,    63,    71,    64,    11,    11,  -105,  -105,    70,
-    -105,  -105,  -105,    72,  -105,  -105,  -105,  -105,  -105,  -105,
-    -105,  -105,  -105,  -105,    69,    73,  -105,    74,  -105,    75,
-    -105,    66,  -105,    76,  -105,    79,    77,  -105,    11,    11,
-      11,    11,     0,    78,    80,    81,    82,    84,  -105,  -105,
-       1,  -105,    46,  -105,  -105,  -105,  -105,    83,    11,     0,
-       0,  -105,  -105,    86,    11,  -105,    10,     0,   103,    91,
-      90,    92,     1,  -105,    94,    13,  -105,   115,  -105,  -105,
-    -105,  -105,  -105,  -105,    89,  -105,    11,    93,    85,    97,
-      10,    98,  -105,     0,  -105,  -105,  -105,    13,    95,  -105,
-    -105
+       9,    15,    39,  -107,  -107,     6,    46,    32,    13,  -107,
+      13,  -107,  -107,  -107,  -107,  -107,  -107,    -1,  -107,    53,
+    -107,    36,    32,  -107,    18,    37,     0,    22,  -107,    46,
+    -107,    28,    29,  -107,    31,  -107,    33,    34,    35,    38,
+    -107,    40,     0,  -107,  -107,  -107,     0,     0,  -107,  -107,
+    -107,  -107,  -107,  -107,  -107,    -1,  -107,    41,    11,    11,
+      30,    11,    42,    50,    52,    56,    58,   -23,  -107,  -107,
+    -107,  -107,  -107,  -107,  -107,  -107,  -107,  -107,  -107,  -107,
+      45,    43,  -107,  -107,  -107,  -107,    47,    -4,     0,    44,
+      11,    48,    49,    51,    54,  -107,  -107,  -107,    55,  -107,
+      13,    57,    11,    59,    11,  -107,   -17,    23,    60,  -107,
+    -107,  -107,  -107,  -107,  -107,  -107,  -107,    11,    61,    11,
+      62,    67,    63,    71,    64,    11,    11,  -107,  -107,    70,
+    -107,  -107,  -107,    72,  -107,  -107,  -107,  -107,  -107,  -107,
+    -107,  -107,  -107,  -107,    69,    73,  -107,    74,  -107,    75,
+    -107,    66,  -107,    76,  -107,    79,    77,  -107,    11,    11,
+      11,    11,     0,    78,    80,    81,    82,    84,  -107,  -107,
+       1,  -107,    46,  -107,  -107,  -107,  -107,    83,    11,     0,
+       0,  -107,  -107,    93,    11,  -107,    10,     0,   104,    86,
+      88,    89,    90,  -107,    98,    13,  -107,   123,  -107,  -107,
+    -107,  -107,  -107,     1,    91,  -107,    11,    94,    92,    97,
+    -107,    10,    99,  -107,     0,  -107,  -107,  -107,    13,    95,
+    -107,  -107
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-    -105,  -105,  -105,  -105,  -105,   -27,  -105,   112,  -105,    87,
-     -10,   -41,  -105,  -105,  -105,  -105,   -24,  -105,  -100,  -105,
-     -95,   -81,  -105,  -105,  -105,  -105,  -105,  -105,   -58,  -105,
-    -105,   -67,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-      65,  -105,  -105,   -52,  -105,  -105,   -55,  -105,  -105,  -105,
-    -105,  -104,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-    -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-    -105,  -105,  -105,  -105
+    -107,  -107,  -107,  -107,  -107,   -27,  -107,   114,  -107,    96,
+     -10,   -41,  -107,  -107,  -107,  -107,   -24,  -107,  -100,  -107,
+    -106,   -81,  -107,  -107,  -107,  -107,  -107,  -107,   -54,  -107,
+    -107,   -68,  -107,  -107,  -107,  -107,  -107,  -107,  -107,  -107,
+      65,  -107,  -107,   -52,  -107,  -107,   -55,  -107,  -107,  -107,
+    -107,  -104,  -107,  -107,  -107,  -107,  -107,  -107,  -107,  -107,
+    -107,  -107,  -107,  -107,  -107,  -107,  -107,  -107,  -107,  -107,
+    -107,  -107,  -107,  -107
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -838,15 +849,15 @@ static const yytype_uint8 yytable[] =
       27,    29,   143,    30,    55,    58,    59,   145,    61,    88,
       63,    64,    65,   152,    91,    66,    92,   131,    73,    90,
       68,    93,    94,   103,   193,   108,   163,   122,   119,   104,
-     128,   147,   124,   121,    96,   149,   123,   203,   127,   142,
+     128,   147,   124,   121,    96,   149,   123,   210,   127,   142,
      146,   144,   134,   173,   174,   171,   148,   150,   156,   168,
-     157,   164,   166,   167,   169,   178,   172,   198,   204,   179,
-     180,   177,   206,   188,   213,   181,   189,   182,   192,   200,
-     201,   210,   202,   212,    28,   220,   219,   205,   190,   191,
-     214,   216,    72,   215,     0,   187,   197,     0,     0,     0,
-       0,     0,     0,     0,   211,     0,     0,     0,     0,     0,
+     157,   164,   166,   167,   169,   178,   172,   192,   198,   179,
+     180,   177,   204,   188,   200,   181,   189,   182,   201,   202,
+     206,   214,   203,   211,   213,   221,    28,   220,   190,   191,
+     215,   205,   217,   216,     0,   187,   197,     0,     0,     0,
+       0,    72,     0,     0,   212,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,   135,
-       0,     0,   218,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   219,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,   128
 };
 
@@ -861,15 +872,15 @@ static const yytype_int16 yycheck[] =
       24,    43,   117,    26,    42,    37,    37,   119,    37,    39,
       37,    37,    37,   125,    24,    37,    24,   101,    37,    37,
       40,    25,    24,    38,   184,    38,    17,    38,    44,    46,
-     100,    24,    38,    45,    37,    24,    45,   192,    43,    39,
+     100,    24,    38,    45,    37,    24,    45,   203,    43,    39,
       38,    40,    43,   158,   159,    26,    43,    43,    38,    43,
-      38,    38,    38,    38,    38,    37,    39,    14,    24,    39,
-      39,   162,     7,    40,    39,    43,   178,    43,    42,    38,
-      40,    42,    40,    40,    22,    40,   217,   195,   179,   180,
-      43,    43,    55,   210,    -1,   172,   187,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   206,    -1,    -1,    -1,    -1,    -1,
+      38,    38,    38,    38,    38,    37,    39,    24,    14,    39,
+      39,   162,    24,    40,    38,    43,   178,    43,    40,    40,
+       7,    39,    42,    42,    40,    40,    22,   218,   179,   180,
+      43,   195,    43,   211,    -1,   172,   187,    -1,    -1,    -1,
+      -1,    55,    -1,    -1,   206,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   104,
-      -1,    -1,   213,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   214,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,   195
 };
 
@@ -896,10 +907,10 @@ static const yytype_uint8 yystos[] =
      102,   103,    84,    17,    38,   117,    38,    38,    43,    38,
       67,    26,    39,    94,    94,    99,    99,    59,    37,    39,
       39,    43,    43,    41,    45,    68,    78,    53,    40,    91,
-      59,    59,    42,    66,    41,    45,    79,    59,    14,    85,
-      38,    40,    40,    68,    24,    76,     7,    74,    86,   114,
-      42,    91,    40,    39,    43,    79,    43,    73,    59,    69,
-      40
+      59,    59,    24,    66,    41,    45,    79,    59,    14,    85,
+      38,    40,    40,    42,    24,    76,     7,    74,    86,   114,
+      68,    42,    91,    40,    39,    43,    79,    43,    73,    59,
+      69,    40
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1714,246 +1725,253 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 157 "sintax.y"
+#line 168 "sintax.y"
     { scope_actual = "global"; actualizaScope("global"); 
 	   	cuadruploEstatuto(10); ;}
     break;
 
   case 3:
-#line 159 "sintax.y"
+#line 170 "sintax.y"
     { scope_actual = "global"; actualizaScope("global"); ;}
     break;
 
   case 4:
-#line 160 "sintax.y"
+#line 171 "sintax.y"
     { cuadruploMain(); ;}
     break;
 
   case 6:
-#line 162 "sintax.y"
+#line 173 "sintax.y"
     { tipo_actual = yytext; actualizaTipoVariables(); ;}
     break;
 
   case 9:
-#line 165 "sintax.y"
+#line 176 "sintax.y"
     { var_actual.push(yytext); ;}
     break;
 
   case 10:
-#line 165 "sintax.y"
+#line 176 "sintax.y"
     { creaVariable(); ;}
     break;
 
   case 25:
-#line 183 "sintax.y"
-    { meterPilaO(); func_actual = yytext; ;}
+#line 194 "sintax.y"
+    { meterPilaO();  ;}
     break;
 
   case 29:
-#line 187 "sintax.y"
+#line 198 "sintax.y"
     { cuadruploEstatuto(7); param_count = 0; ;}
     break;
 
   case 30:
-#line 188 "sintax.y"
-    { /*finParametros();  */ cuadruploEstatuto(9); ;}
+#line 199 "sintax.y"
+    { /*finParametros();*/ cuadruploEstatuto(9); ;}
     break;
 
   case 31:
-#line 190 "sintax.y"
+#line 201 "sintax.y"
     { param_count++; cuadruploEstatuto(8); ;}
     break;
 
   case 36:
-#line 195 "sintax.y"
+#line 206 "sintax.y"
     { tipo_actual = yytext; tipo_func = yytext; ;}
     break;
 
   case 37:
-#line 196 "sintax.y"
-    { scope_actual = yytext; actualizaScope("funcion");
+#line 207 "sintax.y"
+    { scope_actual = yytext; func_actual= yytext; actualizaScope("funcion");
 		agregaFuncion(); ;}
     break;
 
   case 38:
-#line 197 "sintax.y"
+#line 208 "sintax.y"
     { param_count = 0; ;}
     break;
 
   case 39:
-#line 198 "sintax.y"
+#line 209 "sintax.y"
     { cuadruploEstatuto(6); ;}
     break;
 
+  case 44:
+#line 214 "sintax.y"
+    {;}
+    break;
+
   case 46:
-#line 205 "sintax.y"
-    { tipo_actual = yytext; pTipoParams.push(yytext); ;}
+#line 216 "sintax.y"
+    { tipo_actual = yytext; pTipoParams.push(yytext); 
+		Funcion *func = map_func[func_actual]; func->pTipoParams = pTipoParams;
+		map_func[func_actual] = func; ;}
     break;
 
   case 47:
-#line 206 "sintax.y"
-    { var_actual.push(yytext); actualizaTipoVariables();
+#line 219 "sintax.y"
+    {actualizaTipoVariables(); var_actual.push(yytext);  
 			modificaMemoria(scope_actual); param_count++; ;}
     break;
 
   case 48:
-#line 208 "sintax.y"
-    { creaVariable(); ;}
+#line 221 "sintax.y"
+    { creaVariable(); actualizaTipoVariables(); ;}
     break;
 
   case 52:
-#line 213 "sintax.y"
+#line 226 "sintax.y"
     { meterPilaOper(4); ;}
     break;
 
   case 55:
-#line 217 "sintax.y"
+#line 230 "sintax.y"
     { cuadruploEstatuto(0); ;}
     break;
 
   case 56:
-#line 218 "sintax.y"
+#line 231 "sintax.y"
     { cuadruploEstatuto(2); ;}
     break;
 
   case 57:
-#line 219 "sintax.y"
+#line 232 "sintax.y"
     { cuadruploEstatuto(1); ;}
     break;
 
   case 67:
-#line 231 "sintax.y"
+#line 244 "sintax.y"
     { checaOperador(4); ;}
     break;
 
   case 70:
-#line 234 "sintax.y"
+#line 247 "sintax.y"
     { meterPilaOper(5); ;}
     break;
 
   case 71:
-#line 235 "sintax.y"
+#line 248 "sintax.y"
     { meterPilaOper(6); ;}
     break;
 
   case 72:
-#line 236 "sintax.y"
+#line 249 "sintax.y"
     { meterPilaOper(9); ;}
     break;
 
   case 73:
-#line 237 "sintax.y"
+#line 250 "sintax.y"
     { meterPilaOper(7); ;}
     break;
 
   case 74:
-#line 238 "sintax.y"
+#line 251 "sintax.y"
     { meterPilaOper(8); ;}
     break;
 
   case 75:
-#line 239 "sintax.y"
+#line 252 "sintax.y"
     { meterPilaOper(10); ;}
     break;
 
   case 76:
-#line 240 "sintax.y"
+#line 253 "sintax.y"
     { meterPilaOper(4); ;}
     break;
 
   case 77:
-#line 241 "sintax.y"
+#line 254 "sintax.y"
     { checaOperador(0); ;}
     break;
 
   case 79:
-#line 242 "sintax.y"
+#line 255 "sintax.y"
     { meterPilaOper(0); ;}
     break;
 
   case 81:
-#line 243 "sintax.y"
+#line 256 "sintax.y"
     { meterPilaOper(1); ;}
     break;
 
   case 84:
-#line 245 "sintax.y"
+#line 258 "sintax.y"
     { checaOperador(2); ;}
     break;
 
   case 86:
-#line 246 "sintax.y"
+#line 259 "sintax.y"
     { meterPilaOper(2); ;}
     break;
 
   case 88:
-#line 247 "sintax.y"
+#line 260 "sintax.y"
     { meterPilaOper(3); ;}
     break;
 
   case 91:
-#line 249 "sintax.y"
+#line 262 "sintax.y"
     { meterPilaOper(11); ;}
     break;
 
   case 92:
-#line 249 "sintax.y"
+#line 262 "sintax.y"
     { pOper.pop(); ;}
     break;
 
   case 95:
-#line 252 "sintax.y"
+#line 265 "sintax.y"
     { creaConstanteNum(); ;}
     break;
 
   case 96:
-#line 253 "sintax.y"
+#line 266 "sintax.y"
     { creaConstanteStr(yytext); ;}
     break;
 
   case 97:
-#line 254 "sintax.y"
+#line 267 "sintax.y"
     { meterPilaO(); ;}
     break;
 
   case 101:
-#line 258 "sintax.y"
+#line 271 "sintax.y"
     { creaConstanteBool(1); ;}
     break;
 
   case 102:
-#line 259 "sintax.y"
+#line 272 "sintax.y"
     { creaConstanteBool(0); ;}
     break;
 
   case 108:
-#line 270 "sintax.y"
+#line 283 "sintax.y"
     { cuadruploEstatuto(3); ;}
     break;
 
   case 109:
-#line 271 "sintax.y"
+#line 284 "sintax.y"
     { cuadruploEstatuto(5); ;}
     break;
 
   case 111:
-#line 273 "sintax.y"
+#line 286 "sintax.y"
     { cuadruploEstatuto(3); ;}
     break;
 
   case 112:
-#line 274 "sintax.y"
+#line 287 "sintax.y"
     { cuadruploEstatuto(0); ;}
     break;
 
   case 113:
-#line 274 "sintax.y"
+#line 287 "sintax.y"
     { cuadruploEstatuto(4); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1957 "quack.tab.c"
+#line 1975 "quack.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2167,7 +2185,7 @@ yyreturn:
 }
 
 
-#line 284 "sintax.y"
+#line 297 "sintax.y"
 
 
 
@@ -2205,6 +2223,47 @@ for(MapType::const_iterator it = map_vars.begin() ;
 	}*/
 
 }
+
+/**
+* Devuelve la memoria que se tiene que usar de acuerdo al tipo de la  
+* variable
+**/
+int memoriaAUsar (int tipo, std::string str) {
+	//std::cout << "memoriaAUsar" << std::endl;
+	int memset = 0;
+	int scope = -1;
+	if (str == "global") scope = 0;
+	else if (str == "constante") scope = 1;
+	else scope = 2;
+	switch (tipo) {
+		case 1:
+			if(scope == 0) {
+				memset = ++mem_num_global;
+			} else if (scope == 1) {
+				memset = ++mem_num_constante;	
+			} else if (scope == 2) {
+				memset = ++mem_num_local;
+			}
+			break;
+		case 2:
+			if(scope == 0) {
+				memset = ++mem_bool_global;
+			} else if (scope == 1) {
+				memset = ++mem_bool_constante;	
+			} else if (scope == 2) {
+				memset = ++mem_bool_local;
+			}
+			break;
+		case 3:
+			break;
+	}
+	//std::cout << "Memset: " << memset << std::endl;
+	return memset;
+	
+}
+
+
+
 /**
 * Simplemente devuelve la tabla de variables que contiene TODAS las variables
 **/
@@ -2224,7 +2283,7 @@ void cuadruploMain() {
 	std::string str;
 	sstm << "" << cuad_actual;
 	str = sstm.str();
-	Cuadruplo::Cuadruplo cuad(16, "", "", str);
+	Cuadruplo::Cuadruplo cuad(13, -1, -1, str);
 	vec_cuadruplos[0] = cuad;
 	
 }
@@ -2266,7 +2325,7 @@ EspacioMemoria* inicializaMemoria(EspacioMemoria *memory) {
 * Va agregando la cantidad de variables necesarias para la funcion
 **/ 
 void modificaMemoria (std::string str) {
-	//std::cout << "modificaMemoria" << std::endl;
+//	std::cout << "modificaMemoria" << std::endl;
 	MapFunc::iterator it = map_func.find(std::string(str));
 	if(it ==  map_func.end()) {
 		std::cout << "Funcion no encontrada: " << str 
@@ -2293,8 +2352,8 @@ void modificaMemoria (std::string str) {
 
 		}
 		func->memoria->total++;
-		//std::cout << func->memoria->nump << func->memoria->boolp
-		//	 << func->memoria->boolp << std::endl;
+//		std::cout << "mem:" << func->memoria->nump << func->memoria->boolp
+//			 << func->memoria->boolp << std::endl;
 		map_func[str] = func;	
 	
 	}
@@ -2304,7 +2363,7 @@ void modificaMemoria (std::string str) {
 * Inicializa una funcion y le asigna ciertos parametros
 **/
 void agregaFuncion (){
-	//std::cout << "AgregaFuncion" << std::endl;
+//	std::cout << "AgregaFuncion" << std::endl;
 	Funcion *func =  new Funcion();
 	EspacioMemoria *memset;
 	memset = inicializaMemoria(memset);
@@ -2324,7 +2383,7 @@ void agregaFuncion (){
 * ya predefinidas por el lenguaje.
 **/
 void cuadruploEstatuto(int tipo) {
-	//std::cout << "CuadruploEstatuto" << std::endl;
+//	std::cout << "CuadruploEstatuto" << std::endl;
 	std::string nombre;
 	switch(tipo) {
 		/*
@@ -2338,6 +2397,7 @@ void cuadruploEstatuto(int tipo) {
 		+ el case 10 es el primer GOTO y busca el MAIN
 		*/
 		case 0: {
+	//		std::cout << "Case0" << std::endl;
 			int a;
 			Node *resultado;
 			if(!pilaO.empty())resultado = pilaO.top();
@@ -2347,8 +2407,9 @@ void cuadruploEstatuto(int tipo) {
 				std::cout << "Error de tipo: " << resultado->nombre 
 				<< std::endl;
 			} else {
-				Cuadruplo::Cuadruplo cuad1(15, resultado->nombre,
-					 "", "___");
+				std::cout << "15, " << resultado->nombre << ", -1, ____\n";
+				Cuadruplo::Cuadruplo cuad1(15, resultado->loc_mem,
+					 -1, "___");
 				vec_cuadruplos.push_back(cuad1);
 				cuad_actual++;
 				pSaltos.push(cuad_actual - 1);
@@ -2357,10 +2418,13 @@ void cuadruploEstatuto(int tipo) {
 		}
 		
 		case 1: {
+	//		std::cout << "Case1" << std::endl;
 			std::stringstream sstm1;
-			Cuadruplo::Cuadruplo cuad3(13, "", "", "___");
+			std::cout << "13, " << "-1" << ", -1, ___\n";
+			Cuadruplo::Cuadruplo cuad3(13, -1, -1, "___");
 			vec_cuadruplos.push_back(cuad3);
 			cuad_actual++;
+			if(pSaltos.empty()) std::cout << "EY" << std::endl;
 			int falso = pSaltos.top();
 			pSaltos.pop();
 			cuad3 = vec_cuadruplos[falso-1];
@@ -2373,7 +2437,9 @@ void cuadruploEstatuto(int tipo) {
 		}
 		
 		case 2: {
+	//		std::cout << "Case2" << std::endl;
 			std::stringstream sstm2;
+			if(pSaltos.empty()) std::cout << "EY" << std::endl;
 			int salto = pSaltos.top();
 			pSaltos.pop();
 			Cuadruplo::Cuadruplo cuad2;
@@ -2386,21 +2452,26 @@ void cuadruploEstatuto(int tipo) {
 		}
 
 		case 3: {
+			std::cout << "Case3" << std::endl;
 			pSaltos.push(cuad_actual);
 			break;
 		}
 		
 		case 4: {
+	//		std::cout << "Case4" << std::endl;
 			std::stringstream sstm3;
 			std::stringstream sstm4;
+			if(pSaltos.empty()) std::cout << "EY" << std::endl;
 			int falso, retorno;
 			falso = pSaltos.top();
 			pSaltos.pop();
+			if(pSaltos.empty()) std::cout << "EY2" << std::endl;
 			retorno = pSaltos.top();
 			pSaltos.pop();
 			sstm3 << "" << retorno;
 			nombre = sstm3.str();
-			Cuadruplo::Cuadruplo cuad4(13, "", "", nombre);
+			std::cout << "13, " << "-1" << ", -1, " << nombre << "\n";
+			Cuadruplo::Cuadruplo cuad4(13, -1, -1, nombre);
 			vec_cuadruplos.push_back(cuad4);
 			cuad_actual++;
 			cuad4 = vec_cuadruplos[falso-1];
@@ -2412,6 +2483,7 @@ void cuadruploEstatuto(int tipo) {
 		}
 		
 		case 5: {
+	//		std::cout << "Case5" << std::endl;
 			int a, retorno;
 			Node *resultado;
 			std::stringstream sstm5;
@@ -2421,18 +2493,21 @@ void cuadruploEstatuto(int tipo) {
 				std::cout << "Error de tipo: " << resultado->nombre
 				<< std::endl;
 			} else {
+				if(pSaltos.empty()) std::cout << "EY" << std::endl;
 				retorno = pSaltos.top();
 				pSaltos.pop();
 				sstm5 << "" << retorno;
 				nombre = sstm5.str();
-				Cuadruplo::Cuadruplo cuad5(15, resultado->nombre,
-					 "", nombre);
+				std::cout << "15, " << resultado->nombre << ", -1, " << nombre <<"\n";
+				Cuadruplo::Cuadruplo cuad5(15, resultado->loc_mem,
+					 -1, nombre);
 				vec_cuadruplos.push_back(cuad5);
 				cuad_actual++;
 			}
 			break;
 		}
 		case 6: {
+	//		std::cout << "Case6" << std::endl;
 			if(tipo_func != "libre") {
 				Node *retorno = new Node();
 				if (!pilaO.empty()) {
@@ -2442,66 +2517,96 @@ void cuadruploEstatuto(int tipo) {
 						std::cout << "Error tipos" << std::endl;
 						exit(1);
 					} else {
+						std::cout << "18, " << retorno->nombre << ", -1, " << "" << "\n";
 						Cuadruplo::Cuadruplo cuad6(18,
-							retorno->nombre, "", "");
+							retorno->loc_mem, -1, " ");
 						vec_cuadruplos.push_back(cuad6);
 						cuad_actual++; 
 					}
 				} else {}
 			} else {
-				Cuadruplo::Cuadruplo cuad6(18, "", "", "");
+				std::cout << "18, " << "-1" << ", -1, " << "" << "\n";
+				Cuadruplo::Cuadruplo cuad6(18, -1, -1, " ");
 				vec_cuadruplos.push_back(cuad6);
 				cuad_actual++;
 			}
 			break;
 		}
 		case 7: {
-			Cuadruplo::Cuadruplo cuad7(16, func_actual, "", "");
+	//		std::cout << "Case7" << std::endl;		
+			std::cout << "16, " << func_actual << ", w, " << "" << "\n";
+			Cuadruplo::Cuadruplo cuad7(16, func_actual, "w", " ");
 			vec_cuadruplos.push_back(cuad7);
 			cuad_actual++;
 			break;
 		}
 		case 8: {
-			if (!pilaO.empty() && !pTipoParams.empty()) {
-				Node *var = pilaO.top();
-				std::string str = pTipoParams.top();
-				pTipoParams.pop();
-				int b = convierteTipo(str);
-				//std::cout << var->nombre << std::endl;
+	//		std::cout << "Case8" << std::endl;
+			std::string str;
+			Node *var = pilaO.top();
+			Funcion *func = new Funcion();
+			func = map_func[func_actual];
+			if (pilaO.empty() ) {
+				std::cout << "PilaO vacia" << std::endl;
+			} else  if (func->pTipoParams.empty()) {
+				std::cout << "pTipoParams vacia" << std:: endl;
+			} else {
+				int b;
 				int a = var->tipo;
+				str = func->pTipoParams.top();
+				b = convierteTipo(str);
+				//std::cout << var->nombre << std::endl;
 				if(a == b) {
 					//std::cout << "generando..." << std::endl;
 					std::stringstream sstm;
 					sstm << "param" << param_count;
 					str = sstm.str();
-					Cuadruplo::Cuadruplo cuad8(19, var->nombre,
-						 "", str);
+					std::cout << "19, " << var->nombre << ", -1, " << str << "\n";
+					Cuadruplo::Cuadruplo cuad8(19, var->loc_mem,
+						 -1, str);
 					vec_cuadruplos.push_back(cuad8);
 					cuad_actual++;
+				} else {
+					std::cout << "No coinciden los tipos PARAM" <<std::endl;
+					std::cout << var->tipo << " <> " << str << std::endl;
+					std::cout << var->nombre << std::endl;
 				}	
-			}
+			} 
 			break;
 		}
 		case 9: {
+	//		std::cout << "Case9" << std::endl;
+	//		std::cout << func_actual << std::endl;
 			MapFunc::iterator it = map_func.find(func_actual);
-			Funcion *func = it->second;
-			std::string str;
-			std::stringstream sstm;
-			sstm << "" << func->cuad_ini;
-			str = sstm.str();
-			Cuadruplo::Cuadruplo cuad9(17, func_actual, "", str);
-			vec_cuadruplos.push_back(cuad9);
-			cuad_actual++;
+			if(it == map_func.end()) {
+				//meterPilaO();
+				//std::cout << "Error en encontrar funcion: " << func_actual 
+				//	<< std::endl;
+				//exit(1);
+			} else {
+				Funcion *func = it->second;
+				std::string str;
+				std::stringstream sstm;
+				sstm << "" << func->cuad_ini;
+				str = sstm.str();	
+				std::cout << "17, " << func_actual << ", w, " << str << "\n";
+				Cuadruplo::Cuadruplo cuad9(17, func_actual, "w", str);
+				vec_cuadruplos.push_back(cuad9);
+				cuad_actual++;
+			}	
 			break;
 		}
 
 		case 10: {
-			Cuadruplo::Cuadruplo cuad0(13, "", "", "___");
+		//	std::cout << "Case10" << std::endl;		
+			std::cout << "13, " << "-1" << ", -1, " << "___" << "\n";
+			Cuadruplo::Cuadruplo cuad0(13, -1, -1, "___");
 			vec_cuadruplos.push_back(cuad0);
 			cuad_actual++;
 			break;
 		}
-	} 
+	}
+//	std::cout << "sali cuadruploEstatuto" << std::endl; 
 }
 
 
@@ -2512,7 +2617,7 @@ void cuadruploEstatuto(int tipo) {
 *
 **/
 void checaOperador(int a) {
-	//std::cout << "checaOperador" << std::endl;
+//	std::cout << "checaOperador" << std::endl;
 	Node* tmp1 = new Node();
 	Node* tmp2 = new Node();
 	int aux = -1;
@@ -2541,12 +2646,15 @@ void checaOperador(int a) {
 				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador]
 					> 0) {
 					std::stringstream sstm;
-					Cuadruplo::Cuadruplo cuad(operador, tmp2->nombre, 
-						" ", tmp1->nombre);
-					pOper.pop();
+					std::string str;
+					sstm << "" << tmp2->loc_mem;
+					str = sstm.str();
+					std::cout << operador << ", " << tmp2->nombre << ", -1, " << tmp1->nombre << "\n";
+					Cuadruplo::Cuadruplo cuad(operador, tmp2->loc_mem, 
+						-1, tmp1->loc_mem);
 					vec_cuadruplos.push_back(cuad);
-					//cuad.print();
 					cuad_actual++;
+					pOper.pop();
 				} else {
 					std::cout << "Error2: " << tmp1->tipo - 1 
 						<< tmp2->tipo - 1
@@ -2560,21 +2668,24 @@ void checaOperador(int a) {
 				pilaO.pop();
 				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador]
 					> 0) {
+					Node *var = new Node();
 					std::stringstream sstm;
 					sstm << "t" << tmp_actual;
 					avail = sstm.str();
-					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
-						tmp2->nombre, avail);
 					var_actual.push(avail);
-					tipo_actual = "num";
+					tipo_actual = "bool";
 					creaVariable();
 					actualizaTipoVariables();
 					yytext = strdup(avail.c_str());
 					meterPilaO();
 					tmp_actual++;
+					var = pilaO.top();
+					std::cout << operador << ", " << tmp1->nombre << ", " << tmp2->nombre << ", " << var->nombre << "\n";
+					Cuadruplo::Cuadruplo cuad(operador, tmp1->loc_mem, 
+						tmp2->loc_mem, var->loc_mem);
 					cuad_actual++;
-					pOper.pop();
 					vec_cuadruplos.push_back(cuad);
+					pOper.pop();
 					//imprimePila(1);
 				} else {
 					std::cout << "Error3: " << tmp1->tipo - 1 
@@ -2590,11 +2701,10 @@ void checaOperador(int a) {
 				pilaO.pop();
 				if(cubo_sem[tmp1->tipo - 1][tmp2->tipo - 1][operador] 
 					> 0) {
+					Node *var = new Node();
 					std::stringstream sstm;
 					sstm << "t" << tmp_actual;
 					avail = sstm.str();
-					Cuadruplo::Cuadruplo cuad(operador, tmp1->nombre, 
-						tmp2->nombre, avail);
 					var_actual.push(avail);
 					tipo_actual = "num";
 					creaVariable();
@@ -2602,8 +2712,12 @@ void checaOperador(int a) {
 					yytext = strdup(avail.c_str());
 					meterPilaO();
 					tmp_actual++;
+					var = pilaO.top();
 					if(!pOper.empty()) pOper.pop();
 					else {std::cout << "Error mil" << std::endl;}
+					std::cout << operador << ", " << tmp1->nombre << ", " << tmp2->nombre << ", " << var->nombre << "\n";
+					Cuadruplo::Cuadruplo cuad(operador, tmp1->loc_mem, 
+						tmp2->loc_mem, var->loc_mem);
 					vec_cuadruplos.push_back(cuad);
 					cuad_actual++;
 					//imprimePila(1);
@@ -2631,7 +2745,7 @@ void meterPilaOper(int esp) {
 * Mete a la pila de operandos las variables que se va encontrando
 **/
 void meterPilaO() {
-	//std::cout << "meterPilaO" << std::endl;
+//	std::cout << "meterPilaO" << std::endl;
 	
 	const char *aux;
 	Node *var = new Node();
@@ -2639,16 +2753,17 @@ void meterPilaO() {
 	llave = std::string(yytext) + "&" + scope_actual;
 	aux = llave.c_str();
 	MapType::const_iterator it = map_vars.find(aux);
-	
+	//std::cout << llave << std::endl;
 	if(it == map_vars.end()) { 
 		llave = std::string(yytext) + "&global";
 		aux = llave.c_str();
 		it = map_vars.find(llave);
 		if(it != map_vars.end()) pilaO.push(it->second);
 		else {
+			func_actual = yytext;
 			MapFunc::iterator it = map_func.find(std::string(yytext));
 			if(it ==  map_func.end()) {
-				std::cout << "Variable no encontrada: " << yytext 
+				std::cout << "Variable no encontrada:: " << yytext 
 					<< std::endl;
 				std::cout << contlin << std::endl;
 				exit(1);
@@ -2660,7 +2775,7 @@ void meterPilaO() {
 }
 
 /**
-* 
+* Crea una variable para las constantes numericas
 **/
 void creaConstanteNum(){
 	//std::cout << "creaConstateNum" << std::endl;	
@@ -2668,15 +2783,17 @@ void creaConstanteNum(){
 	std::string aux = std::string(yytext);
 	var->nombre = "cN" + aux;
 	var->tipo = 1;
-	var->scope = "global";
+	var->scope = "constante";
 	var->valor_num = ::atof(yytext);
 	var->id = id_actual++;
+	var->loc_mem = memoriaAUsar(1, "constante");
+	//std::cout << var->nombre << "\t\t\tmem: " << var->loc_mem << std::endl;
 	pilaO.push(var);
 
 }
 
 /**
-* 
+* Crea una variable para las constantes booleanas
 **/
 void creaConstanteBool(int a) {
 	//std::cout << "CreaConstanteBool" << std::endl;
@@ -2686,9 +2803,11 @@ void creaConstanteBool(int a) {
 	else aux = "cB1";
 	var->nombre = aux;
 	var->tipo = 2;
-	var->scope = scope_actual ;
+	var->scope = "constante";
 	var->valor_num = a;
 	var->id = id_actual++;
+	var->loc_mem = memoriaAUsar(2, "constante");
+	//std::cout << var->nombre << "\t\tmem: " << var->loc_mem << std::endl;
 	pilaO.push(var);
 
 }
@@ -2697,10 +2816,13 @@ void creaConstanteStr(const char *){
 
 }
 
-
+/**
+* Actualiza el tipo de las variables que han sido declaradas 
+**/
 void actualizaTipoVariables () {
-	//std::cout << "ActualizaTipoVariables" << std::endl;	
+//	std::cout << "ActualizaTipoVariables" << std::endl;	
 	int tipo = -1;
+	int memset = 0;
 	std::string aux;
 	const char  *llave; 
 	Node *var = new Node();
@@ -2708,17 +2830,24 @@ void actualizaTipoVariables () {
 	tipo = convierteTipo(tipo_actual);	
 	
 	if (tipo<0) std::cout << std::endl << " E R R O R " << std::endl;
-
+	
 	while (!aux_vars.empty()) {
+		memset = memoriaAUsar(tipo, scope_actual);
 		var = aux_vars.top();
 		aux_vars.pop();
 		aux =  std::string(var->nombre) + "&" + scope_actual;
 		llave = aux.c_str();
 		var->tipo = tipo;
+		var->loc_mem = memset++;
 		map_vars[llave] = var;
+//		std::cout << var->nombre << " scope: " << var->scope << " tipo: " 
+//			<< var->tipo << " llave: " << llave << std::endl;
 	}
 }
 
+/**
+* Cambia el tipo de String a int
+**/
 int convierteTipo(std::string str) {
 	//std::cout << "convierteTipo" << std::endl;	
 	if(str == "num") return (1);
@@ -2728,11 +2857,15 @@ int convierteTipo(std::string str) {
 	else return (-1);
 }
 
+/**
+* Inicializa una variable con la informacion disponible
+**/
 void creaVariable() {
-	//std::cout << "CreaVariable" << std::endl;	
+//	std::cout << "CreaVariable" << std::endl;	
 	Node *var = new Node();
 	var->nombre = var_actual.top();
 	var->tipo = -1;
+	var->loc_mem = 999999;
 	var->scope = scope_actual;
 	var->id = id_actual++;
 	var_actual.pop();
@@ -2743,12 +2876,18 @@ void creaVariable() {
 
 }
 
+/**
+* Actualiza el scope global para las variables y funciones
+**/
 void actualizaScope(std::string str){
 	//std::cout << "ActualizaScope" << std::endl;
 	scopes.push_back(str);
 	tmp_actual = 1;
 }
 
+/**
+* Imprime una pila de variables
+**/
 void imprimePila(std::stack<Node*> pila) {
 	//std::cout << "imprimePila" << std::endl;	
 	std::stack<Node*> tmp;
@@ -2764,6 +2903,9 @@ void imprimePila(std::stack<Node*> pila) {
 	std::cout << "----------------------------------------" << std::endl;
    }
 
+/**
+* imprime la pila de operadores
+**/
 void imprimePila(int a) {
 	//std::cout << "ImprimePila2" << std::endl;
 	std::stack<int> tmp;
@@ -2782,20 +2924,33 @@ void imprimePila(int a) {
 
 }
 
+/**
+* Imprime el vector de cuadruplos 
+**/
 void imprimeVector(std::vector<Cuadruplo> vec) {
 	//std::cout << "imprimeVector" << std::endl;
-
+	std::ofstream myfile;
+  	myfile.open ("cuacks.cuads");
+	std::string str;
 	Cuadruplo::Cuadruplo cuad;
 
 	for (int i = 0; i < vec.size(); i++) {
 		cuad = vec[i];
 		std::cout << i+1 << ": ";
+		myfile << i+1 << ": ";
 		cuad.print();
-		
+		str = cuad.cuadruploStr();
+		myfile << str ;
 	}
+  	myfile.close();
 }
 
+/**
+* inicializa el cubo con las combinaciones posibles e inicializa los
++ contadores de algunas variables.
+**/
 void creaCubo(){
+	//std::cout << "creaCubo" << std::endl;
 	cubo_sem[0][0][0] = 1;
 	cubo_sem[0][0][1] = 1;
 	cubo_sem[0][0][2] = 1;
@@ -2828,6 +2983,13 @@ void creaCubo(){
 	cuad_actual = 1;
 	tmp_actual = 1;
 	param_count = 0;
+	mem_num_global = 999;
+	mem_num_local = 3000;
+	mem_num_constante = 7000;
+	mem_bool_global = 9000;
+	mem_bool_local = 10000;
+	mem_bool_constante = 11000;
+	
 /*
 	std::cout << "         + - * / = < > < > ! ==";
 
@@ -2847,6 +3009,9 @@ std::cout << std::endl;
 
 }
 
+/**
+* Genera un error si falla la lectura de algun simbolo (sintaxis)
+**/
 int yyerror(char* s) {
   extern char *yytext;	// defined and maintained in lex.c  
   printf("ERROR: %s at symbol  %s  on line %d\n",s,yytext,contlin);

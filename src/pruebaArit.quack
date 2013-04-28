@@ -1,33 +1,23 @@
 programa quack {
 
-	var a, b num;
-	var f num;
+	var i, j num;
 	
 	libre funcion uno (num a) {
-		a = a + b * a;
-		b = a;
-		b = b;
-		a = a + b;
-	}	
-	
-	libre funcion dos (num a, num b, num f){
 		var i num;
-		i = b;
-
-		mientras ( i > 0 ) {
-			a = a + b * i + b;
-			uno (i * 2);
-			a=a;
-			i = i - 1;
+		i = a * 2;
+		si(i < a + 4) {
+			 uno(a+1);
 		}
+		i = i;
+	}	
+	num funcion dos (num b) {
+		b = b * i + j;
+		regresa (b * 2);
 	}
-	a = 3;
-	b = a + 1;
-	a = a;
-	b = b;
-	f = 3.1415;
-	dos( a + b * 2, b, f * 3 );
-	a = a;
-	b = b;
-	f = f * 2 + 1;
+	
+	i = 2;
+	j = i * 2 - 1;
+	uno (j);
+    i = i + ( dos(i+j) );
+	i = i;
 }

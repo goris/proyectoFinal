@@ -58,7 +58,7 @@ Grammar
    31 varsss: sexp @8 varsss2
 
    32 varsss2: COM varsss
-   33        | LSQ RSQ varsss2
+   33        | LSQ CTE_NUM RSQ varsss2
    34        | /* empty */
 
    35 @9: /* empty */
@@ -225,7 +225,7 @@ TRIANGULO (275) 116
 ELIPSE (276) 114
 VERDADERO (277) 100
 FALSO (278) 101
-CTE_NUM (279) 10 49 94 113 114 115 116
+CTE_NUM (279) 10 33 49 94 113 114 115 116
 CTE_TEXTO (280) 95 116
 ID (281) 4 9 25 39 47 97
 SUM (282) 79
@@ -2419,7 +2419,7 @@ state 170
 
    31 varsss: sexp @8 . varsss2
    32 varsss2: . COM varsss
-   33        | . LSQ RSQ varsss2
+   33        | . LSQ CTE_NUM RSQ varsss2
    34        | .  [RPA]
 
     LSQ  shift, and go to state 183
@@ -2648,9 +2648,9 @@ state 182
 
 state 183
 
-   33 varsss2: LSQ . RSQ varsss2
+   33 varsss2: LSQ . CTE_NUM RSQ varsss2
 
-    RSQ  shift, and go to state 192
+    CTE_NUM  shift, and go to state 192
 
 
 state 184
@@ -2800,17 +2800,9 @@ state 191
 
 state 192
 
-   32 varsss2: . COM varsss
-   33        | . LSQ RSQ varsss2
-   33        | LSQ RSQ . varsss2
-   34        | .  [RPA]
+   33 varsss2: LSQ CTE_NUM . RSQ varsss2
 
-    LSQ  shift, and go to state 183
-    COM  shift, and go to state 184
-
-    $default  reduce using rule 34 (varsss2)
-
-    varsss2  go to state 203
+    RSQ  shift, and go to state 203
 
 
 state 193
@@ -2908,16 +2900,24 @@ state 202
 
 state 203
 
-   33 varsss2: LSQ RSQ varsss2 .
+   32 varsss2: . COM varsss
+   33        | . LSQ CTE_NUM RSQ varsss2
+   33        | LSQ CTE_NUM RSQ . varsss2
+   34        | .  [RPA]
 
-    $default  reduce using rule 33 (varsss2)
+    LSQ  shift, and go to state 183
+    COM  shift, and go to state 184
+
+    $default  reduce using rule 34 (varsss2)
+
+    varsss2  go to state 210
 
 
 state 204
 
    49 varss3: LSQ CTE_NUM . RSQ varss3
 
-    RSQ  shift, and go to state 210
+    RSQ  shift, and go to state 211
 
 
 state 205
@@ -2949,7 +2949,7 @@ state 206
     ID         shift, and go to state 78
     LPA        shift, and go to state 79
 
-    sexp      go to state 211
+    sexp      go to state 212
     exp       go to state 87
     termino   go to state 82
     factor    go to state 83
@@ -2961,24 +2961,31 @@ state 207
 
    39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 . RBR @12 funciones
 
-    RBR  shift, and go to state 212
+    RBR  shift, and go to state 213
 
 
 state 208
 
    57 condicion1: SINO @17 . LBR bloque RBR
 
-    LBR  shift, and go to state 213
+    LBR  shift, and go to state 214
 
 
 state 209
 
   109 haz: HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 . SEM
 
-    SEM  shift, and go to state 214
+    SEM  shift, and go to state 215
 
 
 state 210
+
+   33 varsss2: LSQ CTE_NUM RSQ varsss2 .
+
+    $default  reduce using rule 33 (varsss2)
+
+
+state 211
 
    48 varss3: . COM varss2
    49       | . LSQ CTE_NUM RSQ varss3
@@ -2990,27 +2997,27 @@ state 210
 
     $default  reduce using rule 50 (varss3)
 
-    varss3  go to state 215
-
-
-state 211
-
-   41 funciones1: REGRESA sexp . SEM
-
-    SEM  shift, and go to state 216
+    varss3  go to state 216
 
 
 state 212
+
+   41 funciones1: REGRESA sexp . SEM
+
+    SEM  shift, and go to state 217
+
+
+state 213
 
    38 @12: .
    39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR . @12 funciones
 
     $default  reduce using rule 38 (@12)
 
-    @12  go to state 217
+    @12  go to state 218
 
 
-state 213
+state 214
 
    17 bloque: . estatutos bloque
    18       | . ciclos bloque
@@ -3051,7 +3058,7 @@ state 213
 
     $default  reduce using rule 20 (bloque)
 
-    bloque        go to state 218
+    bloque        go to state 219
     estatutos     go to state 42
     asig_llamada  go to state 43
     condicion     go to state 44
@@ -3067,28 +3074,28 @@ state 213
     triangulo     go to state 54
 
 
-state 214
+state 215
 
   109 haz: HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM .
 
     $default  reduce using rule 109 (haz)
 
 
-state 215
+state 216
 
    49 varss3: LSQ CTE_NUM RSQ varss3 .
 
     $default  reduce using rule 49 (varss3)
 
 
-state 216
+state 217
 
    41 funciones1: REGRESA sexp SEM .
 
     $default  reduce using rule 41 (funciones1)
 
 
-state 217
+state 218
 
    13 tipo: . NUM
    14     | . TEXTO
@@ -3106,24 +3113,24 @@ state 217
     $default  reduce using rule 40 (funciones)
 
     tipo       go to state 15
-    funciones  go to state 219
-
-
-state 218
-
-   57 condicion1: SINO @17 LBR bloque . RBR
-
-    RBR  shift, and go to state 220
+    funciones  go to state 220
 
 
 state 219
+
+   57 condicion1: SINO @17 LBR bloque . RBR
+
+    RBR  shift, and go to state 221
+
+
+state 220
 
    39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones .
 
     $default  reduce using rule 39 (funciones)
 
 
-state 220
+state 221
 
    57 condicion1: SINO @17 LBR bloque RBR .
 

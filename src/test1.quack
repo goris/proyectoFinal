@@ -1,0 +1,19 @@
+programa quack {
+
+var i, j, k num;
+
+i = 5 + 10;
+j = 2 + 8;
+k = 10;
+
+haz {
+	i = i + 1;
+} mientras ( i >= 20);
+
+mientras ( i >= 10) {
+	i = i - 1;
+}
+i = i - i;
+j = j * 2;
+k = k + k/2;
+}

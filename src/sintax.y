@@ -41,7 +41,7 @@
 	struct Funcion {
 		int tipo;
 		int cuad_ini;
-		EspacioMemoria *memoria;
+		EspacioMemoria memoria;
 		std::string nombre;
 		std::stack<std::string> pTipoParams;
 		MapType variables;
@@ -80,6 +80,7 @@
 	int id_actual;
 	int param_count;
 	int tmp_actual;
+	int sumar;
 
 	std::ofstream myfile;
 
@@ -105,6 +106,7 @@
 	void actualizaScope(std::string);
 	void actualizaTipoVariables();
 	void agregaFuncion();
+	void agregaVarMemFunc(int, int);
 	void checaOperador(int);
 	void creaConstanteNum();
 	void creaConstanteBool(int);
@@ -116,9 +118,10 @@
 	void cuadruploMain();
 	void finParametros();
 	void imprimeCubo();
+	void imprimeMapaFunc();
 	void imprimeMapaVars();
 	void imprimePila(std::stack<Node*>);
-	void imprimePila(int a);
+	void imprimePila(int);
 	void imprimeVector(std::vector<Cuadruplo>);
 	void manipulaStack();
 	void meterPilaO();
@@ -179,14 +182,14 @@ program: PROGRAMA ID { scope_actual = "global"; actualizaScope("global");
 vars: VAR vars2 tipo { tipo_actual = yytext; actualizaTipoVariables(); }
 	SEM vars
 	|
-vars2: ID { var_actual.push(yytext); } vars3 { creaVariable(); }
+vars2: ID { var_actual.push(yytext); param_count++; } vars3 { creaVariable(); }
 vars3: LSQ CTE_NUM RSQ vars3
 	 | COM vars2
 	 |
 
-tipo: NUM
-	| TEXTO
-	| BOOL
+tipo: NUM { agregaVarMemFunc(0, sumar); }
+	| TEXTO { agregaVarMemFunc(1, sumar); }
+	| BOOL { agregaVarMemFunc(2, sumar); }
 	| LIBRE 
 
 bloque: estatutos bloque
@@ -209,21 +212,24 @@ varsss2: COM varsss
 		| LSQ CTE_NUM RSQ varsss2
 		|
 
-funciones: tipo { tipo_actual = yytext; tipo_func = yytext; } FUNCION ID 
+funciones: tipo { param_count = 0; tipo_actual = yytext;
+		 tipo_func = yytext; } FUNCION ID 
 		{ scope_actual = yytext; func_actual= yytext; actualizaScope("funcion");
-		agregaFuncion(); } LPA { param_count = 0; } varss RPA LBR 
-		vars bloque funciones1 RBR { cuadruploEstatuto(6); } funciones
+		agregaFuncion(); } LPA { sumar = 1;} varss  RPA LBR 
+		vars { agregaVarMemFunc(3,1); param_count = 0; sumar = 0; }
+		bloque funciones1 RBR 
+		{ cuadruploEstatuto(6); } funciones
 		|
 funciones1: REGRESA sexp SEM
 	 	| 
 
-varss: varss2 {}
+varss: varss2 
 	 |
 varss2: tipo { tipo_actual = yytext; pTipoParams.push(yytext); 
 		Funcion *func = map_func[func_actual]; func->pTipoParams = pTipoParams;
 		map_func[func_actual] = func; } ID 
-	  	{actualizaTipoVariables(); var_actual.push(yytext);  
-			modificaMemoria(scope_actual); param_count++; } 
+	  	{ actualizaTipoVariables(); var_actual.push(yytext);  
+	  	 param_count++; modificaMemoria(scope_actual);  } 
 		varss3 { creaVariable(); actualizaTipoVariables(); }
 varss3: COM varss2
 	  	| LSQ CTE_NUM RSQ varss3
@@ -321,10 +327,58 @@ int main(int argc, char *argv[]){
 	int a = yyparse();
 	//imprimePila(pilaO);
 	myfile.open("cuacks.cuads");
+	imprimeMapaFunc();
 	imprimeMapaVars();
 	imprimeVector(vec_cuadruplos);
 	myfile.close();	
 	if (!a) printf("Eres un campeon\n");
+}
+
+/**
+* Aumenta el contador de variables para las funciones
+**/
+void agregaVarMemFunc(int a, int var){
+	//std::cout << "agregaVarMemFunc" << std::endl;
+	//std::cout << scope_actual << " : " << func_actual << std::endl;
+	MapFunc::iterator it = map_func.find(func_actual);
+	if(it != map_func.end() && var == 1 ){
+		Funcion *func = new Funcion();
+		func = it->second;
+		EspacioMemoria mem = func->memoria;
+		if(a == 0) mem.numl++;
+		if(a == 1) mem.booll++;
+		if(a == 2) mem.textol++;
+		if(a == 3) mem.total = param_count;
+		func->memoria = mem;
+		map_func[func_actual] = func;
+	} else {
+		//std::cout << " no se encontro: " << func_actual << std::endl;
+	}
+}
+
+
+/**
+* Imprime todas las variables que se guardaron
+**/
+void imprimeMapaFunc() {
+	//std::cout << imprimeMapaFunc << std::endl;
+	Funcion *tmp = new Funcion();
+	std::string str;
+	MapFunc::const_iterator end = map_func.end();
+
+	for(MapFunc::const_iterator it = map_func.begin() ;
+		it != end; ++it) {
+		tmp = it->second;
+		EspacioMemoria mem;
+		mem = tmp->memoria;
+		myfile << tmp->nombre << ", " << tmp->tipo << ", " <<
+		tmp->memoria.total << ", " << tmp->cuad_ini << std::endl;
+		std::cout << tmp->nombre << ", " << tmp->tipo << ", " <<
+		tmp->memoria.total << ", " << tmp->cuad_ini << std::endl;
+	}
+
+	myfile << "&&&" << std::endl;
+	std::cout << "&&&" << std::endl;
 }
 
 /**
@@ -338,12 +392,14 @@ void imprimeMapaVars() {
 	for(MapType::const_iterator it = map_vars.begin() ;
 		it != end; ++it) {
 			//std::cout << "llave: " << it->first << std::endl;
-			tmp = it->second;
+			if (std::string::npos != it->first.find("cN")) {
+				tmp = it->second;
+				myfile << tmp->loc_mem << "," << tmp->valor_num << std::endl;
+				std::cout << tmp->loc_mem << "," << tmp->valor_num << std::endl;
+			}
 			//std::cout << "nombre: " << tmp->nombre << std::endl;
 			//std::cout << "tipo: " << tmp->tipo << std::endl;
 			//std::cout << "scope: " << tmp->scope << std::endl;
-			myfile << tmp->loc_mem << "," << tmp->valor_num << std::endl;
-			std::cout << tmp->loc_mem << "," << tmp->valor_num << std::endl;
 	}
 
 	myfile << "&&&" << std::endl;
@@ -385,10 +441,7 @@ int memoriaAUsar (int tipo, std::string str) {
 	}
 	//std::cout << "Memset: " << memset << std::endl;
 	return memset;
-	
 }
-
-
 
 /**
 * Simplemente devuelve la tabla de variables que contiene TODAS las variables
@@ -444,16 +497,16 @@ void finParametros(){
 /**
 * Inicializa la memoria en 0 para una funcion en especifico
 **/
-EspacioMemoria* inicializaMemoria(EspacioMemoria *memory) {
+EspacioMemoria inicializaMemoria(EspacioMemoria memory) {
 	//std::cout << incializaMemoria << std::endl;
-	EspacioMemoria *memset = memory;
-	memset->numl = 0;
-	memset->nump = 0;
-	memset->booll = 0;
-	memset->boolp = 0;
-	memset->textol = 0;
-	memset->textop = 0;
-	memset->total = 0;
+	EspacioMemoria memset = memory;
+	memset.numl = 0;
+	memset.nump = 0;
+	memset.booll = 0;
+	memset.boolp = 0;
+	memset.textol = 0;
+	memset.textop = 0;
+	memset.total = 0;
 
 	return memset;
 }
@@ -475,22 +528,22 @@ void modificaMemoria (std::string str) {
 		func = it->second;
 		switch (a) {
 			case 1: {
-				func->memoria->nump++;	
+				func->memoria.nump++;	
 				break;
 			}
 			case 2: {
-				func->memoria->boolp++;					
+				func->memoria.boolp++;					
 				break;
 			}
 			case 3: {
-				func->memoria->textop++;					
+				func->memoria.textop++;					
 				break;
 			}
 
 		}
-		func->memoria->total++;
-//		std::cout << "mem:" << func->memoria->nump << func->memoria->boolp
-//			 << func->memoria->boolp << std::endl;
+		func->memoria.total++;
+		//std::cout << "mem:" << func->memoria.nump << func->memoria.boolp
+		//	 << func->memoria.boolp << std::endl;
 		map_func[str] = func;	
 	
 	}
@@ -502,7 +555,7 @@ void modificaMemoria (std::string str) {
 void agregaFuncion (){
 //	std::cout << "AgregaFuncion" << std::endl;
 	Funcion *func =  new Funcion();
-	EspacioMemoria *memset;
+	EspacioMemoria memset;
 	memset = inicializaMemoria(memset);
 	func-> nombre = yytext;
 	func-> tipo = convierteTipo(tipo_actual);
@@ -928,20 +981,20 @@ void creaConstanteNum(){
 		var->tipo = 1;
 		var->scope = "constante";
 		var->valor_num = ::atof(yytext);
-		std::cout << var->valor_num << "  " << memset << std::endl;
+	//	std::cout << var->valor_num << "  " << memset << std::endl;
 		var->id = id_actual++;
 		var->loc_mem = memset;
 		sstm.str(std::string());
+		map_vars[var->nombre] = var;
 	
 	//std::cout << var->nombre << "\t\t\tmem: " << var->loc_mem << std::endl;
-		map_vars[var->nombre] = var;
 	} else {
 		var = it->second;
 		sstm << "cN" << memset--;
 		var->nombre = sstm.str();
 		var->tipo = 1;
 		var->scope = "constante";
-		std::cout << var->valor_num << "  " << memset-- << std::endl;
+	//	std::cout << var->valor_num << "  " << memset-- << std::endl;
 		var->valor_num = ::atof(yytext);
 		var->loc_mem = memset--;
 		sstm.str(std::string());
@@ -1162,6 +1215,7 @@ void creaCubo(){
 	mem_bool_global = 9000;
 	mem_bool_local = 10000;
 	mem_bool_constante = 11000;
+	sumar = 0;
 	
 /*
 	std::cout << "         + - * / = < > < > ! ==";

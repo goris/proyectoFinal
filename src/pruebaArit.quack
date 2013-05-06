@@ -1,7 +1,7 @@
 programa quack {
 	var i, j num;
 
-	libre funcion uno (num a) {
+	libre funcion uno (num a,  num y) {
 		var i num;
 		i = a * 2;
 		si(i < 9 + 4) {
@@ -19,5 +19,4 @@ programa quack {
 	j = i * 7 - 8;
 	uno(j);
 	i = i + (dos(i + j));
-	i = i;
 }

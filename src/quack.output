@@ -69,135 +69,137 @@ Grammar
 
    38 @12: /* empty */
 
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
-   40          | /* empty */
+   39 @13: /* empty */
 
-   41 funciones1: REGRESA sexp SEM
-   42           | /* empty */
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
+   41          | /* empty */
 
-   43 varss: varss2
-   44      | /* empty */
+   42 funciones1: REGRESA sexp SEM
+   43           | /* empty */
 
-   45 @13: /* empty */
+   44 varss: varss2
+   45      | /* empty */
 
    46 @14: /* empty */
 
-   47 varss2: tipo @13 ID @14 varss3
+   47 @15: /* empty */
 
-   48 varss3: COM varss2
-   49       | LSQ CTE_NUM RSQ varss3
-   50       | /* empty */
+   48 varss2: tipo @14 ID @15 varss3
 
-   51 @15: /* empty */
+   49 varss3: COM varss2
+   50       | LSQ CTE_NUM RSQ varss3
+   51       | /* empty */
 
-   52 asignacion: EQU @15 asignacion1 SEM
+   52 @16: /* empty */
 
-   53 asignacion1: sexp
+   53 asignacion: EQU @16 asignacion1 SEM
 
-   54 @16: /* empty */
+   54 asignacion1: sexp
 
-   55 condicion: SI LPA sexp RPA LBR @16 bloque RBR condicion1
+   55 @17: /* empty */
 
-   56 @17: /* empty */
+   56 condicion: SI LPA sexp RPA LBR @17 bloque RBR condicion1
 
-   57 condicion1: SINO @17 LBR bloque RBR
-   58           | /* empty */
+   57 @18: /* empty */
 
-   59 escritura: IMPRIME LPA escritura1 RPA SEM
+   58 condicion1: SINO @18 LBR bloque RBR
+   59           | /* empty */
 
-   60 escritura1: exp escritura2
+   60 escritura: IMPRIME LPA escritura1 RPA SEM
 
-   61 escritura2: DOT escritura1
-   62           | /* empty */
+   61 escritura1: exp escritura2
 
-   63 ciclos: mientras
-   64       | haz
-   65       | por
+   62 escritura2: DOT escritura1
+   63           | /* empty */
 
-   66 sexp: exp expresion1
+   64 ciclos: mientras
+   65       | haz
+   66       | por
 
-   67 expresion1: operadores exp
-   68           | /* empty */
+   67 sexp: exp expresion1
 
-   69 operadores: LT
-   70           | GT
-   71           | DIF
-   72           | LTE
-   73           | GTE
-   74           | DEQ
-   75           | EQU
+   68 expresion1: operadores exp
+   69           | /* empty */
 
-   76 @18: /* empty */
+   70 operadores: LT
+   71           | GT
+   72           | DIF
+   73           | LTE
+   74           | GTE
+   75           | DEQ
+   76           | EQU
 
-   77 exp: termino @18 exp1
+   77 @19: /* empty */
 
-   78 @19: /* empty */
+   78 exp: termino @19 exp1
 
-   79 exp1: SUM @19 exp
+   79 @20: /* empty */
 
-   80 @20: /* empty */
+   80 exp1: SUM @20 exp
 
-   81 exp1: MIN @20 exp
-   82     | /* empty */
+   81 @21: /* empty */
 
-   83 @21: /* empty */
+   82 exp1: MIN @21 exp
+   83     | /* empty */
 
-   84 termino: factor @21 termino1
+   84 @22: /* empty */
 
-   85 @22: /* empty */
+   85 termino: factor @22 termino1
 
-   86 termino1: PRO @22 termino
+   86 @23: /* empty */
 
-   87 @23: /* empty */
+   87 termino1: PRO @23 termino
 
-   88 termino1: DIV @23 termino
-   89         | /* empty */
+   88 @24: /* empty */
 
-   90 @24: /* empty */
+   89 termino1: DIV @24 termino
+   90         | /* empty */
 
-   91 factor: LPA @24 sexp RPA
-   92       | var_cte
+   91 @25: /* empty */
 
-   93 var_cte: cte_bool
-   94        | CTE_NUM
-   95        | CTE_TEXTO
+   92 factor: LPA @25 sexp RPA
+   93       | var_cte
 
-   96 @25: /* empty */
+   94 var_cte: cte_bool
+   95        | CTE_NUM
+   96        | CTE_TEXTO
 
-   97 var_cte: ID @25 llamada_opt
+   97 @26: /* empty */
 
-   98 llamada_opt: llamada
-   99            | /* empty */
+   98 var_cte: ID @26 llamada_opt
 
-  100 cte_bool: VERDADERO
-  101         | FALSO
+   99 llamada_opt: llamada
+  100            | /* empty */
 
-  102 dibuja: triangulo
-  103       | rectangulo
-  104       | elipse
-  105       | linea
+  101 cte_bool: VERDADERO
+  102         | FALSO
 
-  106 por: POR LPA sexp DOU sexp RPA LBR bloque RBR
+  103 dibuja: triangulo
+  104       | rectangulo
+  105       | elipse
+  106       | linea
 
-  107 @26: /* empty */
+  107 por: POR LPA sexp DOU sexp RPA LBR bloque RBR
 
   108 @27: /* empty */
 
-  109 haz: HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
+  109 @28: /* empty */
 
-  110 @28: /* empty */
+  110 haz: HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
 
   111 @29: /* empty */
 
-  112 mientras: MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
+  112 @30: /* empty */
 
-  113 rectangulo: RECTANGULO LPA CTE_NUM RPA SEM
+  113 mientras: MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
 
-  114 elipse: ELIPSE LPA CTE_NUM RPA SEM
+  114 rectangulo: RECTANGULO LPA CTE_NUM RPA SEM
 
-  115 linea: LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  115 elipse: ELIPSE LPA CTE_NUM RPA SEM
 
-  116 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+  116 linea: LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+
+  117 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
 
 Terminals, with rules where they appear
@@ -205,50 +207,50 @@ Terminals, with rules where they appear
 $end (0) 0
 error (256)
 PROGRAMA (258) 4
-IMPRIME (259) 59
+IMPRIME (259) 60
 DIBUJA (260)
-FUNCION (261) 39
-REGRESA (262) 41
+FUNCION (261) 40
+REGRESA (262) 42
 VAR (263) 6
 BOOL (264) 15
 NUM (265) 13
 TEXTO (266) 14
 LIBRE (267) 16
-SI (268) 55
-SINO (269) 57
-HAZ (270) 109
-POR (271) 106
-MIENTRAS (272) 109 112
-LINEA (273) 115
-RECTANGULO (274) 113
-TRIANGULO (275) 116
-ELIPSE (276) 114
-VERDADERO (277) 100
-FALSO (278) 101
-CTE_NUM (279) 10 33 49 94 113 114 115 116
-CTE_TEXTO (280) 95 116
-ID (281) 4 9 25 39 47 97
-SUM (282) 79
-MIN (283) 81
-PRO (284) 86
-DIV (285) 88
-EQU (286) 52 75
-LT (287) 69
-GT (288) 70
-LTE (289) 72
-GTE (290) 73
-DIF (291) 71
-LPA (292) 29 39 55 59 91 106 109 112 113 114 115 116
-RPA (293) 29 39 55 59 91 106 109 112 113 114 115 116
-LBR (294) 4 39 55 57 106 109 112
-RBR (295) 4 39 55 57 106 109 112
-LSQ (296) 10 33 49
-RSQ (297) 10 33 49
-SEM (298) 6 27 41 52 59 109 113 114 115 116
-DOU (299) 106
-COM (300) 11 32 48 115 116
-DOT (301) 61
-DEQ (302) 74
+SI (268) 56
+SINO (269) 58
+HAZ (270) 110
+POR (271) 107
+MIENTRAS (272) 110 113
+LINEA (273) 116
+RECTANGULO (274) 114
+TRIANGULO (275) 117
+ELIPSE (276) 115
+VERDADERO (277) 101
+FALSO (278) 102
+CTE_NUM (279) 10 33 50 95 114 115 116 117
+CTE_TEXTO (280) 96 117
+ID (281) 4 9 25 40 48 98
+SUM (282) 80
+MIN (283) 82
+PRO (284) 87
+DIV (285) 89
+EQU (286) 53 76
+LT (287) 70
+GT (288) 71
+LTE (289) 73
+GTE (290) 74
+DIF (291) 72
+LPA (292) 29 40 56 60 92 107 110 113 114 115 116 117
+RPA (293) 29 40 56 60 92 107 110 113 114 115 116 117
+LBR (294) 4 40 56 58 107 110 113
+RBR (295) 4 40 56 58 107 110 113
+LSQ (296) 10 33 50
+RSQ (297) 10 33 50
+SEM (298) 6 27 42 53 60 110 114 115 116 117
+DOU (299) 107
+COM (300) 11 32 49 116 117
+DOT (301) 62
+DEQ (302) 75
 
 
 Nonterminals, with rules where they appear
@@ -264,7 +266,7 @@ program (49)
 @3 (52)
     on left: 3, on right: 4
 vars (53)
-    on left: 6 7, on right: 4 6 39
+    on left: 6 7, on right: 4 6 40
 @4 (54)
     on left: 5, on right: 6
 vars2 (55)
@@ -274,9 +276,9 @@ vars2 (55)
 vars3 (57)
     on left: 10 11 12, on right: 9 10
 tipo (58)
-    on left: 13 14 15 16, on right: 6 39 47
+    on left: 13 14 15 16, on right: 6 40 48
 bloque (59)
-    on left: 17 18 19 20, on right: 4 17 18 19 39 55 57 106 109 112
+    on left: 17 18 19 20, on right: 4 17 18 19 40 56 58 107 110 113
 estatutos (60)
     on left: 21 22 23, on right: 17
 asig_llamada (61)
@@ -286,7 +288,7 @@ asig_llamada (61)
 llamada_ (63)
     on left: 26 27, on right: 25
 llamada (64)
-    on left: 29, on right: 27 98
+    on left: 29, on right: 27 99
 @7 (65)
     on left: 28, on right: 29
 varsss (66)
@@ -296,111 +298,113 @@ varsss (66)
 varsss2 (68)
     on left: 32 33 34, on right: 31 33
 funciones (69)
-    on left: 39 40, on right: 4 39
+    on left: 40 41, on right: 4 40
 @9 (70)
-    on left: 35, on right: 39
+    on left: 35, on right: 40
 @10 (71)
-    on left: 36, on right: 39
+    on left: 36, on right: 40
 @11 (72)
-    on left: 37, on right: 39
+    on left: 37, on right: 40
 @12 (73)
-    on left: 38, on right: 39
-funciones1 (74)
-    on left: 41 42, on right: 39
-varss (75)
-    on left: 43 44, on right: 39
-varss2 (76)
-    on left: 47, on right: 43 48
-@13 (77)
-    on left: 45, on right: 47
+    on left: 38, on right: 40
+@13 (74)
+    on left: 39, on right: 40
+funciones1 (75)
+    on left: 42 43, on right: 40
+varss (76)
+    on left: 44 45, on right: 40
+varss2 (77)
+    on left: 48, on right: 44 49
 @14 (78)
-    on left: 46, on right: 47
-varss3 (79)
-    on left: 48 49 50, on right: 47 49
-asignacion (80)
-    on left: 52, on right: 26
-@15 (81)
-    on left: 51, on right: 52
-asignacion1 (82)
-    on left: 53, on right: 52
-condicion (83)
-    on left: 55, on right: 21
-@16 (84)
-    on left: 54, on right: 55
-condicion1 (85)
-    on left: 57 58, on right: 55
-@17 (86)
-    on left: 56, on right: 57
-escritura (87)
-    on left: 59, on right: 23
-escritura1 (88)
-    on left: 60, on right: 59 61
-escritura2 (89)
-    on left: 61 62, on right: 60
-ciclos (90)
-    on left: 63 64 65, on right: 18
-sexp (91)
-    on left: 66, on right: 31 41 53 55 91 106 109 112
-expresion1 (92)
-    on left: 67 68, on right: 66
-operadores (93)
-    on left: 69 70 71 72 73 74 75, on right: 67
-exp (94)
-    on left: 77, on right: 60 66 67 79 81
-@18 (95)
-    on left: 76, on right: 77
-exp1 (96)
-    on left: 79 81 82, on right: 77
-@19 (97)
-    on left: 78, on right: 79
+    on left: 46, on right: 48
+@15 (79)
+    on left: 47, on right: 48
+varss3 (80)
+    on left: 49 50 51, on right: 48 50
+asignacion (81)
+    on left: 53, on right: 26
+@16 (82)
+    on left: 52, on right: 53
+asignacion1 (83)
+    on left: 54, on right: 53
+condicion (84)
+    on left: 56, on right: 21
+@17 (85)
+    on left: 55, on right: 56
+condicion1 (86)
+    on left: 58 59, on right: 56
+@18 (87)
+    on left: 57, on right: 58
+escritura (88)
+    on left: 60, on right: 23
+escritura1 (89)
+    on left: 61, on right: 60 62
+escritura2 (90)
+    on left: 62 63, on right: 61
+ciclos (91)
+    on left: 64 65 66, on right: 18
+sexp (92)
+    on left: 67, on right: 31 42 54 56 92 107 110 113
+expresion1 (93)
+    on left: 68 69, on right: 67
+operadores (94)
+    on left: 70 71 72 73 74 75 76, on right: 68
+exp (95)
+    on left: 78, on right: 61 67 68 80 82
+@19 (96)
+    on left: 77, on right: 78
+exp1 (97)
+    on left: 80 82 83, on right: 78
 @20 (98)
-    on left: 80, on right: 81
-termino (99)
-    on left: 84, on right: 77 86 88
-@21 (100)
-    on left: 83, on right: 84
-termino1 (101)
-    on left: 86 88 89, on right: 84
-@22 (102)
-    on left: 85, on right: 86
+    on left: 79, on right: 80
+@21 (99)
+    on left: 81, on right: 82
+termino (100)
+    on left: 85, on right: 78 87 89
+@22 (101)
+    on left: 84, on right: 85
+termino1 (102)
+    on left: 87 89 90, on right: 85
 @23 (103)
-    on left: 87, on right: 88
-factor (104)
-    on left: 91 92, on right: 84
-@24 (105)
-    on left: 90, on right: 91
-var_cte (106)
-    on left: 93 94 95 97, on right: 92
-@25 (107)
-    on left: 96, on right: 97
-llamada_opt (108)
-    on left: 98 99, on right: 97
-cte_bool (109)
-    on left: 100 101, on right: 93
-dibuja (110)
-    on left: 102 103 104 105, on right: 19
-por (111)
-    on left: 106, on right: 65
-haz (112)
-    on left: 109, on right: 64
-@26 (113)
-    on left: 107, on right: 109
+    on left: 86, on right: 87
+@24 (104)
+    on left: 88, on right: 89
+factor (105)
+    on left: 92 93, on right: 85
+@25 (106)
+    on left: 91, on right: 92
+var_cte (107)
+    on left: 94 95 96 98, on right: 93
+@26 (108)
+    on left: 97, on right: 98
+llamada_opt (109)
+    on left: 99 100, on right: 98
+cte_bool (110)
+    on left: 101 102, on right: 94
+dibuja (111)
+    on left: 103 104 105 106, on right: 19
+por (112)
+    on left: 107, on right: 66
+haz (113)
+    on left: 110, on right: 65
 @27 (114)
-    on left: 108, on right: 109
-mientras (115)
-    on left: 112, on right: 63
-@28 (116)
-    on left: 110, on right: 112
+    on left: 108, on right: 110
+@28 (115)
+    on left: 109, on right: 110
+mientras (116)
+    on left: 113, on right: 64
 @29 (117)
-    on left: 111, on right: 112
-rectangulo (118)
-    on left: 113, on right: 103
-elipse (119)
+    on left: 111, on right: 113
+@30 (118)
+    on left: 112, on right: 113
+rectangulo (119)
     on left: 114, on right: 104
-linea (120)
+elipse (120)
     on left: 115, on right: 105
-triangulo (121)
-    on left: 116, on right: 102
+linea (121)
+    on left: 116, on right: 106
+triangulo (122)
+    on left: 117, on right: 103
 
 
 state 0
@@ -481,15 +485,15 @@ state 8
    14     | . TEXTO
    15     | . BOOL
    16     | . LIBRE
-   39 funciones: . tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
-   40          | .  [IMPRIME, SI, HAZ, POR, MIENTRAS, LINEA, RECTANGULO, TRIANGULO, ELIPSE, ID, RBR]
+   40 funciones: . tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
+   41          | .  [IMPRIME, SI, HAZ, POR, MIENTRAS, LINEA, RECTANGULO, TRIANGULO, ELIPSE, ID, RBR]
 
     BOOL   shift, and go to state 11
     NUM    shift, and go to state 12
     TEXTO  shift, and go to state 13
     LIBRE  shift, and go to state 14
 
-    $default  reduce using rule 40 (funciones)
+    $default  reduce using rule 41 (funciones)
 
     tipo       go to state 15
     funciones  go to state 16
@@ -552,7 +556,7 @@ state 14
 state 15
 
    35 @9: .
-   39 funciones: tipo . @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo . @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
 
     $default  reduce using rule 35 (@9)
 
@@ -596,7 +600,7 @@ state 18
 
 state 19
 
-   39 funciones: tipo @9 . FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo @9 . FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
 
     FUNCION  shift, and go to state 25
 
@@ -644,7 +648,7 @@ state 24
 
 state 25
 
-   39 funciones: tipo @9 FUNCION . ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo @9 FUNCION . ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
 
     ID  shift, and go to state 30
 
@@ -660,22 +664,22 @@ state 26
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -736,7 +740,7 @@ state 29
 state 30
 
    36 @10: .
-   39 funciones: tipo @9 FUNCION ID . @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo @9 FUNCION ID . @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
 
     $default  reduce using rule 36 (@10)
 
@@ -745,69 +749,69 @@ state 30
 
 state 31
 
-   59 escritura: IMPRIME . LPA escritura1 RPA SEM
+   60 escritura: IMPRIME . LPA escritura1 RPA SEM
 
     LPA  shift, and go to state 58
 
 
 state 32
 
-   55 condicion: SI . LPA sexp RPA LBR @16 bloque RBR condicion1
+   56 condicion: SI . LPA sexp RPA LBR @17 bloque RBR condicion1
 
     LPA  shift, and go to state 59
 
 
 state 33
 
-  107 @26: .
-  109 haz: HAZ . @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
+  108 @27: .
+  110 haz: HAZ . @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
 
-    $default  reduce using rule 107 (@26)
+    $default  reduce using rule 108 (@27)
 
-    @26  go to state 60
+    @27  go to state 60
 
 
 state 34
 
-  106 por: POR . LPA sexp DOU sexp RPA LBR bloque RBR
+  107 por: POR . LPA sexp DOU sexp RPA LBR bloque RBR
 
     LPA  shift, and go to state 61
 
 
 state 35
 
-  110 @28: .
-  112 mientras: MIENTRAS . @28 LPA sexp RPA @29 LBR bloque RBR
+  111 @29: .
+  113 mientras: MIENTRAS . @29 LPA sexp RPA @30 LBR bloque RBR
 
-    $default  reduce using rule 110 (@28)
+    $default  reduce using rule 111 (@29)
 
-    @28  go to state 62
+    @29  go to state 62
 
 
 state 36
 
-  115 linea: LINEA . LPA CTE_NUM COM CTE_NUM RPA SEM
+  116 linea: LINEA . LPA CTE_NUM COM CTE_NUM RPA SEM
 
     LPA  shift, and go to state 63
 
 
 state 37
 
-  113 rectangulo: RECTANGULO . LPA CTE_NUM RPA SEM
+  114 rectangulo: RECTANGULO . LPA CTE_NUM RPA SEM
 
     LPA  shift, and go to state 64
 
 
 state 38
 
-  116 triangulo: TRIANGULO . LPA CTE_TEXTO COM CTE_NUM RPA SEM
+  117 triangulo: TRIANGULO . LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     LPA  shift, and go to state 65
 
 
 state 39
 
-  114 elipse: ELIPSE . LPA CTE_NUM RPA SEM
+  115 elipse: ELIPSE . LPA CTE_NUM RPA SEM
 
     LPA  shift, and go to state 66
 
@@ -840,22 +844,22 @@ state 42
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -918,22 +922,22 @@ state 46
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -975,22 +979,22 @@ state 47
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -1023,51 +1027,51 @@ state 47
 
 state 48
 
-   65 ciclos: por .
+   66 ciclos: por .
 
-    $default  reduce using rule 65 (ciclos)
+    $default  reduce using rule 66 (ciclos)
 
 
 state 49
 
-   64 ciclos: haz .
+   65 ciclos: haz .
 
-    $default  reduce using rule 64 (ciclos)
+    $default  reduce using rule 65 (ciclos)
 
 
 state 50
 
-   63 ciclos: mientras .
+   64 ciclos: mientras .
 
-    $default  reduce using rule 63 (ciclos)
+    $default  reduce using rule 64 (ciclos)
 
 
 state 51
 
-  103 dibuja: rectangulo .
-
-    $default  reduce using rule 103 (dibuja)
-
-
-state 52
-
-  104 dibuja: elipse .
+  104 dibuja: rectangulo .
 
     $default  reduce using rule 104 (dibuja)
 
 
-state 53
+state 52
 
-  105 dibuja: linea .
+  105 dibuja: elipse .
 
     $default  reduce using rule 105 (dibuja)
 
 
+state 53
+
+  106 dibuja: linea .
+
+    $default  reduce using rule 106 (dibuja)
+
+
 state 54
 
-  102 dibuja: triangulo .
+  103 dibuja: triangulo .
 
-    $default  reduce using rule 102 (dibuja)
+    $default  reduce using rule 103 (dibuja)
 
 
 state 55
@@ -1094,25 +1098,25 @@ state 56
 
 state 57
 
-   39 funciones: tipo @9 FUNCION ID @10 . LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo @9 FUNCION ID @10 . LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
 
     LPA  shift, and go to state 73
 
 
 state 58
 
-   59 escritura: IMPRIME LPA . escritura1 RPA SEM
-   60 escritura1: . exp escritura2
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   60 escritura: IMPRIME LPA . escritura1 RPA SEM
+   61 escritura1: . exp escritura2
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1131,18 +1135,18 @@ state 58
 
 state 59
 
-   55 condicion: SI LPA . sexp RPA LBR @16 bloque RBR condicion1
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   56 condicion: SI LPA . sexp RPA LBR @17 bloque RBR condicion1
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1161,25 +1165,25 @@ state 59
 
 state 60
 
-  109 haz: HAZ @26 . LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
+  110 haz: HAZ @27 . LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
 
     LBR  shift, and go to state 88
 
 
 state 61
 
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
-  106 por: POR LPA . sexp DOU sexp RPA LBR bloque RBR
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
+  107 por: POR LPA . sexp DOU sexp RPA LBR bloque RBR
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1198,35 +1202,35 @@ state 61
 
 state 62
 
-  112 mientras: MIENTRAS @28 . LPA sexp RPA @29 LBR bloque RBR
+  113 mientras: MIENTRAS @29 . LPA sexp RPA @30 LBR bloque RBR
 
     LPA  shift, and go to state 90
 
 
 state 63
 
-  115 linea: LINEA LPA . CTE_NUM COM CTE_NUM RPA SEM
+  116 linea: LINEA LPA . CTE_NUM COM CTE_NUM RPA SEM
 
     CTE_NUM  shift, and go to state 91
 
 
 state 64
 
-  113 rectangulo: RECTANGULO LPA . CTE_NUM RPA SEM
+  114 rectangulo: RECTANGULO LPA . CTE_NUM RPA SEM
 
     CTE_NUM  shift, and go to state 92
 
 
 state 65
 
-  116 triangulo: TRIANGULO LPA . CTE_TEXTO COM CTE_NUM RPA SEM
+  117 triangulo: TRIANGULO LPA . CTE_TEXTO COM CTE_NUM RPA SEM
 
     CTE_TEXTO  shift, and go to state 93
 
 
 state 66
 
-  114 elipse: ELIPSE LPA . CTE_NUM RPA SEM
+  115 elipse: ELIPSE LPA . CTE_NUM RPA SEM
 
     CTE_NUM  shift, and go to state 94
 
@@ -1237,7 +1241,7 @@ state 67
    26 llamada_: . asignacion
    27         | . llamada SEM
    29 llamada: . LPA @7 varsss RPA
-   52 asignacion: . EQU @15 asignacion1 SEM
+   53 asignacion: . EQU @16 asignacion1 SEM
 
     EQU  shift, and go to state 95
     LPA  shift, and go to state 96
@@ -1285,7 +1289,7 @@ state 72
 state 73
 
    37 @11: .
-   39 funciones: tipo @9 FUNCION ID @10 LPA . @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo @9 FUNCION ID @10 LPA . @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
 
     $default  reduce using rule 37 (@11)
 
@@ -1294,125 +1298,125 @@ state 73
 
 state 74
 
-  100 cte_bool: VERDADERO .
-
-    $default  reduce using rule 100 (cte_bool)
-
-
-state 75
-
-  101 cte_bool: FALSO .
+  101 cte_bool: VERDADERO .
 
     $default  reduce using rule 101 (cte_bool)
 
 
+state 75
+
+  102 cte_bool: FALSO .
+
+    $default  reduce using rule 102 (cte_bool)
+
+
 state 76
 
-   94 var_cte: CTE_NUM .
-
-    $default  reduce using rule 94 (var_cte)
-
-
-state 77
-
-   95 var_cte: CTE_TEXTO .
+   95 var_cte: CTE_NUM .
 
     $default  reduce using rule 95 (var_cte)
 
 
+state 77
+
+   96 var_cte: CTE_TEXTO .
+
+    $default  reduce using rule 96 (var_cte)
+
+
 state 78
 
-   96 @25: .
-   97 var_cte: ID . @25 llamada_opt
+   97 @26: .
+   98 var_cte: ID . @26 llamada_opt
 
-    $default  reduce using rule 96 (@25)
+    $default  reduce using rule 97 (@26)
 
-    @25  go to state 101
+    @26  go to state 101
 
 
 state 79
 
-   90 @24: .
-   91 factor: LPA . @24 sexp RPA
+   91 @25: .
+   92 factor: LPA . @25 sexp RPA
 
-    $default  reduce using rule 90 (@24)
+    $default  reduce using rule 91 (@25)
 
-    @24  go to state 102
+    @25  go to state 102
 
 
 state 80
 
-   59 escritura: IMPRIME LPA escritura1 . RPA SEM
+   60 escritura: IMPRIME LPA escritura1 . RPA SEM
 
     RPA  shift, and go to state 103
 
 
 state 81
 
-   60 escritura1: exp . escritura2
-   61 escritura2: . DOT escritura1
-   62           | .  [RPA]
+   61 escritura1: exp . escritura2
+   62 escritura2: . DOT escritura1
+   63           | .  [RPA]
 
     DOT  shift, and go to state 104
 
-    $default  reduce using rule 62 (escritura2)
+    $default  reduce using rule 63 (escritura2)
 
     escritura2  go to state 105
 
 
 state 82
 
-   76 @18: .
-   77 exp: termino . @18 exp1
+   77 @19: .
+   78 exp: termino . @19 exp1
 
-    $default  reduce using rule 76 (@18)
+    $default  reduce using rule 77 (@19)
 
-    @18  go to state 106
+    @19  go to state 106
 
 
 state 83
 
-   83 @21: .
-   84 termino: factor . @21 termino1
+   84 @22: .
+   85 termino: factor . @22 termino1
 
-    $default  reduce using rule 83 (@21)
+    $default  reduce using rule 84 (@22)
 
-    @21  go to state 107
+    @22  go to state 107
 
 
 state 84
 
-   92 factor: var_cte .
+   93 factor: var_cte .
 
-    $default  reduce using rule 92 (factor)
+    $default  reduce using rule 93 (factor)
 
 
 state 85
 
-   93 var_cte: cte_bool .
+   94 var_cte: cte_bool .
 
-    $default  reduce using rule 93 (var_cte)
+    $default  reduce using rule 94 (var_cte)
 
 
 state 86
 
-   55 condicion: SI LPA sexp . RPA LBR @16 bloque RBR condicion1
+   56 condicion: SI LPA sexp . RPA LBR @17 bloque RBR condicion1
 
     RPA  shift, and go to state 108
 
 
 state 87
 
-   66 sexp: exp . expresion1
-   67 expresion1: . operadores exp
-   68           | .  [RPA, LSQ, SEM, DOU, COM]
-   69 operadores: . LT
-   70           | . GT
-   71           | . DIF
-   72           | . LTE
-   73           | . GTE
-   74           | . DEQ
-   75           | . EQU
+   67 sexp: exp . expresion1
+   68 expresion1: . operadores exp
+   69           | .  [RPA, LSQ, SEM, DOU, COM]
+   70 operadores: . LT
+   71           | . GT
+   72           | . DIF
+   73           | . LTE
+   74           | . GTE
+   75           | . DEQ
+   76           | . EQU
 
     EQU  shift, and go to state 109
     LT   shift, and go to state 110
@@ -1422,7 +1426,7 @@ state 87
     DIF  shift, and go to state 114
     DEQ  shift, and go to state 115
 
-    $default  reduce using rule 68 (expresion1)
+    $default  reduce using rule 69 (expresion1)
 
     expresion1  go to state 116
     operadores  go to state 117
@@ -1438,23 +1442,23 @@ state 88
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  109    | HAZ @26 LBR . bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  110    | HAZ @27 LBR . bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -1487,25 +1491,25 @@ state 88
 
 state 89
 
-  106 por: POR LPA sexp . DOU sexp RPA LBR bloque RBR
+  107 por: POR LPA sexp . DOU sexp RPA LBR bloque RBR
 
     DOU  shift, and go to state 119
 
 
 state 90
 
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
-  112 mientras: MIENTRAS @28 LPA . sexp RPA @29 LBR bloque RBR
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
+  113 mientras: MIENTRAS @29 LPA . sexp RPA @30 LBR bloque RBR
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1524,40 +1528,40 @@ state 90
 
 state 91
 
-  115 linea: LINEA LPA CTE_NUM . COM CTE_NUM RPA SEM
+  116 linea: LINEA LPA CTE_NUM . COM CTE_NUM RPA SEM
 
     COM  shift, and go to state 121
 
 
 state 92
 
-  113 rectangulo: RECTANGULO LPA CTE_NUM . RPA SEM
+  114 rectangulo: RECTANGULO LPA CTE_NUM . RPA SEM
 
     RPA  shift, and go to state 122
 
 
 state 93
 
-  116 triangulo: TRIANGULO LPA CTE_TEXTO . COM CTE_NUM RPA SEM
+  117 triangulo: TRIANGULO LPA CTE_TEXTO . COM CTE_NUM RPA SEM
 
     COM  shift, and go to state 123
 
 
 state 94
 
-  114 elipse: ELIPSE LPA CTE_NUM . RPA SEM
+  115 elipse: ELIPSE LPA CTE_NUM . RPA SEM
 
     RPA  shift, and go to state 124
 
 
 state 95
 
-   51 @15: .
-   52 asignacion: EQU . @15 asignacion1 SEM
+   52 @16: .
+   53 asignacion: EQU . @16 asignacion1 SEM
 
-    $default  reduce using rule 51 (@15)
+    $default  reduce using rule 52 (@16)
 
-    @15  go to state 125
+    @16  go to state 125
 
 
 state 96
@@ -1597,17 +1601,17 @@ state 100
    14     | . TEXTO
    15     | . BOOL
    16     | . LIBRE
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 . varss RPA LBR vars bloque funciones1 RBR @12 funciones
-   43 varss: . varss2
-   44      | .  [RPA]
-   47 varss2: . tipo @13 ID @14 varss3
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 . varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
+   44 varss: . varss2
+   45      | .  [RPA]
+   48 varss2: . tipo @14 ID @15 varss3
 
     BOOL   shift, and go to state 11
     NUM    shift, and go to state 12
     TEXTO  shift, and go to state 13
     LIBRE  shift, and go to state 14
 
-    $default  reduce using rule 44 (varss)
+    $default  reduce using rule 45 (varss)
 
     tipo    go to state 128
     varss   go to state 129
@@ -1617,13 +1621,13 @@ state 100
 state 101
 
    29 llamada: . LPA @7 varsss RPA
-   97 var_cte: ID @25 . llamada_opt
-   98 llamada_opt: . llamada
-   99            | .  [SUM, MIN, PRO, DIV, EQU, LT, GT, LTE, GTE, DIF, RPA, LSQ, SEM, DOU, COM, DOT, DEQ]
+   98 var_cte: ID @26 . llamada_opt
+   99 llamada_opt: . llamada
+  100            | .  [SUM, MIN, PRO, DIV, EQU, LT, GT, LTE, GTE, DIF, RPA, LSQ, SEM, DOU, COM, DOT, DEQ]
 
     LPA  shift, and go to state 96
 
-    $default  reduce using rule 99 (llamada_opt)
+    $default  reduce using rule 100 (llamada_opt)
 
     llamada      go to state 131
     llamada_opt  go to state 132
@@ -1631,18 +1635,18 @@ state 101
 
 state 102
 
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   91       | LPA @24 . sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   92       | LPA @25 . sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1661,25 +1665,25 @@ state 102
 
 state 103
 
-   59 escritura: IMPRIME LPA escritura1 RPA . SEM
+   60 escritura: IMPRIME LPA escritura1 RPA . SEM
 
     SEM  shift, and go to state 134
 
 
 state 104
 
-   60 escritura1: . exp escritura2
-   61 escritura2: DOT . escritura1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   61 escritura1: . exp escritura2
+   62 escritura2: DOT . escritura1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1698,117 +1702,117 @@ state 104
 
 state 105
 
-   60 escritura1: exp escritura2 .
+   61 escritura1: exp escritura2 .
 
-    $default  reduce using rule 60 (escritura1)
+    $default  reduce using rule 61 (escritura1)
 
 
 state 106
 
-   77 exp: termino @18 . exp1
-   79 exp1: . SUM @19 exp
-   81     | . MIN @20 exp
-   82     | .  [EQU, LT, GT, LTE, GTE, DIF, RPA, LSQ, SEM, DOU, COM, DOT, DEQ]
+   78 exp: termino @19 . exp1
+   80 exp1: . SUM @20 exp
+   82     | . MIN @21 exp
+   83     | .  [EQU, LT, GT, LTE, GTE, DIF, RPA, LSQ, SEM, DOU, COM, DOT, DEQ]
 
     SUM  shift, and go to state 136
     MIN  shift, and go to state 137
 
-    $default  reduce using rule 82 (exp1)
+    $default  reduce using rule 83 (exp1)
 
     exp1  go to state 138
 
 
 state 107
 
-   84 termino: factor @21 . termino1
-   86 termino1: . PRO @22 termino
-   88         | . DIV @23 termino
-   89         | .  [SUM, MIN, EQU, LT, GT, LTE, GTE, DIF, RPA, LSQ, SEM, DOU, COM, DOT, DEQ]
+   85 termino: factor @22 . termino1
+   87 termino1: . PRO @23 termino
+   89         | . DIV @24 termino
+   90         | .  [SUM, MIN, EQU, LT, GT, LTE, GTE, DIF, RPA, LSQ, SEM, DOU, COM, DOT, DEQ]
 
     PRO  shift, and go to state 139
     DIV  shift, and go to state 140
 
-    $default  reduce using rule 89 (termino1)
+    $default  reduce using rule 90 (termino1)
 
     termino1  go to state 141
 
 
 state 108
 
-   55 condicion: SI LPA sexp RPA . LBR @16 bloque RBR condicion1
+   56 condicion: SI LPA sexp RPA . LBR @17 bloque RBR condicion1
 
     LBR  shift, and go to state 142
 
 
 state 109
 
-   75 operadores: EQU .
+   76 operadores: EQU .
 
-    $default  reduce using rule 75 (operadores)
+    $default  reduce using rule 76 (operadores)
 
 
 state 110
 
-   69 operadores: LT .
-
-    $default  reduce using rule 69 (operadores)
-
-
-state 111
-
-   70 operadores: GT .
+   70 operadores: LT .
 
     $default  reduce using rule 70 (operadores)
 
 
-state 112
+state 111
 
-   72 operadores: LTE .
-
-    $default  reduce using rule 72 (operadores)
-
-
-state 113
-
-   73 operadores: GTE .
-
-    $default  reduce using rule 73 (operadores)
-
-
-state 114
-
-   71 operadores: DIF .
+   71 operadores: GT .
 
     $default  reduce using rule 71 (operadores)
 
 
-state 115
+state 112
 
-   74 operadores: DEQ .
+   73 operadores: LTE .
+
+    $default  reduce using rule 73 (operadores)
+
+
+state 113
+
+   74 operadores: GTE .
 
     $default  reduce using rule 74 (operadores)
 
 
+state 114
+
+   72 operadores: DIF .
+
+    $default  reduce using rule 72 (operadores)
+
+
+state 115
+
+   75 operadores: DEQ .
+
+    $default  reduce using rule 75 (operadores)
+
+
 state 116
 
-   66 sexp: exp expresion1 .
+   67 sexp: exp expresion1 .
 
-    $default  reduce using rule 66 (sexp)
+    $default  reduce using rule 67 (sexp)
 
 
 state 117
 
-   67 expresion1: operadores . exp
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   68 expresion1: operadores . exp
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1826,25 +1830,25 @@ state 117
 
 state 118
 
-  109 haz: HAZ @26 LBR bloque . RBR MIENTRAS LPA sexp RPA @27 SEM
+  110 haz: HAZ @27 LBR bloque . RBR MIENTRAS LPA sexp RPA @28 SEM
 
     RBR  shift, and go to state 144
 
 
 state 119
 
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
-  106 por: POR LPA sexp DOU . sexp RPA LBR bloque RBR
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
+  107 por: POR LPA sexp DOU . sexp RPA LBR bloque RBR
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1863,54 +1867,54 @@ state 119
 
 state 120
 
-  112 mientras: MIENTRAS @28 LPA sexp . RPA @29 LBR bloque RBR
+  113 mientras: MIENTRAS @29 LPA sexp . RPA @30 LBR bloque RBR
 
     RPA  shift, and go to state 146
 
 
 state 121
 
-  115 linea: LINEA LPA CTE_NUM COM . CTE_NUM RPA SEM
+  116 linea: LINEA LPA CTE_NUM COM . CTE_NUM RPA SEM
 
     CTE_NUM  shift, and go to state 147
 
 
 state 122
 
-  113 rectangulo: RECTANGULO LPA CTE_NUM RPA . SEM
+  114 rectangulo: RECTANGULO LPA CTE_NUM RPA . SEM
 
     SEM  shift, and go to state 148
 
 
 state 123
 
-  116 triangulo: TRIANGULO LPA CTE_TEXTO COM . CTE_NUM RPA SEM
+  117 triangulo: TRIANGULO LPA CTE_TEXTO COM . CTE_NUM RPA SEM
 
     CTE_NUM  shift, and go to state 149
 
 
 state 124
 
-  114 elipse: ELIPSE LPA CTE_NUM RPA . SEM
+  115 elipse: ELIPSE LPA CTE_NUM RPA . SEM
 
     SEM  shift, and go to state 150
 
 
 state 125
 
-   52 asignacion: EQU @15 . asignacion1 SEM
-   53 asignacion1: . sexp
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   53 asignacion: EQU @16 . asignacion1 SEM
+   54 asignacion1: . sexp
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1932,17 +1936,17 @@ state 126
 
    29 llamada: LPA @7 . varsss RPA
    31 varsss: . sexp @8 varsss2
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -1969,198 +1973,198 @@ state 127
 
 state 128
 
-   45 @13: .
-   47 varss2: tipo . @13 ID @14 varss3
+   46 @14: .
+   48 varss2: tipo . @14 ID @15 varss3
 
-    $default  reduce using rule 45 (@13)
+    $default  reduce using rule 46 (@14)
 
-    @13  go to state 155
+    @14  go to state 155
 
 
 state 129
 
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss . RPA LBR vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss . RPA LBR vars @12 bloque funciones1 RBR @13 funciones
 
     RPA  shift, and go to state 156
 
 
 state 130
 
-   43 varss: varss2 .
+   44 varss: varss2 .
 
-    $default  reduce using rule 43 (varss)
+    $default  reduce using rule 44 (varss)
 
 
 state 131
 
-   98 llamada_opt: llamada .
+   99 llamada_opt: llamada .
 
-    $default  reduce using rule 98 (llamada_opt)
+    $default  reduce using rule 99 (llamada_opt)
 
 
 state 132
 
-   97 var_cte: ID @25 llamada_opt .
+   98 var_cte: ID @26 llamada_opt .
 
-    $default  reduce using rule 97 (var_cte)
+    $default  reduce using rule 98 (var_cte)
 
 
 state 133
 
-   91 factor: LPA @24 sexp . RPA
+   92 factor: LPA @25 sexp . RPA
 
     RPA  shift, and go to state 157
 
 
 state 134
 
-   59 escritura: IMPRIME LPA escritura1 RPA SEM .
+   60 escritura: IMPRIME LPA escritura1 RPA SEM .
 
-    $default  reduce using rule 59 (escritura)
+    $default  reduce using rule 60 (escritura)
 
 
 state 135
 
-   61 escritura2: DOT escritura1 .
+   62 escritura2: DOT escritura1 .
 
-    $default  reduce using rule 61 (escritura2)
+    $default  reduce using rule 62 (escritura2)
 
 
 state 136
 
-   78 @19: .
-   79 exp1: SUM . @19 exp
+   79 @20: .
+   80 exp1: SUM . @20 exp
 
-    $default  reduce using rule 78 (@19)
+    $default  reduce using rule 79 (@20)
 
-    @19  go to state 158
+    @20  go to state 158
 
 
 state 137
 
-   80 @20: .
-   81 exp1: MIN . @20 exp
+   81 @21: .
+   82 exp1: MIN . @21 exp
 
-    $default  reduce using rule 80 (@20)
+    $default  reduce using rule 81 (@21)
 
-    @20  go to state 159
+    @21  go to state 159
 
 
 state 138
 
-   77 exp: termino @18 exp1 .
+   78 exp: termino @19 exp1 .
 
-    $default  reduce using rule 77 (exp)
+    $default  reduce using rule 78 (exp)
 
 
 state 139
 
-   85 @22: .
-   86 termino1: PRO . @22 termino
+   86 @23: .
+   87 termino1: PRO . @23 termino
 
-    $default  reduce using rule 85 (@22)
+    $default  reduce using rule 86 (@23)
 
-    @22  go to state 160
+    @23  go to state 160
 
 
 state 140
 
-   87 @23: .
-   88 termino1: DIV . @23 termino
+   88 @24: .
+   89 termino1: DIV . @24 termino
 
-    $default  reduce using rule 87 (@23)
+    $default  reduce using rule 88 (@24)
 
-    @23  go to state 161
+    @24  go to state 161
 
 
 state 141
 
-   84 termino: factor @21 termino1 .
+   85 termino: factor @22 termino1 .
 
-    $default  reduce using rule 84 (termino)
+    $default  reduce using rule 85 (termino)
 
 
 state 142
 
-   54 @16: .
-   55 condicion: SI LPA sexp RPA LBR . @16 bloque RBR condicion1
+   55 @17: .
+   56 condicion: SI LPA sexp RPA LBR . @17 bloque RBR condicion1
 
-    $default  reduce using rule 54 (@16)
+    $default  reduce using rule 55 (@17)
 
-    @16  go to state 162
+    @17  go to state 162
 
 
 state 143
 
-   67 expresion1: operadores exp .
+   68 expresion1: operadores exp .
 
-    $default  reduce using rule 67 (expresion1)
+    $default  reduce using rule 68 (expresion1)
 
 
 state 144
 
-  109 haz: HAZ @26 LBR bloque RBR . MIENTRAS LPA sexp RPA @27 SEM
+  110 haz: HAZ @27 LBR bloque RBR . MIENTRAS LPA sexp RPA @28 SEM
 
     MIENTRAS  shift, and go to state 163
 
 
 state 145
 
-  106 por: POR LPA sexp DOU sexp . RPA LBR bloque RBR
+  107 por: POR LPA sexp DOU sexp . RPA LBR bloque RBR
 
     RPA  shift, and go to state 164
 
 
 state 146
 
-  111 @29: .
-  112 mientras: MIENTRAS @28 LPA sexp RPA . @29 LBR bloque RBR
+  112 @30: .
+  113 mientras: MIENTRAS @29 LPA sexp RPA . @30 LBR bloque RBR
 
-    $default  reduce using rule 111 (@29)
+    $default  reduce using rule 112 (@30)
 
-    @29  go to state 165
+    @30  go to state 165
 
 
 state 147
 
-  115 linea: LINEA LPA CTE_NUM COM CTE_NUM . RPA SEM
+  116 linea: LINEA LPA CTE_NUM COM CTE_NUM . RPA SEM
 
     RPA  shift, and go to state 166
 
 
 state 148
 
-  113 rectangulo: RECTANGULO LPA CTE_NUM RPA SEM .
+  114 rectangulo: RECTANGULO LPA CTE_NUM RPA SEM .
 
-    $default  reduce using rule 113 (rectangulo)
+    $default  reduce using rule 114 (rectangulo)
 
 
 state 149
 
-  116 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM . RPA SEM
+  117 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM . RPA SEM
 
     RPA  shift, and go to state 167
 
 
 state 150
 
-  114 elipse: ELIPSE LPA CTE_NUM RPA SEM .
+  115 elipse: ELIPSE LPA CTE_NUM RPA SEM .
 
-    $default  reduce using rule 114 (elipse)
+    $default  reduce using rule 115 (elipse)
 
 
 state 151
 
-   52 asignacion: EQU @15 asignacion1 . SEM
+   53 asignacion: EQU @16 asignacion1 . SEM
 
     SEM  shift, and go to state 168
 
 
 state 152
 
-   53 asignacion1: sexp .
+   54 asignacion1: sexp .
 
-    $default  reduce using rule 53 (asignacion1)
+    $default  reduce using rule 54 (asignacion1)
 
 
 state 153
@@ -2182,38 +2186,38 @@ state 154
 
 state 155
 
-   47 varss2: tipo @13 . ID @14 varss3
+   48 varss2: tipo @14 . ID @15 varss3
 
     ID  shift, and go to state 171
 
 
 state 156
 
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA . LBR vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA . LBR vars @12 bloque funciones1 RBR @13 funciones
 
     LBR  shift, and go to state 172
 
 
 state 157
 
-   91 factor: LPA @24 sexp RPA .
+   92 factor: LPA @25 sexp RPA .
 
-    $default  reduce using rule 91 (factor)
+    $default  reduce using rule 92 (factor)
 
 
 state 158
 
-   77 exp: . termino @18 exp1
-   79 exp1: SUM @19 . exp
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   78 exp: . termino @19 exp1
+   80 exp1: SUM @20 . exp
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -2231,17 +2235,17 @@ state 158
 
 state 159
 
-   77 exp: . termino @18 exp1
-   81 exp1: MIN @20 . exp
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   78 exp: . termino @19 exp1
+   82 exp1: MIN @21 . exp
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -2259,16 +2263,16 @@ state 159
 
 state 160
 
-   84 termino: . factor @21 termino1
-   86 termino1: PRO @22 . termino
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   85 termino: . factor @22 termino1
+   87 termino1: PRO @23 . termino
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -2285,16 +2289,16 @@ state 160
 
 state 161
 
-   84 termino: . factor @21 termino1
-   88 termino1: DIV @23 . termino
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   85 termino: . factor @22 termino1
+   89 termino1: DIV @24 . termino
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -2319,23 +2323,23 @@ state 162
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   55          | SI LPA sexp RPA LBR @16 . bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   56          | SI LPA sexp RPA LBR @17 . bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -2368,44 +2372,44 @@ state 162
 
 state 163
 
-  109 haz: HAZ @26 LBR bloque RBR MIENTRAS . LPA sexp RPA @27 SEM
+  110 haz: HAZ @27 LBR bloque RBR MIENTRAS . LPA sexp RPA @28 SEM
 
     LPA  shift, and go to state 178
 
 
 state 164
 
-  106 por: POR LPA sexp DOU sexp RPA . LBR bloque RBR
+  107 por: POR LPA sexp DOU sexp RPA . LBR bloque RBR
 
     LBR  shift, and go to state 179
 
 
 state 165
 
-  112 mientras: MIENTRAS @28 LPA sexp RPA @29 . LBR bloque RBR
+  113 mientras: MIENTRAS @29 LPA sexp RPA @30 . LBR bloque RBR
 
     LBR  shift, and go to state 180
 
 
 state 166
 
-  115 linea: LINEA LPA CTE_NUM COM CTE_NUM RPA . SEM
+  116 linea: LINEA LPA CTE_NUM COM CTE_NUM RPA . SEM
 
     SEM  shift, and go to state 181
 
 
 state 167
 
-  116 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA . SEM
+  117 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA . SEM
 
     SEM  shift, and go to state 182
 
 
 state 168
 
-   52 asignacion: EQU @15 asignacion1 SEM .
+   53 asignacion: EQU @16 asignacion1 SEM .
 
-    $default  reduce using rule 52 (asignacion)
+    $default  reduce using rule 53 (asignacion)
 
 
 state 169
@@ -2432,19 +2436,19 @@ state 170
 
 state 171
 
-   46 @14: .
-   47 varss2: tipo @13 ID . @14 varss3
+   47 @15: .
+   48 varss2: tipo @14 ID . @15 varss3
 
-    $default  reduce using rule 46 (@14)
+    $default  reduce using rule 47 (@15)
 
-    @14  go to state 186
+    @15  go to state 186
 
 
 state 172
 
     6 vars: . VAR vars2 tipo @4 SEM vars
     7     | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, LINEA, RECTANGULO, TRIANGULO, ELIPSE, ID, RBR]
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR . vars bloque funciones1 RBR @12 funciones
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR . vars @12 bloque funciones1 RBR @13 funciones
 
     VAR  shift, and go to state 7
 
@@ -2455,53 +2459,53 @@ state 172
 
 state 173
 
-   79 exp1: SUM @19 exp .
+   80 exp1: SUM @20 exp .
 
-    $default  reduce using rule 79 (exp1)
+    $default  reduce using rule 80 (exp1)
 
 
 state 174
 
-   81 exp1: MIN @20 exp .
+   82 exp1: MIN @21 exp .
 
-    $default  reduce using rule 81 (exp1)
+    $default  reduce using rule 82 (exp1)
 
 
 state 175
 
-   86 termino1: PRO @22 termino .
+   87 termino1: PRO @23 termino .
 
-    $default  reduce using rule 86 (termino1)
+    $default  reduce using rule 87 (termino1)
 
 
 state 176
 
-   88 termino1: DIV @23 termino .
+   89 termino1: DIV @24 termino .
 
-    $default  reduce using rule 88 (termino1)
+    $default  reduce using rule 89 (termino1)
 
 
 state 177
 
-   55 condicion: SI LPA sexp RPA LBR @16 bloque . RBR condicion1
+   56 condicion: SI LPA sexp RPA LBR @17 bloque . RBR condicion1
 
     RBR  shift, and go to state 188
 
 
 state 178
 
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
-  109 haz: HAZ @26 LBR bloque RBR MIENTRAS LPA . sexp RPA @27 SEM
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
+  110 haz: HAZ @27 LBR bloque RBR MIENTRAS LPA . sexp RPA @28 SEM
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -2528,23 +2532,23 @@ state 179
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  106    | POR LPA sexp DOU sexp RPA LBR . bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  107    | POR LPA sexp DOU sexp RPA LBR . bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -2585,23 +2589,23 @@ state 180
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  112         | MIENTRAS @28 LPA sexp RPA @29 LBR . bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  113         | MIENTRAS @29 LPA sexp RPA @30 LBR . bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -2634,16 +2638,16 @@ state 180
 
 state 181
 
-  115 linea: LINEA LPA CTE_NUM COM CTE_NUM RPA SEM .
+  116 linea: LINEA LPA CTE_NUM COM CTE_NUM RPA SEM .
 
-    $default  reduce using rule 115 (linea)
+    $default  reduce using rule 116 (linea)
 
 
 state 182
 
-  116 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM .
+  117 triangulo: TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM .
 
-    $default  reduce using rule 116 (triangulo)
+    $default  reduce using rule 117 (triangulo)
 
 
 state 183
@@ -2657,17 +2661,17 @@ state 184
 
    31 varsss: . sexp @8 varsss2
    32 varsss2: COM . varsss
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
 
     VERDADERO  shift, and go to state 74
     FALSO      shift, and go to state 75
@@ -2694,106 +2698,59 @@ state 185
 
 state 186
 
-   47 varss2: tipo @13 ID @14 . varss3
-   48 varss3: . COM varss2
-   49       | . LSQ CTE_NUM RSQ varss3
-   50       | .  [RPA]
+   48 varss2: tipo @14 ID @15 . varss3
+   49 varss3: . COM varss2
+   50       | . LSQ CTE_NUM RSQ varss3
+   51       | .  [RPA]
 
     LSQ  shift, and go to state 194
     COM  shift, and go to state 195
 
-    $default  reduce using rule 50 (varss3)
+    $default  reduce using rule 51 (varss3)
 
     varss3  go to state 196
 
 
 state 187
 
-   17 bloque: . estatutos bloque
-   18       | . ciclos bloque
-   19       | . dibuja bloque
-   20       | .  [REGRESA, RBR]
-   21 estatutos: . condicion
-   22          | . asig_llamada
-   23          | . escritura
-   25 asig_llamada: . ID @6 llamada_
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars . bloque funciones1 RBR @12 funciones
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   38 @12: .
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars . @12 bloque funciones1 RBR @13 funciones
 
-    IMPRIME     shift, and go to state 31
-    SI          shift, and go to state 32
-    HAZ         shift, and go to state 33
-    POR         shift, and go to state 34
-    MIENTRAS    shift, and go to state 35
-    LINEA       shift, and go to state 36
-    RECTANGULO  shift, and go to state 37
-    TRIANGULO   shift, and go to state 38
-    ELIPSE      shift, and go to state 39
-    ID          shift, and go to state 40
+    $default  reduce using rule 38 (@12)
 
-    $default  reduce using rule 20 (bloque)
-
-    bloque        go to state 197
-    estatutos     go to state 42
-    asig_llamada  go to state 43
-    condicion     go to state 44
-    escritura     go to state 45
-    ciclos        go to state 46
-    dibuja        go to state 47
-    por           go to state 48
-    haz           go to state 49
-    mientras      go to state 50
-    rectangulo    go to state 51
-    elipse        go to state 52
-    linea         go to state 53
-    triangulo     go to state 54
+    @12  go to state 197
 
 
 state 188
 
-   55 condicion: SI LPA sexp RPA LBR @16 bloque RBR . condicion1
-   57 condicion1: . SINO @17 LBR bloque RBR
-   58           | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, LINEA, RECTANGULO, TRIANGULO, ELIPSE, ID, RBR]
+   56 condicion: SI LPA sexp RPA LBR @17 bloque RBR . condicion1
+   58 condicion1: . SINO @18 LBR bloque RBR
+   59           | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, LINEA, RECTANGULO, TRIANGULO, ELIPSE, ID, RBR]
 
     SINO  shift, and go to state 198
 
-    $default  reduce using rule 58 (condicion1)
+    $default  reduce using rule 59 (condicion1)
 
     condicion1  go to state 199
 
 
 state 189
 
-  109 haz: HAZ @26 LBR bloque RBR MIENTRAS LPA sexp . RPA @27 SEM
+  110 haz: HAZ @27 LBR bloque RBR MIENTRAS LPA sexp . RPA @28 SEM
 
     RPA  shift, and go to state 200
 
 
 state 190
 
-  106 por: POR LPA sexp DOU sexp RPA LBR bloque . RBR
+  107 por: POR LPA sexp DOU sexp RPA LBR bloque . RBR
 
     RBR  shift, and go to state 201
 
 
 state 191
 
-  112 mientras: MIENTRAS @28 LPA sexp RPA @29 LBR bloque . RBR
+  113 mientras: MIENTRAS @29 LPA sexp RPA @30 LBR bloque . RBR
 
     RBR  shift, and go to state 202
 
@@ -2814,7 +2771,7 @@ state 193
 
 state 194
 
-   49 varss3: LSQ . CTE_NUM RSQ varss3
+   50 varss3: LSQ . CTE_NUM RSQ varss3
 
     CTE_NUM  shift, and go to state 204
 
@@ -2825,8 +2782,8 @@ state 195
    14     | . TEXTO
    15     | . BOOL
    16     | . LIBRE
-   47 varss2: . tipo @13 ID @14 varss3
-   48 varss3: COM . varss2
+   48 varss2: . tipo @14 ID @15 varss3
+   49 varss3: COM . varss2
 
     BOOL   shift, and go to state 11
     NUM    shift, and go to state 12
@@ -2839,211 +2796,38 @@ state 195
 
 state 196
 
-   47 varss2: tipo @13 ID @14 varss3 .
+   48 varss2: tipo @14 ID @15 varss3 .
 
-    $default  reduce using rule 47 (varss2)
+    $default  reduce using rule 48 (varss2)
 
 
 state 197
 
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque . funciones1 RBR @12 funciones
-   41 funciones1: . REGRESA sexp SEM
-   42           | .  [RBR]
-
-    REGRESA  shift, and go to state 206
-
-    $default  reduce using rule 42 (funciones1)
-
-    funciones1  go to state 207
-
-
-state 198
-
-   56 @17: .
-   57 condicion1: SINO . @17 LBR bloque RBR
-
-    $default  reduce using rule 56 (@17)
-
-    @17  go to state 208
-
-
-state 199
-
-   55 condicion: SI LPA sexp RPA LBR @16 bloque RBR condicion1 .
-
-    $default  reduce using rule 55 (condicion)
-
-
-state 200
-
-  108 @27: .
-  109 haz: HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA . @27 SEM
-
-    $default  reduce using rule 108 (@27)
-
-    @27  go to state 209
-
-
-state 201
-
-  106 por: POR LPA sexp DOU sexp RPA LBR bloque RBR .
-
-    $default  reduce using rule 106 (por)
-
-
-state 202
-
-  112 mientras: MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR .
-
-    $default  reduce using rule 112 (mientras)
-
-
-state 203
-
-   32 varsss2: . COM varsss
-   33        | . LSQ CTE_NUM RSQ varsss2
-   33        | LSQ CTE_NUM RSQ . varsss2
-   34        | .  [RPA]
-
-    LSQ  shift, and go to state 183
-    COM  shift, and go to state 184
-
-    $default  reduce using rule 34 (varsss2)
-
-    varsss2  go to state 210
-
-
-state 204
-
-   49 varss3: LSQ CTE_NUM . RSQ varss3
-
-    RSQ  shift, and go to state 211
-
-
-state 205
-
-   48 varss3: COM varss2 .
-
-    $default  reduce using rule 48 (varss3)
-
-
-state 206
-
-   41 funciones1: REGRESA . sexp SEM
-   66 sexp: . exp expresion1
-   77 exp: . termino @18 exp1
-   84 termino: . factor @21 termino1
-   91 factor: . LPA @24 sexp RPA
-   92       | . var_cte
-   93 var_cte: . cte_bool
-   94        | . CTE_NUM
-   95        | . CTE_TEXTO
-   97        | . ID @25 llamada_opt
-  100 cte_bool: . VERDADERO
-  101         | . FALSO
-
-    VERDADERO  shift, and go to state 74
-    FALSO      shift, and go to state 75
-    CTE_NUM    shift, and go to state 76
-    CTE_TEXTO  shift, and go to state 77
-    ID         shift, and go to state 78
-    LPA        shift, and go to state 79
-
-    sexp      go to state 212
-    exp       go to state 87
-    termino   go to state 82
-    factor    go to state 83
-    var_cte   go to state 84
-    cte_bool  go to state 85
-
-
-state 207
-
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 . RBR @12 funciones
-
-    RBR  shift, and go to state 213
-
-
-state 208
-
-   57 condicion1: SINO @17 . LBR bloque RBR
-
-    LBR  shift, and go to state 214
-
-
-state 209
-
-  109 haz: HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 . SEM
-
-    SEM  shift, and go to state 215
-
-
-state 210
-
-   33 varsss2: LSQ CTE_NUM RSQ varsss2 .
-
-    $default  reduce using rule 33 (varsss2)
-
-
-state 211
-
-   48 varss3: . COM varss2
-   49       | . LSQ CTE_NUM RSQ varss3
-   49       | LSQ CTE_NUM RSQ . varss3
-   50       | .  [RPA]
-
-    LSQ  shift, and go to state 194
-    COM  shift, and go to state 195
-
-    $default  reduce using rule 50 (varss3)
-
-    varss3  go to state 216
-
-
-state 212
-
-   41 funciones1: REGRESA sexp . SEM
-
-    SEM  shift, and go to state 217
-
-
-state 213
-
-   38 @12: .
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR . @12 funciones
-
-    $default  reduce using rule 38 (@12)
-
-    @12  go to state 218
-
-
-state 214
-
    17 bloque: . estatutos bloque
    18       | . ciclos bloque
    19       | . dibuja bloque
-   20       | .  [RBR]
+   20       | .  [REGRESA, RBR]
    21 estatutos: . condicion
    22          | . asig_llamada
    23          | . escritura
    25 asig_llamada: . ID @6 llamada_
-   55 condicion: . SI LPA sexp RPA LBR @16 bloque RBR condicion1
-   57 condicion1: SINO @17 LBR . bloque RBR
-   59 escritura: . IMPRIME LPA escritura1 RPA SEM
-   63 ciclos: . mientras
-   64       | . haz
-   65       | . por
-  102 dibuja: . triangulo
-  103       | . rectangulo
-  104       | . elipse
-  105       | . linea
-  106 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
-  109 haz: . HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM
-  112 mientras: . MIENTRAS @28 LPA sexp RPA @29 LBR bloque RBR
-  113 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
-  114 elipse: . ELIPSE LPA CTE_NUM RPA SEM
-  115 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
-  116 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 . bloque funciones1 RBR @13 funciones
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
 
     IMPRIME     shift, and go to state 31
     SI          shift, and go to state 32
@@ -3058,7 +2842,7 @@ state 214
 
     $default  reduce using rule 20 (bloque)
 
-    bloque        go to state 219
+    bloque        go to state 206
     estatutos     go to state 42
     asig_llamada  go to state 43
     condicion     go to state 44
@@ -3074,64 +2858,294 @@ state 214
     triangulo     go to state 54
 
 
-state 215
+state 198
 
-  109 haz: HAZ @26 LBR bloque RBR MIENTRAS LPA sexp RPA @27 SEM .
+   57 @18: .
+   58 condicion1: SINO . @18 LBR bloque RBR
 
-    $default  reduce using rule 109 (haz)
+    $default  reduce using rule 57 (@18)
+
+    @18  go to state 207
 
 
-state 216
+state 199
 
-   49 varss3: LSQ CTE_NUM RSQ varss3 .
+   56 condicion: SI LPA sexp RPA LBR @17 bloque RBR condicion1 .
+
+    $default  reduce using rule 56 (condicion)
+
+
+state 200
+
+  109 @28: .
+  110 haz: HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA . @28 SEM
+
+    $default  reduce using rule 109 (@28)
+
+    @28  go to state 208
+
+
+state 201
+
+  107 por: POR LPA sexp DOU sexp RPA LBR bloque RBR .
+
+    $default  reduce using rule 107 (por)
+
+
+state 202
+
+  113 mientras: MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR .
+
+    $default  reduce using rule 113 (mientras)
+
+
+state 203
+
+   32 varsss2: . COM varsss
+   33        | . LSQ CTE_NUM RSQ varsss2
+   33        | LSQ CTE_NUM RSQ . varsss2
+   34        | .  [RPA]
+
+    LSQ  shift, and go to state 183
+    COM  shift, and go to state 184
+
+    $default  reduce using rule 34 (varsss2)
+
+    varsss2  go to state 209
+
+
+state 204
+
+   50 varss3: LSQ CTE_NUM . RSQ varss3
+
+    RSQ  shift, and go to state 210
+
+
+state 205
+
+   49 varss3: COM varss2 .
 
     $default  reduce using rule 49 (varss3)
 
 
+state 206
+
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque . funciones1 RBR @13 funciones
+   42 funciones1: . REGRESA sexp SEM
+   43           | .  [RBR]
+
+    REGRESA  shift, and go to state 211
+
+    $default  reduce using rule 43 (funciones1)
+
+    funciones1  go to state 212
+
+
+state 207
+
+   58 condicion1: SINO @18 . LBR bloque RBR
+
+    LBR  shift, and go to state 213
+
+
+state 208
+
+  110 haz: HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 . SEM
+
+    SEM  shift, and go to state 214
+
+
+state 209
+
+   33 varsss2: LSQ CTE_NUM RSQ varsss2 .
+
+    $default  reduce using rule 33 (varsss2)
+
+
+state 210
+
+   49 varss3: . COM varss2
+   50       | . LSQ CTE_NUM RSQ varss3
+   50       | LSQ CTE_NUM RSQ . varss3
+   51       | .  [RPA]
+
+    LSQ  shift, and go to state 194
+    COM  shift, and go to state 195
+
+    $default  reduce using rule 51 (varss3)
+
+    varss3  go to state 215
+
+
+state 211
+
+   42 funciones1: REGRESA . sexp SEM
+   67 sexp: . exp expresion1
+   78 exp: . termino @19 exp1
+   85 termino: . factor @22 termino1
+   92 factor: . LPA @25 sexp RPA
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . CTE_NUM
+   96        | . CTE_TEXTO
+   98        | . ID @26 llamada_opt
+  101 cte_bool: . VERDADERO
+  102         | . FALSO
+
+    VERDADERO  shift, and go to state 74
+    FALSO      shift, and go to state 75
+    CTE_NUM    shift, and go to state 76
+    CTE_TEXTO  shift, and go to state 77
+    ID         shift, and go to state 78
+    LPA        shift, and go to state 79
+
+    sexp      go to state 216
+    exp       go to state 87
+    termino   go to state 82
+    factor    go to state 83
+    var_cte   go to state 84
+    cte_bool  go to state 85
+
+
+state 212
+
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 . RBR @13 funciones
+
+    RBR  shift, and go to state 217
+
+
+state 213
+
+   17 bloque: . estatutos bloque
+   18       | . ciclos bloque
+   19       | . dibuja bloque
+   20       | .  [RBR]
+   21 estatutos: . condicion
+   22          | . asig_llamada
+   23          | . escritura
+   25 asig_llamada: . ID @6 llamada_
+   56 condicion: . SI LPA sexp RPA LBR @17 bloque RBR condicion1
+   58 condicion1: SINO @18 LBR . bloque RBR
+   60 escritura: . IMPRIME LPA escritura1 RPA SEM
+   64 ciclos: . mientras
+   65       | . haz
+   66       | . por
+  103 dibuja: . triangulo
+  104       | . rectangulo
+  105       | . elipse
+  106       | . linea
+  107 por: . POR LPA sexp DOU sexp RPA LBR bloque RBR
+  110 haz: . HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM
+  113 mientras: . MIENTRAS @29 LPA sexp RPA @30 LBR bloque RBR
+  114 rectangulo: . RECTANGULO LPA CTE_NUM RPA SEM
+  115 elipse: . ELIPSE LPA CTE_NUM RPA SEM
+  116 linea: . LINEA LPA CTE_NUM COM CTE_NUM RPA SEM
+  117 triangulo: . TRIANGULO LPA CTE_TEXTO COM CTE_NUM RPA SEM
+
+    IMPRIME     shift, and go to state 31
+    SI          shift, and go to state 32
+    HAZ         shift, and go to state 33
+    POR         shift, and go to state 34
+    MIENTRAS    shift, and go to state 35
+    LINEA       shift, and go to state 36
+    RECTANGULO  shift, and go to state 37
+    TRIANGULO   shift, and go to state 38
+    ELIPSE      shift, and go to state 39
+    ID          shift, and go to state 40
+
+    $default  reduce using rule 20 (bloque)
+
+    bloque        go to state 218
+    estatutos     go to state 42
+    asig_llamada  go to state 43
+    condicion     go to state 44
+    escritura     go to state 45
+    ciclos        go to state 46
+    dibuja        go to state 47
+    por           go to state 48
+    haz           go to state 49
+    mientras      go to state 50
+    rectangulo    go to state 51
+    elipse        go to state 52
+    linea         go to state 53
+    triangulo     go to state 54
+
+
+state 214
+
+  110 haz: HAZ @27 LBR bloque RBR MIENTRAS LPA sexp RPA @28 SEM .
+
+    $default  reduce using rule 110 (haz)
+
+
+state 215
+
+   50 varss3: LSQ CTE_NUM RSQ varss3 .
+
+    $default  reduce using rule 50 (varss3)
+
+
+state 216
+
+   42 funciones1: REGRESA sexp . SEM
+
+    SEM  shift, and go to state 219
+
+
 state 217
 
-   41 funciones1: REGRESA sexp SEM .
+   39 @13: .
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR . @13 funciones
 
-    $default  reduce using rule 41 (funciones1)
+    $default  reduce using rule 39 (@13)
+
+    @13  go to state 220
 
 
 state 218
+
+   58 condicion1: SINO @18 LBR bloque . RBR
+
+    RBR  shift, and go to state 221
+
+
+state 219
+
+   42 funciones1: REGRESA sexp SEM .
+
+    $default  reduce using rule 42 (funciones1)
+
+
+state 220
 
    13 tipo: . NUM
    14     | . TEXTO
    15     | . BOOL
    16     | . LIBRE
-   39 funciones: . tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones
-   39          | tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 . funciones
-   40          | .  [IMPRIME, SI, HAZ, POR, MIENTRAS, LINEA, RECTANGULO, TRIANGULO, ELIPSE, ID, RBR]
+   40 funciones: . tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones
+   40          | tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 . funciones
+   41          | .  [IMPRIME, SI, HAZ, POR, MIENTRAS, LINEA, RECTANGULO, TRIANGULO, ELIPSE, ID, RBR]
 
     BOOL   shift, and go to state 11
     NUM    shift, and go to state 12
     TEXTO  shift, and go to state 13
     LIBRE  shift, and go to state 14
 
-    $default  reduce using rule 40 (funciones)
+    $default  reduce using rule 41 (funciones)
 
     tipo       go to state 15
-    funciones  go to state 220
-
-
-state 219
-
-   57 condicion1: SINO @17 LBR bloque . RBR
-
-    RBR  shift, and go to state 221
-
-
-state 220
-
-   39 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars bloque funciones1 RBR @12 funciones .
-
-    $default  reduce using rule 39 (funciones)
+    funciones  go to state 222
 
 
 state 221
 
-   57 condicion1: SINO @17 LBR bloque RBR .
+   58 condicion1: SINO @18 LBR bloque RBR .
 
-    $default  reduce using rule 57 (condicion1)
+    $default  reduce using rule 58 (condicion1)
+
+
+state 222
+
+   40 funciones: tipo @9 FUNCION ID @10 LPA @11 varss RPA LBR vars @12 bloque funciones1 RBR @13 funciones .
+
+    $default  reduce using rule 40 (funciones)

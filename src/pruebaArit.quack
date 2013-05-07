@@ -1,22 +1,15 @@
 programa quack {
-	var i, j num;
 
-	libre funcion uno (num a) {
-		var i num;
-		i = a * 2;
-		si(i < a + 4) {
-			a= (a + 1);
+	var i num;
+	
+	num funcion fib (num n) {
+		si(n < 2) {
+			regresa n;
 		}
-		i = i;
-	} 
-
-	num funcion dos (num b) {
-		b = b * i + j;
-		regresa (b * 2);
+		sino {
+			regresa fib(n-1) + fib(n-2);
+		}
 	}
 
-	i = 2;
-	j = i * 2 - 1;
-	uno(j);
-	i = i + (dos(i + j));
+	i =( fib(5));
 }

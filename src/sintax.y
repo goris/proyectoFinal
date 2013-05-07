@@ -85,18 +85,19 @@
 	std::ofstream myfile;
 
 	std::string avail;
-	std::stack <std::string> var_actual;
+	std::string func_actual;
+	std::string func_llamada;
+	std::string scope_actual;
 	std::string tipo_actual;
 	std::string tipo_func;
-	std::string scope_actual;
-	std::string func_actual;
-	std::vector<std::string> scopes;	
-	std::stack<Node*> aux_vars;
-	std::stack<Node*> pilaO;
 	std::stack<int> pOper;
 	std::stack<int> pSaltos;
+	std::stack<Node*> aux_vars;
+	std::stack<Node*> pilaO;
+	std::stack<std::string> var_actual;
 	std::stack<std::string> pTipoParams;
 	std::vector<Cuadruplo> vec_cuadruplos;
+	std::vector<std::string> scopes;	
 	MapType map_vars;
 	MapFunc map_func;
 
@@ -117,6 +118,7 @@
 	void cuadruploEnd();
 	void cuadruploMain();
 	void finParametros();
+	void limpiaContMemoria();
 	void imprimeCubo();
 	void imprimeMapaFunc();
 	void imprimeMapaVars();
@@ -215,9 +217,9 @@ varsss2: COM varsss
 funciones: tipo { param_count = 0; tipo_actual = yytext;
 		 tipo_func = yytext; } FUNCION ID 
 		{ scope_actual = yytext; func_actual= yytext; actualizaScope("funcion");
-		agregaFuncion(); } LPA { sumar = 1;} varss  RPA LBR 
+		agregaFuncion(); limpiaContMemoria(); } LPA { sumar = 1;} varss  RPA LBR 
 		vars { agregaVarMemFunc(3,1); param_count = 0; sumar = 0; }
-		bloque funciones1 RBR 
+		bloque funciones1 RBR { func_actual = "global"; } 
 		{ cuadruploEstatuto(6); } funciones
 		|
 funciones1: REGRESA sexp SEM
@@ -726,6 +728,7 @@ void cuadruploEstatuto(int tipo) {
 	//		std::cout << "Case7" << std::endl;		
 			//std::cout << "16, " << func_actual << ", w, " << "" << "\n";
 			Cuadruplo::Cuadruplo cuad7(16, func_actual, "w", " ");
+			func_llamada = func_actual;
 			vec_cuadruplos.push_back(cuad7);
 			cuad_actual++;
 			break;
@@ -751,7 +754,7 @@ void cuadruploEstatuto(int tipo) {
 					std::stringstream sstm;
 					sstm << "param" << param_count;
 					str = sstm.str();
-					//std::cout << "19, " << var->nombre << ", -1, " << str << "\n";
+					std::cout << "19, " << var->nombre << var->scope << scope_actual << "\n";
 					Cuadruplo::Cuadruplo cuad8(19, var->loc_mem,
 						 -1, str);
 					vec_cuadruplos.push_back(cuad8);
@@ -1058,8 +1061,8 @@ void actualizaTipoVariables () {
 	if (tipo<0) std::cout << std::endl << " E R R O R " << std::endl;
 	
 	while (!aux_vars.empty()) {
-		memset = memoriaAUsar(tipo, scope_actual);
 		var = aux_vars.top();
+		memset = memoriaAUsar(tipo, var->scope);
 		aux_vars.pop();
 		aux =  std::string(var->nombre) + "&" + scope_actual;
 		llave = aux.c_str();
@@ -1098,8 +1101,8 @@ void creaVariable() {
 	var_actual.pop();
 	aux_vars.push(var);
 	
-//	std::cout << "nombre: " << var->nombre << "\t scope: " << scope_actual
-//	<< std::endl;
+	//std::cout << "nombre: " << var->nombre << "\t scope: " << scope_actual
+	//<< std::endl;
 
 }
 
@@ -1172,6 +1175,15 @@ void imprimeVector(std::vector<Cuadruplo> vec) {
 }
 
 /**
+* Vuelve a sus valores por default a los contadores de memoria
+**/
+void limpiaContMemoria(){
+	mem_num_local = 3000;
+	mem_bool_local = 10000;
+
+}
+
+/**
 * inicializa el cubo con las combinaciones posibles e inicializa los
 + contadores de algunas variables.
 **/
@@ -1205,16 +1217,17 @@ void creaCubo(){
 	cubo_sem[2][2][9] = 3;
 	cubo_sem[2][2][10] = 3;
 
+	limpiaContMemoria();
+
+	mem_num_global = 999;
+	mem_num_constante = 7000;
+	mem_bool_constante = 11000;
+	mem_bool_global = 9000;
+	
 	id_actual = 1;
 	cuad_actual = 1;
 	tmp_actual = 1;
 	param_count = 0;
-	mem_num_global = 999;
-	mem_num_local = 3000;
-	mem_num_constante = 7000;
-	mem_bool_global = 9000;
-	mem_bool_local = 10000;
-	mem_bool_constante = 11000;
 	sumar = 0;
 	
 /*

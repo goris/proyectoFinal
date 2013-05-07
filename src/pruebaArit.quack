@@ -11,5 +11,5 @@ programa quack {
 		}
 	}
 
-	i =( fib(5));
+	i = fib(5);
 }

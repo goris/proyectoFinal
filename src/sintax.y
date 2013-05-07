@@ -805,22 +805,13 @@ void cuadruploEstatuto(int tipo) {
 					} else {
 						pilaO.pop();
 				}
-				sstm << "t" << tmp_actual;
-				avail = sstm.str();
-				var_actual.push(avail);
-				tipo_actual = func->tipo;
-				creaVariable();
-				actualizaTipoVariables();
-				yytext = strdup(avail.c_str());
-				meterPilaO();
-				tmp_actual++;
-				Node ptr* = pilaO.top();
-				Cuadruplo::Cuadruplo cuad9(17, func_actual, ptr->loc_mem, str);
+				creaVarFunc(func_actual, func->tipo);
+				Node var = pilaO.top();
+				Cuadruplo::Cuadruplo cuad9(17, func_actual, var->mem_loc, str);
 				vec_cuadruplos.push_back(cuad9);
 				cuad_actual++;
 				//std::cout << "17, " << func_actual << ", w, " << str << "\n";
 				//std::cout << "cas9: " << func_actual << std::endl;
-				creaVarFunc(func_actual, func->tipo);
 				//imprimePila(pilaO);
 			}
 			break;
@@ -1149,15 +1140,17 @@ void creaVariable() {
 void creaVarFunc(std::string str, int tipo){
 	//std::cout << "creaVarFunc" << std::endl;
 	Node *var = new Node();
-	int memset = memoriaAUsar(tipo, "global");
-	var->nombre = str;
+	std::stringstream sstm;
+	sstm << "t" << tmp_actual;
+	avail = sstm.str();
+	var_actual.push(avail);
+	creaVariable();
+	actualizaTipoVariables();
+	yytext = strdup(avail.c_str());
+	meterPilaO();
+	var = pilaO.top();
 	var->tipo = tipo;
-	var->loc_mem = memset++;
-	var->scope = "global";
-	var->id = id_actual++;
-	var->valor_num = 0;
-	map_vars[str + "&global"] = var;
-	pilaO.push(var);
+	tmp_actual++;
 }
 
 /**

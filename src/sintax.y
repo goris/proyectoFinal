@@ -805,7 +805,17 @@ void cuadruploEstatuto(int tipo) {
 					} else {
 						pilaO.pop();
 				}
-				Cuadruplo::Cuadruplo cuad9(17, func_actual, "w", str);
+				sstm << "t" << tmp_actual;
+				avail = sstm.str();
+				var_actual.push(avail);
+				tipo_actual = func->tipo;
+				creaVariable();
+				actualizaTipoVariables();
+				yytext = strdup(avail.c_str());
+				meterPilaO();
+				tmp_actual++;
+				Node ptr* = pilaO.top();
+				Cuadruplo::Cuadruplo cuad9(17, func_actual, ptr->loc_mem, str);
 				vec_cuadruplos.push_back(cuad9);
 				cuad_actual++;
 				//std::cout << "17, " << func_actual << ", w, " << str << "\n";

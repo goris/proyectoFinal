@@ -803,11 +803,11 @@ void cuadruploEstatuto(int tipo) {
 						std::cout << "E R R O RR" << std::endl;
 						exit(1);
 					} else {
-						pilaO.pop();
+						// pilaO.pop();
 				}
 				creaVarFunc(func_actual, func->tipo);
-				Node var = pilaO.top();
-				Cuadruplo::Cuadruplo cuad9(17, func_actual, var->mem_loc, str);
+				Node* var = pilaO.top();
+				Cuadruplo::Cuadruplo cuad9(17, var->loc_mem, -1, str);
 				vec_cuadruplos.push_back(cuad9);
 				cuad_actual++;
 				//std::cout << "17, " << func_actual << ", w, " << str << "\n";
@@ -944,7 +944,7 @@ void checaOperador(int a) {
 					//imprimePila(1);
 				} else {
 					std::cout << "Error1: " << tmp1->tipo - 1
-						<< tmp2->tipo - 1
+						<< " -- " << tmp2->tipo - 1
 					<< operador	<< std::endl;
 					imprimeVector(vec_cuadruplos);
 				}
@@ -1144,6 +1144,7 @@ void creaVarFunc(std::string str, int tipo){
 	sstm << "t" << tmp_actual;
 	avail = sstm.str();
 	var_actual.push(avail);
+	tipo_actual = "num";
 	creaVariable();
 	actualizaTipoVariables();
 	yytext = strdup(avail.c_str());

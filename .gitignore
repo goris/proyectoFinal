@@ -41,8 +41,9 @@ ehthumbs.db
 Thumbs.db
 
 # Other Dirs
-ProyectoCompi/
 MV/
 docs/
 docs
-
+MV
+.metadata
+MaquinaVirtual

@@ -140,7 +140,7 @@
 typedef union YYSTYPE
 #line 140 "sintax.y"
 {
-	int int_val;	
+	int int_val;
 	float float_val;
 	char* text;
 }

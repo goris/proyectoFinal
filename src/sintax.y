@@ -205,7 +205,7 @@ estatutos: condicion
 		 | asig_llamada
 	 	 | escritura
 		 | funciones1
-funciones1: REGRESA sexp SEM
+funciones1: REGRESA sexp SEM { cuadruploEstatuto(6); } 
 
 asig_llamada: ID { meterPilaO(); tmp=yytext; } llamada_
 llamada_: asignacion
@@ -225,7 +225,7 @@ funciones: tipo { param_count = 0; tipo_actual = yytext;
 		agregaFuncion(); limpiaContMemoria(); } leftp { sumar = 1;} varss  rightp LBR
 		vars { agregaVarMemFunc(3,1); param_count = 0; sumar = 0; }
 		bloque  RBR { scope_actual = "global"; }
-		{ cuadruploEstatuto(6); } funciones
+		{ cuadruploEstatuto(11); } funciones
 		|
 
 
@@ -724,12 +724,14 @@ void cuadruploEstatuto(int tipo) {
 						cuad_actual++;
 					}
 				} else {}
-			} else {
-				//std::cout << "18, " << "-1" << ", -1, " << "" << "\n";
-				Cuadruplo::Cuadruplo cuad6(18, -1, -1, " ");
-				vec_cuadruplos.push_back(cuad6);
-				cuad_actual++;
+				break;
 			}
+		}
+		case 11: {
+				//std::cout << "18, " << "-1" << ", -1, " << "" << "\n";
+			Cuadruplo::Cuadruplo cuad11(18, -1, -1, " ");
+			vec_cuadruplos.push_back(cuad11);
+			cuad_actual++;
 			break;
 		}
 		case 7: {

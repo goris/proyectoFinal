@@ -2,16 +2,22 @@ programa quack {
 
 	var i num;
 	
-	num funcion fac (num n) {
-		var resultado num;
-		si(n < 2) {
-			resultado =  1;
+	num funcion fib (num n) {
+		var prevPrev, prev, result num;
+		var i num;
+		prevPrev = 0;
+		prev = 1;
+		result = 0;
+		i = 2;
+		
+		mientras ( i <= n){
+			result = prev + prevPrev;
+			prevPrev = prev;
+			prev = result;
+			i = i + 1 ;
 		}
-		sino {
-			resultado = n * fac(n-1);
-		}
-		regresa resultado;
+		regresa result;
 	}
 
-	i = fac(5);
+	i = fib(10);
 }

@@ -105,6 +105,7 @@
 
 	int convierteTipo(std::string);
 	int memoriaAUsar(int, std::string);
+	int* traePuntos(int);
 	void actualizaScope(std::string);
 	void actualizaTipoVariables();
 	void agregaFuncion();
@@ -181,7 +182,7 @@ SEM DOU COM DOT DEQ
 program: PROGRAMA ID { scope_actual = "global"; actualizaScope("global");
 	   	cuadruploEstatuto(10); } LBR vars
 	funciones { scope_actual = "global"; actualizaScope("global"); }
-	{ cuadruploMain(); } bloque RBR { cuadruploEnd(); }
+	{ cuadruploMain(); } bloque dibuja RBR { cuadruploEnd(); }
 
 vars: VAR vars2 tipo { tipo_actual = yytext; actualizaTipoVariables(); }
 	SEM vars
@@ -198,7 +199,6 @@ tipo: NUM { agregaVarMemFunc(0, sumar); }
 
 bloque: estatutos bloque
 	  | ciclos bloque
-	  | dibuja bloque
 	  |
 
 estatutos: condicion
@@ -221,8 +221,9 @@ varsss2: COM varsss
 
 funciones: tipo { param_count = 0; tipo_actual = yytext;
 		 tipo_func = yytext; } FUNCION ID
-		{ scope_actual = yytext; func_actual= yytext; actualizaScope("funcion");
-		agregaFuncion(); limpiaContMemoria(); } leftp { sumar = 1;} varss  rightp LBR
+		{scope_actual = yytext; func_actual= yytext; actualizaScope("funcion");
+		agregaFuncion(); limpiaContMemoria(); } leftp 
+		{ sumar = 1; } varss rightp LBR
 		vars { agregaVarMemFunc(3,1); param_count = 0; sumar = 0; }
 		bloque  RBR { scope_actual = "global"; }
 		{ cuadruploEstatuto(11); } funciones
@@ -250,8 +251,8 @@ condicion: SI leftp sexp rightp
 condicion1: SINO { cuadruploEstatuto(1); } LBR bloque RBR
  			|
 
-escritura: IMPRIME leftp escritura1 rightp SEM
-escritura1: exp escritura2
+escritura: IMPRIME leftp escritura1 rightp  SEM
+escritura1: exp { cuadruploEstatuto(12); } escritura2
 escritura2: DOT escritura1
 		  |
 
@@ -280,21 +281,27 @@ termino1: PRO { meterPilaOper(2); } termino
 factor: leftp sexp rightp
 	  | var_cte
 var_cte: cte_bool
-	  	| CTE_NUM { creaConstanteNum(); }
+	  	| cte_nume 
 		| CTE_TEXTO { creaConstanteStr(yytext); }
 		| ID { meterPilaO(); } llamada_opt
+
+cte_nume: CTE_NUM { creaConstanteNum(); }
+
 llamada_opt: llamada
 		   |
 
 cte_bool: VERDADERO { creaConstanteBool(1); }
 		| FALSO { creaConstanteBool(0); }
 
+dibuja: DIBUJA LBR dibuja1 bloque RBR
+	  |
+dibuja1: formas
+	  	|
 
-dibuja: triangulo
+formas: triangulo
 	  | rectangulo
 	  | elipse
 	  | linea
-
 
 por: POR leftp sexp DOU sexp rightp LBR bloque RBR
 
@@ -309,8 +316,9 @@ rectangulo: RECTANGULO leftp CTE_NUM rightp SEM
 elipse: ELIPSE leftp CTE_NUM rightp SEM
 
 linea: LINEA leftp CTE_NUM COM CTE_NUM rightp SEM
-
-triangulo: TRIANGULO leftp CTE_TEXTO COM CTE_NUM rightp SEM
+{ /* Se usan tres puntos para dibujar el triangulo */}
+triangulo: TRIANGULO leftp exp COM exp COM exp COM exp 
+		COM exp COM exp rightp {cuadruploEstatuto(13);} SEM
 
 leftp: LPA { meterPilaOper(11); }
 rightp: RPA { pOper.pop(); }
@@ -340,6 +348,28 @@ int main(int argc, char *argv[]){
 	imprimeVector(vec_cuadruplos);
 	myfile.close();
 	if (!a) printf("Eres un campeon\n");
+}
+
+/**
+* Trae el numero de puntos indicados y devuelve un arreglo con ellos
+**/
+int* traePuntos (int cant) {
+	//std::cout << "TraePuntos" << std::endl;
+	int *puntos = new int[cant];
+	if(pilaO.size() < 5) {
+		std::cout << "Insuficientes valores para generar cuadruplo" 
+		<< std::endl;
+		exit(1);
+	} 
+	std::stack<Node*> aux = pilaO;
+	for (int i = 0; i < cant; i++){
+		Node* var = aux.top();
+		puntos[i] = var->loc_mem;
+		std::cout << i << ": " << var->loc_mem << std::endl;
+		aux.pop();
+	}
+
+	return puntos;
 }
 
 /**
@@ -402,7 +432,8 @@ void imprimeMapaVars() {
 			if (std::string::npos != it->first.find("cN")) {
 				tmp = it->second;
 				myfile << tmp->loc_mem << "," << tmp->valor_num << std::endl;
-				std::cout << tmp->loc_mem << "," << tmp->valor_num << std::endl;
+				std::cout << tmp->loc_mem << "," << tmp->valor_num 
+				<< std::endl;
 			}
 			/*
 			std::cout << "nombre: " << tmp->nombre << std::endl;
@@ -594,7 +625,8 @@ void cuadruploEstatuto(int tipo) {
 		* el case 7 genera el ERA de la función actual,
 		* el case 8 crea los PARAM de las llamadas a funcion,
 		* el case 9 busca el cuadruplo donde inicia para crear el GOSUB
-		+ el case 10 es el primer GOTO y busca el MAIN
+		* el case 10 es el primer GOTO y busca el MAIN
+		* el case 11 imprime un resultado
 		*/
 		case 0: {
 			//std::cout << "Case0" << std::endl;
@@ -698,7 +730,8 @@ void cuadruploEstatuto(int tipo) {
 				pSaltos.pop();
 				sstm5 << "" << retorno;
 				nombre = sstm5.str();
-				//std::cout << "15, " << resultado->nombre << ", -1, " << nombre <<"\n";
+				//std::cout << "15, " << resultado->nombre << ", -1, " 
+				//<< nombre <<"\n";
 				Cuadruplo::Cuadruplo cuad5(15, resultado->loc_mem,
 					 -1, nombre);
 				vec_cuadruplos.push_back(cuad5);
@@ -717,7 +750,8 @@ void cuadruploEstatuto(int tipo) {
 						std::cout << "Error tipos" << std::endl;
 						exit(1);
 					} else {
-						//std::cout << "18, " << retorno->nombre << ", -1, " << "" << "\n";
+						//std::cout << "18, " << retorno->nombre <<
+						// ", -1, " << "" << "\n";
 						Cuadruplo::Cuadruplo cuad6(18,
 							retorno->loc_mem, -1, " ");
 						vec_cuadruplos.push_back(cuad6);
@@ -727,13 +761,7 @@ void cuadruploEstatuto(int tipo) {
 				break;
 			}
 		}
-		case 11: {
-				//std::cout << "18, " << "-1" << ", -1, " << "" << "\n";
-			Cuadruplo::Cuadruplo cuad11(18, -1, -1, " ");
-			vec_cuadruplos.push_back(cuad11);
-			cuad_actual++;
-			break;
-		}
+
 		case 7: {
 			//std::cout << "Case7" << std::endl;
 			//std::cout << "16, " << func_actual << ", w, " << "" << "\n";
@@ -768,7 +796,8 @@ void cuadruploEstatuto(int tipo) {
 					std::stringstream sstm;
 					sstm << "param" << param_count;
 					str = sstm.str();
-					//std::cout << "19, " << var->nombre << var->scope << scope_actual << "\n";
+					//std::cout << "19, " << var->nombre << var->scope 
+					//<< scope_actual << "\n";
 					Cuadruplo::Cuadruplo cuad8(19, var->loc_mem,
 						 -1, str);
 					vec_cuadruplos.push_back(cuad8);
@@ -822,10 +851,46 @@ void cuadruploEstatuto(int tipo) {
 		case 10: {
 			//std::cout << "Case10" << std::endl;
 			//std::cout << "13, " << "-1" << ", -1, " << "___" << "\n";
-			Cuadruplo::Cuadruplo cuad0(13, -1, -1, "___");
-			vec_cuadruplos.push_back(cuad0);
+			Cuadruplo::Cuadruplo cuad10(13, -1, -1, "___");
+			vec_cuadruplos.push_back(cuad10);
 			cuad_actual++;
 			break;
+		}
+		case 11: {
+				//std::cout << "18, " << "-1" << ", -1, " << "" << "\n";
+			Cuadruplo::Cuadruplo cuad11(18, -1, -1, " ");
+			vec_cuadruplos.push_back(cuad11);
+			cuad_actual++;
+			break;
+		}
+		case 12: {
+			//std::cout << "Case 13" << std::endl;
+			//std::cout << "20, " << var->loc_mem << "-1, \n";
+			if (pilaO.empty()) {
+				std::cout << "12 Error " << std::endl;
+				exit(1);
+			} 
+			Node* var = pilaO.top();
+			Cuadruplo::Cuadruplo cuad12(20, var->loc_mem, -1, "");
+			vec_cuadruplos.push_back(cuad12);
+			cuad_actual++;
+			break;
+		}
+		case 13: {
+			//std::cout << "Case 13" << std::endl;
+			//std::cout << "21, " << var->loc_mem << "-1, \n";
+			if (pilaO.empty()) {
+				std::cout << "13 Error " << std::endl;
+				exit(1);
+			}
+			int *points = traePuntos(6);
+			Cuadruplo::Cuadruplo cuad13a(21, points[0], points[1], points[2]);
+			Cuadruplo::Cuadruplo cuad13b(21, points[3], points[4], points[5]);
+			vec_cuadruplos.push_back(cuad13a);
+			cuad_actual++;
+			vec_cuadruplos.push_back(cuad13b);
+			cuad_actual++;
+
 		}
 	}
 //	std::cout << "sali cuadruploEstatuto" << std::endl;
@@ -861,7 +926,7 @@ void checaOperador(int a) {
 
 			if (operador == 11 || operador == 12){
 			} else if (operador == 4) {
-				imprimePila(pilaO);
+				//imprimePila(pilaO);
 				tmp2 = pilaO.top();
 				pilaO.pop();
 				tmp1 = pilaO.top();
@@ -872,7 +937,8 @@ void checaOperador(int a) {
 					std::string str;
 					sstm << "" << tmp2->loc_mem;
 					str = sstm.str();
-					//std::cout << operador << ", " << tmp2->nombre << ", -1, " << tmp1->nombre << "\n";
+					//std::cout << operador << ", " << tmp2->nombre 
+					//<< ", -1, " << tmp1->nombre << "\n";
 					Cuadruplo::Cuadruplo cuad(operador, tmp2->loc_mem,
 						-1, tmp1->loc_mem);
 					vec_cuadruplos.push_back(cuad);
@@ -903,7 +969,8 @@ void checaOperador(int a) {
 					meterPilaO();
 					tmp_actual++;
 					var = pilaO.top();
-					//std::cout << operador << ", " << tmp1->nombre << ", " << tmp2->nombre << ", " << var->nombre << "\n";
+					//std::cout << operador << ", " << tmp1->nombre << 
+					//", " << tmp2->nombre << ", " << var->nombre << "\n";
 					Cuadruplo::Cuadruplo cuad(operador, tmp1->loc_mem,
 						tmp2->loc_mem, var->loc_mem);
 					cuad_actual++;
@@ -938,7 +1005,8 @@ void checaOperador(int a) {
 					var = pilaO.top();
 					if(!pOper.empty()) pOper.pop();
 					else {std::cout << "Error mil" << std::endl;}
-					//std::cout << operador << ", " << tmp1->nombre << ", " << tmp2->nombre << ", " << var->nombre << "\n";
+					//std::cout << operador << ", " << tmp1->nombre << ", " 
+					//<< tmp2->nombre << ", " << var->nombre << "\n";
 					Cuadruplo::Cuadruplo cuad(operador, tmp1->loc_mem,
 						tmp2->loc_mem, var->loc_mem);
 					vec_cuadruplos.push_back(cuad);

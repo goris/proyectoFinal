@@ -41,7 +41,7 @@ ehthumbs.db
 Thumbs.db
 
 # Other Dirs
-MV/
+MV/*
 docs/
 docs
 MV

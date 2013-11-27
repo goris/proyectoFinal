@@ -178,10 +178,10 @@ Grammar
   106 dibuja1: formas
   107        | /* empty */
 
-  108 formas: triangulo
-  109       | rectangulo
-  110       | elipse
-  111       | linea
+  108 formas: triangulo dibuja1
+  109       | rectangulo dibuja1
+  110       | elipse dibuja1
+  111       | linea dibuja1
 
   112 por: POR leftp sexp DOU sexp rightp LBR bloque RBR
 
@@ -197,19 +197,25 @@ Grammar
 
   118 mientras: MIENTRAS @30 leftp sexp rightp @31 LBR bloque RBR
 
-  119 rectangulo: RECTANGULO leftp CTE_NUM rightp SEM
+  119 @32: /* empty */
 
-  120 elipse: ELIPSE leftp CTE_NUM rightp SEM
+  120 linea: LINEA leftp exp COM exp COM exp COM exp rightp @32 SEM
 
-  121 linea: LINEA leftp CTE_NUM COM CTE_NUM rightp SEM
+  121 @33: /* empty */
 
-  122 @32: /* empty */
+  122 rectangulo: RECTANGULO leftp exp COM exp COM exp COM exp @33 rightp SEM
 
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @32 SEM
+  123 @34: /* empty */
 
-  124 leftp: LPA
+  124 elipse: ELIPSE leftp exp COM exp COM exp COM exp @34 rightp SEM
 
-  125 rightp: RPA
+  125 @35: /* empty */
+
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
+
+  127 leftp: LPA
+
+  128 rightp: RPA
 
 
 Terminals, with rules where they appear
@@ -231,13 +237,13 @@ SINO (269) 58
 HAZ (270) 115
 POR (271) 112
 MIENTRAS (272) 115 118
-LINEA (273) 121
-RECTANGULO (274) 119
-TRIANGULO (275) 123
-ELIPSE (276) 120
+LINEA (273) 120
+RECTANGULO (274) 122
+TRIANGULO (275) 126
+ELIPSE (276) 124
 VERDADERO (277) 102
 FALSO (278) 103
-CTE_NUM (279) 10 34 50 99 119 120 121
+CTE_NUM (279) 10 34 50 99
 CTE_TEXTO (280) 96
 ID (281) 4 9 26 42 48 98
 SUM (282) 81
@@ -250,15 +256,15 @@ GT (288) 72
 LTE (289) 74
 GTE (290) 75
 DIF (291) 73
-LPA (292) 124
-RPA (293) 125
+LPA (292) 127
+RPA (293) 128
 LBR (294) 4 42 56 58 104 112 115 118
 RBR (295) 4 42 56 58 104 112 115 118
 LSQ (296) 10 34 50
 RSQ (297) 10 34 50
-SEM (298) 6 24 28 53 60 115 119 120 121 123
+SEM (298) 6 24 28 53 60 115 120 122 124 126
 DOU (299) 112
-COM (300) 11 33 49 121 123
+COM (300) 11 33 49 120 122 124 126
 DOT (301) 63
 DEQ (302) 76
 
@@ -364,7 +370,7 @@ expresion1 (95)
 operadores (96)
     on left: 71 72 73 74 75 76 77, on right: 69
 exp (97)
-    on left: 79, on right: 62 68 69 81 83 123
+    on left: 79, on right: 62 68 69 81 83 120 122 124 126
 @21 (98)
     on left: 78, on right: 79
 exp1 (99)
@@ -398,7 +404,7 @@ cte_bool (112)
 dibuja (113)
     on left: 104 105, on right: 4
 dibuja1 (114)
-    on left: 106 107, on right: 104
+    on left: 106 107, on right: 104 108 109 110 111
 formas (115)
     on left: 108 109 110 111, on right: 106
 por (116)
@@ -415,22 +421,28 @@ mientras (120)
     on left: 116, on right: 118
 @31 (122)
     on left: 117, on right: 118
-rectangulo (123)
-    on left: 119, on right: 109
-elipse (124)
-    on left: 120, on right: 110
-linea (125)
-    on left: 121, on right: 111
-triangulo (126)
-    on left: 123, on right: 108
-@32 (127)
-    on left: 122, on right: 123
-leftp (128)
-    on left: 124, on right: 30 42 56 60 92 112 115 118 119 120 121
-    123
-rightp (129)
-    on left: 125, on right: 30 42 56 60 92 112 115 118 119 120 121
-    123
+linea (123)
+    on left: 120, on right: 111
+@32 (124)
+    on left: 119, on right: 120
+rectangulo (125)
+    on left: 122, on right: 109
+@33 (126)
+    on left: 121, on right: 122
+elipse (127)
+    on left: 124, on right: 110
+@34 (128)
+    on left: 123, on right: 124
+triangulo (129)
+    on left: 126, on right: 108
+@35 (130)
+    on left: 125, on right: 126
+leftp (131)
+    on left: 127, on right: 30 42 56 60 92 112 115 118 120 122 124
+    126
+rightp (132)
+    on left: 128, on right: 30 42 56 60 92 112 115 118 120 122 124
+    126
 
 
 state 0
@@ -762,7 +774,7 @@ state 30
 state 31
 
    60 escritura: IMPRIME . leftp escritura1 rightp SEM
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -784,7 +796,7 @@ state 32
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -806,7 +818,7 @@ state 32
 state 33
 
    56 condicion: SI . leftp sexp rightp LBR @18 bloque RBR condicion1
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -826,7 +838,7 @@ state 34
 state 35
 
   112 por: POR . leftp sexp DOU sexp rightp LBR bloque RBR
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -1026,7 +1038,7 @@ state 49
 state 50
 
    42 funciones: tipo @9 FUNCION ID @10 . leftp @11 varss rightp LBR vars @12 bloque RBR @13 @14 funciones
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -1035,9 +1047,9 @@ state 50
 
 state 51
 
-  124 leftp: LPA .
+  127 leftp: LPA .
 
-    $default  reduce using rule 124 (leftp)
+    $default  reduce using rule 127 (leftp)
 
 
 state 52
@@ -1055,7 +1067,7 @@ state 52
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1202,7 +1214,7 @@ state 65
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1236,7 +1248,7 @@ state 66
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1277,7 +1289,7 @@ state 68
   102 cte_bool: . VERDADERO
   103         | . FALSO
   112 por: POR leftp . sexp DOU sexp rightp LBR bloque RBR
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1299,7 +1311,7 @@ state 68
 state 69
 
   118 mientras: MIENTRAS @30 . leftp sexp rightp @31 LBR bloque RBR
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -1313,7 +1325,7 @@ state 70
    28         | . llamada SEM
    30 llamada: . leftp @7 varsss rightp
    53 asignacion: . EQU @17 asignacion1 SEM
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     EQU  shift, and go to state 97
     LPA  shift, and go to state 51
@@ -1372,7 +1384,7 @@ state 76
 state 77
 
    60 escritura: IMPRIME leftp escritura1 . rightp SEM
-  125 rightp: . RPA
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
@@ -1395,7 +1407,7 @@ state 79
    98 var_cte: ID @27 . llamada_opt
   100 llamada_opt: . llamada
   101            | .  [SUM, MIN, PRO, DIV, EQU, LT, GT, LTE, GTE, DIF, RPA, LSQ, SEM, DOU, COM, DOT, DEQ]
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -1483,7 +1495,7 @@ state 89
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1534,7 +1546,7 @@ state 91
 state 92
 
    92 factor: leftp sexp . rightp
-  125 rightp: . RPA
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
@@ -1544,7 +1556,7 @@ state 92
 state 93
 
    56 condicion: SI leftp sexp . rightp LBR @18 bloque RBR condicion1
-  125 rightp: . RPA
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
@@ -1616,7 +1628,7 @@ state 96
   102 cte_bool: . VERDADERO
   103         | . FALSO
   118 mientras: MIENTRAS @30 leftp . sexp rightp @31 LBR bloque RBR
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1681,14 +1693,14 @@ state 102
   104 dibuja: DIBUJA LBR . dibuja1 bloque RBR
   106 dibuja1: . formas
   107        | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, ID, RBR]
-  108 formas: . triangulo
-  109       | . rectangulo
-  110       | . elipse
-  111       | . linea
-  119 rectangulo: . RECTANGULO leftp CTE_NUM rightp SEM
-  120 elipse: . ELIPSE leftp CTE_NUM rightp SEM
-  121 linea: . LINEA leftp CTE_NUM COM CTE_NUM rightp SEM
-  123 triangulo: . TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @32 SEM
+  108 formas: . triangulo dibuja1
+  109       | . rectangulo dibuja1
+  110       | . elipse dibuja1
+  111       | . linea dibuja1
+  120 linea: . LINEA leftp exp COM exp COM exp COM exp rightp @32 SEM
+  122 rectangulo: . RECTANGULO leftp exp COM exp COM exp COM exp @33 rightp SEM
+  124 elipse: . ELIPSE leftp exp COM exp COM exp COM exp @34 rightp SEM
+  126 triangulo: . TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
 
     LINEA       shift, and go to state 125
     RECTANGULO  shift, and go to state 126
@@ -1699,9 +1711,9 @@ state 102
 
     dibuja1     go to state 129
     formas      go to state 130
-    rectangulo  go to state 131
-    elipse      go to state 132
-    linea       go to state 133
+    linea       go to state 131
+    rectangulo  go to state 132
+    elipse      go to state 133
     triangulo   go to state 134
 
 
@@ -1737,9 +1749,9 @@ state 104
 
 state 105
 
-  125 rightp: RPA .
+  128 rightp: RPA .
 
-    $default  reduce using rule 125 (rightp)
+    $default  reduce using rule 128 (rightp)
 
 
 state 106
@@ -1873,7 +1885,7 @@ state 120
   102 cte_bool: . VERDADERO
   103         | . FALSO
   112 por: POR leftp sexp DOU . sexp rightp LBR bloque RBR
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1895,7 +1907,7 @@ state 120
 state 121
 
   118 mientras: MIENTRAS @30 leftp sexp . rightp @31 LBR bloque RBR
-  125 rightp: . RPA
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
@@ -1918,7 +1930,7 @@ state 122
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1961,7 +1973,7 @@ state 124
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -1983,8 +1995,8 @@ state 124
 
 state 125
 
-  121 linea: LINEA . leftp CTE_NUM COM CTE_NUM rightp SEM
-  124 leftp: . LPA
+  120 linea: LINEA . leftp exp COM exp COM exp COM exp rightp @32 SEM
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -1993,8 +2005,8 @@ state 125
 
 state 126
 
-  119 rectangulo: RECTANGULO . leftp CTE_NUM rightp SEM
-  124 leftp: . LPA
+  122 rectangulo: RECTANGULO . leftp exp COM exp COM exp COM exp @33 rightp SEM
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -2003,8 +2015,8 @@ state 126
 
 state 127
 
-  123 triangulo: TRIANGULO . leftp exp COM exp COM exp COM exp COM exp COM exp rightp @32 SEM
-  124 leftp: . LPA
+  126 triangulo: TRIANGULO . leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -2013,8 +2025,8 @@ state 127
 
 state 128
 
-  120 elipse: ELIPSE . leftp CTE_NUM rightp SEM
-  124 leftp: . LPA
+  124 elipse: ELIPSE . leftp exp COM exp COM exp COM exp @34 rightp SEM
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
@@ -2073,30 +2085,118 @@ state 130
 
 state 131
 
-  109 formas: rectangulo .
+  106 dibuja1: . formas
+  107        | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, ID, RBR]
+  108 formas: . triangulo dibuja1
+  109       | . rectangulo dibuja1
+  110       | . elipse dibuja1
+  111       | . linea dibuja1
+  111       | linea . dibuja1
+  120 linea: . LINEA leftp exp COM exp COM exp COM exp rightp @32 SEM
+  122 rectangulo: . RECTANGULO leftp exp COM exp COM exp COM exp @33 rightp SEM
+  124 elipse: . ELIPSE leftp exp COM exp COM exp COM exp @34 rightp SEM
+  126 triangulo: . TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
 
-    $default  reduce using rule 109 (formas)
+    LINEA       shift, and go to state 125
+    RECTANGULO  shift, and go to state 126
+    TRIANGULO   shift, and go to state 127
+    ELIPSE      shift, and go to state 128
+
+    $default  reduce using rule 107 (dibuja1)
+
+    dibuja1     go to state 158
+    formas      go to state 130
+    linea       go to state 131
+    rectangulo  go to state 132
+    elipse      go to state 133
+    triangulo   go to state 134
 
 
 state 132
 
-  110 formas: elipse .
+  106 dibuja1: . formas
+  107        | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, ID, RBR]
+  108 formas: . triangulo dibuja1
+  109       | . rectangulo dibuja1
+  109       | rectangulo . dibuja1
+  110       | . elipse dibuja1
+  111       | . linea dibuja1
+  120 linea: . LINEA leftp exp COM exp COM exp COM exp rightp @32 SEM
+  122 rectangulo: . RECTANGULO leftp exp COM exp COM exp COM exp @33 rightp SEM
+  124 elipse: . ELIPSE leftp exp COM exp COM exp COM exp @34 rightp SEM
+  126 triangulo: . TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
 
-    $default  reduce using rule 110 (formas)
+    LINEA       shift, and go to state 125
+    RECTANGULO  shift, and go to state 126
+    TRIANGULO   shift, and go to state 127
+    ELIPSE      shift, and go to state 128
+
+    $default  reduce using rule 107 (dibuja1)
+
+    dibuja1     go to state 159
+    formas      go to state 130
+    linea       go to state 131
+    rectangulo  go to state 132
+    elipse      go to state 133
+    triangulo   go to state 134
 
 
 state 133
 
-  111 formas: linea .
+  106 dibuja1: . formas
+  107        | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, ID, RBR]
+  108 formas: . triangulo dibuja1
+  109       | . rectangulo dibuja1
+  110       | . elipse dibuja1
+  110       | elipse . dibuja1
+  111       | . linea dibuja1
+  120 linea: . LINEA leftp exp COM exp COM exp COM exp rightp @32 SEM
+  122 rectangulo: . RECTANGULO leftp exp COM exp COM exp COM exp @33 rightp SEM
+  124 elipse: . ELIPSE leftp exp COM exp COM exp COM exp @34 rightp SEM
+  126 triangulo: . TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
 
-    $default  reduce using rule 111 (formas)
+    LINEA       shift, and go to state 125
+    RECTANGULO  shift, and go to state 126
+    TRIANGULO   shift, and go to state 127
+    ELIPSE      shift, and go to state 128
+
+    $default  reduce using rule 107 (dibuja1)
+
+    dibuja1     go to state 160
+    formas      go to state 130
+    linea       go to state 131
+    rectangulo  go to state 132
+    elipse      go to state 133
+    triangulo   go to state 134
 
 
 state 134
 
-  108 formas: triangulo .
+  106 dibuja1: . formas
+  107        | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, ID, RBR]
+  108 formas: . triangulo dibuja1
+  108       | triangulo . dibuja1
+  109       | . rectangulo dibuja1
+  110       | . elipse dibuja1
+  111       | . linea dibuja1
+  120 linea: . LINEA leftp exp COM exp COM exp COM exp rightp @32 SEM
+  122 rectangulo: . RECTANGULO leftp exp COM exp COM exp COM exp @33 rightp SEM
+  124 elipse: . ELIPSE leftp exp COM exp COM exp COM exp @34 rightp SEM
+  126 triangulo: . TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
 
-    $default  reduce using rule 108 (formas)
+    LINEA       shift, and go to state 125
+    RECTANGULO  shift, and go to state 126
+    TRIANGULO   shift, and go to state 127
+    ELIPSE      shift, and go to state 128
+
+    $default  reduce using rule 107 (dibuja1)
+
+    dibuja1     go to state 161
+    formas      go to state 130
+    linea       go to state 131
+    rectangulo  go to state 132
+    elipse      go to state 133
+    triangulo   go to state 134
 
 
 state 135
@@ -2106,17 +2206,17 @@ state 135
 
     $default  reduce using rule 46 (@15)
 
-    @15  go to state 158
+    @15  go to state 162
 
 
 state 136
 
    42 funciones: tipo @9 FUNCION ID @10 leftp @11 varss . rightp LBR vars @12 bloque RBR @13 @14 funciones
-  125 rightp: . RPA
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
-    rightp  go to state 159
+    rightp  go to state 163
 
 
 state 137
@@ -2148,7 +2248,7 @@ state 139
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2157,7 +2257,7 @@ state 139
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    escritura1  go to state 160
+    escritura1  go to state 164
     exp         go to state 78
     termino     go to state 60
     factor      go to state 61
@@ -2188,7 +2288,7 @@ state 141
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2197,7 +2297,7 @@ state 141
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    exp       go to state 161
+    exp       go to state 165
     termino   go to state 60
     factor    go to state 61
     var_cte   go to state 62
@@ -2220,7 +2320,7 @@ state 142
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2229,7 +2329,7 @@ state 142
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    exp       go to state 162
+    exp       go to state 166
     termino   go to state 60
     factor    go to state 61
     var_cte   go to state 62
@@ -2251,7 +2351,7 @@ state 143
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2260,7 +2360,7 @@ state 143
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    termino   go to state 163
+    termino   go to state 167
     factor    go to state 61
     var_cte   go to state 62
     cte_nume  go to state 63
@@ -2281,7 +2381,7 @@ state 144
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2290,7 +2390,7 @@ state 144
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    termino   go to state 164
+    termino   go to state 168
     factor    go to state 61
     var_cte   go to state 62
     cte_nume  go to state 63
@@ -2305,24 +2405,24 @@ state 145
 
     $default  reduce using rule 55 (@18)
 
-    @18  go to state 165
+    @18  go to state 169
 
 
 state 146
 
   115 haz: HAZ @28 LBR bloque RBR . MIENTRAS leftp sexp rightp @29 SEM
 
-    MIENTRAS  shift, and go to state 166
+    MIENTRAS  shift, and go to state 170
 
 
 state 147
 
   112 por: POR leftp sexp DOU sexp . rightp LBR bloque RBR
-  125 rightp: . RPA
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
-    rightp  go to state 167
+    rightp  go to state 171
 
 
 state 148
@@ -2332,14 +2432,14 @@ state 148
 
     $default  reduce using rule 117 (@31)
 
-    @31  go to state 168
+    @31  go to state 172
 
 
 state 149
 
    53 asignacion: EQU @17 asignacion1 . SEM
 
-    SEM  shift, and go to state 169
+    SEM  shift, and go to state 173
 
 
 state 150
@@ -2352,11 +2452,11 @@ state 150
 state 151
 
    30 llamada: leftp @7 varsss . rightp
-  125 rightp: . RPA
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
-    rightp  go to state 170
+    rightp  go to state 174
 
 
 state 152
@@ -2366,21 +2466,71 @@ state 152
 
     $default  reduce using rule 31 (@8)
 
-    @8  go to state 171
+    @8  go to state 175
 
 
 state 153
 
-  121 linea: LINEA leftp . CTE_NUM COM CTE_NUM rightp SEM
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  120 linea: LINEA leftp . exp COM exp COM exp COM exp rightp @32 SEM
+  127 leftp: . LPA
 
-    CTE_NUM  shift, and go to state 172
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 176
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
 
 
 state 154
 
-  119 rectangulo: RECTANGULO leftp . CTE_NUM rightp SEM
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  122 rectangulo: RECTANGULO leftp . exp COM exp COM exp COM exp @33 rightp SEM
+  127 leftp: . LPA
 
-    CTE_NUM  shift, and go to state 173
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 177
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
 
 
 state 155
@@ -2396,8 +2546,8 @@ state 155
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  123 triangulo: TRIANGULO leftp . exp COM exp COM exp COM exp COM exp COM exp rightp @32 SEM
-  124 leftp: . LPA
+  126 triangulo: TRIANGULO leftp . exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2406,7 +2556,7 @@ state 155
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    exp       go to state 174
+    exp       go to state 178
     termino   go to state 60
     factor    go to state 61
     var_cte   go to state 62
@@ -2417,68 +2567,121 @@ state 155
 
 state 156
 
-  120 elipse: ELIPSE leftp . CTE_NUM rightp SEM
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  124 elipse: ELIPSE leftp . exp COM exp COM exp COM exp @34 rightp SEM
+  127 leftp: . LPA
 
-    CTE_NUM  shift, and go to state 175
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 179
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
 
 
 state 157
 
   104 dibuja: DIBUJA LBR dibuja1 bloque . RBR
 
-    RBR  shift, and go to state 176
+    RBR  shift, and go to state 180
 
 
 state 158
 
-   48 varss2: tipo @15 . ID @16 varss3
+  111 formas: linea dibuja1 .
 
-    ID  shift, and go to state 177
+    $default  reduce using rule 111 (formas)
 
 
 state 159
 
-   42 funciones: tipo @9 FUNCION ID @10 leftp @11 varss rightp . LBR vars @12 bloque RBR @13 @14 funciones
+  109 formas: rectangulo dibuja1 .
 
-    LBR  shift, and go to state 178
+    $default  reduce using rule 109 (formas)
 
 
 state 160
+
+  110 formas: elipse dibuja1 .
+
+    $default  reduce using rule 110 (formas)
+
+
+state 161
+
+  108 formas: triangulo dibuja1 .
+
+    $default  reduce using rule 108 (formas)
+
+
+state 162
+
+   48 varss2: tipo @15 . ID @16 varss3
+
+    ID  shift, and go to state 181
+
+
+state 163
+
+   42 funciones: tipo @9 FUNCION ID @10 leftp @11 varss rightp . LBR vars @12 bloque RBR @13 @14 funciones
+
+    LBR  shift, and go to state 182
+
+
+state 164
 
    63 escritura2: DOT escritura1 .
 
     $default  reduce using rule 63 (escritura2)
 
 
-state 161
+state 165
 
    81 exp1: SUM @22 exp .
 
     $default  reduce using rule 81 (exp1)
 
 
-state 162
+state 166
 
    83 exp1: MIN @23 exp .
 
     $default  reduce using rule 83 (exp1)
 
 
-state 163
+state 167
 
    88 termino1: PRO @25 termino .
 
     $default  reduce using rule 88 (termino1)
 
 
-state 164
+state 168
 
    90 termino1: DIV @26 termino .
 
     $default  reduce using rule 90 (termino1)
 
 
-state 165
+state 169
 
    17 bloque: . estatutos bloque
    18       | . ciclos bloque
@@ -2509,7 +2712,7 @@ state 165
 
     $default  reduce using rule 19 (bloque)
 
-    bloque        go to state 179
+    bloque        go to state 183
     estatutos     go to state 39
     funciones1    go to state 40
     asig_llamada  go to state 41
@@ -2521,111 +2724,105 @@ state 165
     mientras      go to state 47
 
 
-state 166
+state 170
 
   115 haz: HAZ @28 LBR bloque RBR MIENTRAS . leftp sexp rightp @29 SEM
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     LPA  shift, and go to state 51
 
-    leftp  go to state 180
+    leftp  go to state 184
 
 
-state 167
+state 171
 
   112 por: POR leftp sexp DOU sexp rightp . LBR bloque RBR
 
-    LBR  shift, and go to state 181
+    LBR  shift, and go to state 185
 
 
-state 168
+state 172
 
   118 mientras: MIENTRAS @30 leftp sexp rightp @31 . LBR bloque RBR
 
-    LBR  shift, and go to state 182
+    LBR  shift, and go to state 186
 
 
-state 169
+state 173
 
    53 asignacion: EQU @17 asignacion1 SEM .
 
     $default  reduce using rule 53 (asignacion)
 
 
-state 170
+state 174
 
    30 llamada: leftp @7 varsss rightp .
 
     $default  reduce using rule 30 (llamada)
 
 
-state 171
+state 175
 
    32 varsss: sexp @8 . varsss2
    33 varsss2: . COM varsss
    34        | . LSQ CTE_NUM RSQ varsss2
    35        | .  [RPA]
 
-    LSQ  shift, and go to state 183
-    COM  shift, and go to state 184
+    LSQ  shift, and go to state 187
+    COM  shift, and go to state 188
 
     $default  reduce using rule 35 (varsss2)
 
-    varsss2  go to state 185
-
-
-state 172
-
-  121 linea: LINEA leftp CTE_NUM . COM CTE_NUM rightp SEM
-
-    COM  shift, and go to state 186
-
-
-state 173
-
-  119 rectangulo: RECTANGULO leftp CTE_NUM . rightp SEM
-  125 rightp: . RPA
-
-    RPA  shift, and go to state 105
-
-    rightp  go to state 187
-
-
-state 174
-
-  123 triangulo: TRIANGULO leftp exp . COM exp COM exp COM exp COM exp COM exp rightp @32 SEM
-
-    COM  shift, and go to state 188
-
-
-state 175
-
-  120 elipse: ELIPSE leftp CTE_NUM . rightp SEM
-  125 rightp: . RPA
-
-    RPA  shift, and go to state 105
-
-    rightp  go to state 189
+    varsss2  go to state 189
 
 
 state 176
+
+  120 linea: LINEA leftp exp . COM exp COM exp COM exp rightp @32 SEM
+
+    COM  shift, and go to state 190
+
+
+state 177
+
+  122 rectangulo: RECTANGULO leftp exp . COM exp COM exp COM exp @33 rightp SEM
+
+    COM  shift, and go to state 191
+
+
+state 178
+
+  126 triangulo: TRIANGULO leftp exp . COM exp COM exp COM exp COM exp COM exp rightp @35 SEM
+
+    COM  shift, and go to state 192
+
+
+state 179
+
+  124 elipse: ELIPSE leftp exp . COM exp COM exp COM exp @34 rightp SEM
+
+    COM  shift, and go to state 193
+
+
+state 180
 
   104 dibuja: DIBUJA LBR dibuja1 bloque RBR .
 
     $default  reduce using rule 104 (dibuja)
 
 
-state 177
+state 181
 
    47 @16: .
    48 varss2: tipo @15 ID . @16 varss3
 
     $default  reduce using rule 47 (@16)
 
-    @16  go to state 190
+    @16  go to state 194
 
 
-state 178
+state 182
 
     6 vars: . VAR vars2 tipo @4 SEM vars
     7     | .  [IMPRIME, REGRESA, SI, HAZ, POR, MIENTRAS, ID, RBR]
@@ -2635,17 +2832,17 @@ state 178
 
     $default  reduce using rule 7 (vars)
 
-    vars  go to state 191
+    vars  go to state 195
 
 
-state 179
+state 183
 
    56 condicion: SI leftp sexp rightp LBR @18 bloque . RBR condicion1
 
-    RBR  shift, and go to state 192
+    RBR  shift, and go to state 196
 
 
-state 180
+state 184
 
    68 sexp: . exp expresion1
    79 exp: . termino @21 exp1
@@ -2660,7 +2857,7 @@ state 180
   102 cte_bool: . VERDADERO
   103         | . FALSO
   115 haz: HAZ @28 LBR bloque RBR MIENTRAS leftp . sexp rightp @29 SEM
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2669,7 +2866,7 @@ state 180
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    sexp      go to state 193
+    sexp      go to state 197
     exp       go to state 59
     termino   go to state 60
     factor    go to state 61
@@ -2679,7 +2876,7 @@ state 180
     leftp     go to state 65
 
 
-state 181
+state 185
 
    17 bloque: . estatutos bloque
    18       | . ciclos bloque
@@ -2710,7 +2907,7 @@ state 181
 
     $default  reduce using rule 19 (bloque)
 
-    bloque        go to state 194
+    bloque        go to state 198
     estatutos     go to state 39
     funciones1    go to state 40
     asig_llamada  go to state 41
@@ -2722,7 +2919,7 @@ state 181
     mientras      go to state 47
 
 
-state 182
+state 186
 
    17 bloque: . estatutos bloque
    18       | . ciclos bloque
@@ -2753,7 +2950,7 @@ state 182
 
     $default  reduce using rule 19 (bloque)
 
-    bloque        go to state 195
+    bloque        go to state 199
     estatutos     go to state 39
     funciones1    go to state 40
     asig_llamada  go to state 41
@@ -2765,14 +2962,14 @@ state 182
     mientras      go to state 47
 
 
-state 183
+state 187
 
    34 varsss2: LSQ . CTE_NUM RSQ varsss2
 
-    CTE_NUM  shift, and go to state 196
+    CTE_NUM  shift, and go to state 200
 
 
-state 184
+state 188
 
    32 varsss: . sexp @8 varsss2
    33 varsss2: COM . varsss
@@ -2788,7 +2985,7 @@ state 184
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  124 leftp: . LPA
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2797,7 +2994,7 @@ state 184
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    varsss    go to state 197
+    varsss    go to state 201
     sexp      go to state 152
     exp       go to state 59
     termino   go to state 60
@@ -2808,28 +3005,14 @@ state 184
     leftp     go to state 65
 
 
-state 185
+state 189
 
    32 varsss: sexp @8 varsss2 .
 
     $default  reduce using rule 32 (varsss)
 
 
-state 186
-
-  121 linea: LINEA leftp CTE_NUM COM . CTE_NUM rightp SEM
-
-    CTE_NUM  shift, and go to state 198
-
-
-state 187
-
-  119 rectangulo: RECTANGULO leftp CTE_NUM rightp . SEM
-
-    SEM  shift, and go to state 199
-
-
-state 188
+state 190
 
    79 exp: . termino @21 exp1
    86 termino: . factor @24 termino1
@@ -2842,8 +3025,8 @@ state 188
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  123 triangulo: TRIANGULO leftp exp COM . exp COM exp COM exp COM exp COM exp rightp @32 SEM
-  124 leftp: . LPA
+  120 linea: LINEA leftp exp COM . exp COM exp COM exp rightp @32 SEM
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -2852,7 +3035,7 @@ state 188
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    exp       go to state 200
+    exp       go to state 202
     termino   go to state 60
     factor    go to state 61
     var_cte   go to state 62
@@ -2861,128 +3044,214 @@ state 188
     leftp     go to state 65
 
 
-state 189
+state 191
 
-  120 elipse: ELIPSE leftp CTE_NUM rightp . SEM
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  122 rectangulo: RECTANGULO leftp exp COM . exp COM exp COM exp @33 rightp SEM
+  127 leftp: . LPA
 
-    SEM  shift, and go to state 201
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 203
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
 
 
-state 190
+state 192
+
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  126 triangulo: TRIANGULO leftp exp COM . exp COM exp COM exp COM exp COM exp rightp @35 SEM
+  127 leftp: . LPA
+
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 204
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
+
+
+state 193
+
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  124 elipse: ELIPSE leftp exp COM . exp COM exp COM exp @34 rightp SEM
+  127 leftp: . LPA
+
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 205
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
+
+
+state 194
 
    48 varss2: tipo @15 ID @16 . varss3
    49 varss3: . COM varss2
    50       | . LSQ CTE_NUM RSQ varss3
    51       | .  [RPA]
 
-    LSQ  shift, and go to state 202
-    COM  shift, and go to state 203
+    LSQ  shift, and go to state 206
+    COM  shift, and go to state 207
 
     $default  reduce using rule 51 (varss3)
 
-    varss3  go to state 204
+    varss3  go to state 208
 
 
-state 191
+state 195
 
    39 @12: .
    42 funciones: tipo @9 FUNCION ID @10 leftp @11 varss rightp LBR vars . @12 bloque RBR @13 @14 funciones
 
     $default  reduce using rule 39 (@12)
 
-    @12  go to state 205
+    @12  go to state 209
 
 
-state 192
+state 196
 
    56 condicion: SI leftp sexp rightp LBR @18 bloque RBR . condicion1
    58 condicion1: . SINO @19 LBR bloque RBR
    59           | .  [IMPRIME, DIBUJA, REGRESA, SI, HAZ, POR, MIENTRAS, ID, RBR]
 
-    SINO  shift, and go to state 206
+    SINO  shift, and go to state 210
 
     $default  reduce using rule 59 (condicion1)
 
-    condicion1  go to state 207
-
-
-state 193
-
-  115 haz: HAZ @28 LBR bloque RBR MIENTRAS leftp sexp . rightp @29 SEM
-  125 rightp: . RPA
-
-    RPA  shift, and go to state 105
-
-    rightp  go to state 208
-
-
-state 194
-
-  112 por: POR leftp sexp DOU sexp rightp LBR bloque . RBR
-
-    RBR  shift, and go to state 209
-
-
-state 195
-
-  118 mientras: MIENTRAS @30 leftp sexp rightp @31 LBR bloque . RBR
-
-    RBR  shift, and go to state 210
-
-
-state 196
-
-   34 varsss2: LSQ CTE_NUM . RSQ varsss2
-
-    RSQ  shift, and go to state 211
+    condicion1  go to state 211
 
 
 state 197
 
-   33 varsss2: COM varsss .
-
-    $default  reduce using rule 33 (varsss2)
-
-
-state 198
-
-  121 linea: LINEA leftp CTE_NUM COM CTE_NUM . rightp SEM
-  125 rightp: . RPA
+  115 haz: HAZ @28 LBR bloque RBR MIENTRAS leftp sexp . rightp @29 SEM
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
     rightp  go to state 212
 
 
+state 198
+
+  112 por: POR leftp sexp DOU sexp rightp LBR bloque . RBR
+
+    RBR  shift, and go to state 213
+
+
 state 199
 
-  119 rectangulo: RECTANGULO leftp CTE_NUM rightp SEM .
+  118 mientras: MIENTRAS @30 leftp sexp rightp @31 LBR bloque . RBR
 
-    $default  reduce using rule 119 (rectangulo)
+    RBR  shift, and go to state 214
 
 
 state 200
 
-  123 triangulo: TRIANGULO leftp exp COM exp . COM exp COM exp COM exp COM exp rightp @32 SEM
+   34 varsss2: LSQ CTE_NUM . RSQ varsss2
 
-    COM  shift, and go to state 213
+    RSQ  shift, and go to state 215
 
 
 state 201
 
-  120 elipse: ELIPSE leftp CTE_NUM rightp SEM .
+   33 varsss2: COM varsss .
 
-    $default  reduce using rule 120 (elipse)
+    $default  reduce using rule 33 (varsss2)
 
 
 state 202
 
-   50 varss3: LSQ . CTE_NUM RSQ varss3
+  120 linea: LINEA leftp exp COM exp . COM exp COM exp rightp @32 SEM
 
-    CTE_NUM  shift, and go to state 214
+    COM  shift, and go to state 216
 
 
 state 203
+
+  122 rectangulo: RECTANGULO leftp exp COM exp . COM exp COM exp @33 rightp SEM
+
+    COM  shift, and go to state 217
+
+
+state 204
+
+  126 triangulo: TRIANGULO leftp exp COM exp . COM exp COM exp COM exp COM exp rightp @35 SEM
+
+    COM  shift, and go to state 218
+
+
+state 205
+
+  124 elipse: ELIPSE leftp exp COM exp . COM exp COM exp @34 rightp SEM
+
+    COM  shift, and go to state 219
+
+
+state 206
+
+   50 varss3: LSQ . CTE_NUM RSQ varss3
+
+    CTE_NUM  shift, and go to state 220
+
+
+state 207
 
    13 tipo: . NUM
    14     | . TEXTO
@@ -2997,17 +3266,17 @@ state 203
     LIBRE  shift, and go to state 14
 
     tipo    go to state 135
-    varss2  go to state 215
+    varss2  go to state 221
 
 
-state 204
+state 208
 
    48 varss2: tipo @15 ID @16 varss3 .
 
     $default  reduce using rule 48 (varss2)
 
 
-state 205
+state 209
 
    17 bloque: . estatutos bloque
    18       | . ciclos bloque
@@ -3038,7 +3307,7 @@ state 205
 
     $default  reduce using rule 19 (bloque)
 
-    bloque        go to state 216
+    bloque        go to state 222
     estatutos     go to state 39
     funciones1    go to state 40
     asig_llamada  go to state 41
@@ -3050,70 +3319,63 @@ state 205
     mientras      go to state 47
 
 
-state 206
+state 210
 
    57 @19: .
    58 condicion1: SINO . @19 LBR bloque RBR
 
     $default  reduce using rule 57 (@19)
 
-    @19  go to state 217
+    @19  go to state 223
 
 
-state 207
+state 211
 
    56 condicion: SI leftp sexp rightp LBR @18 bloque RBR condicion1 .
 
     $default  reduce using rule 56 (condicion)
 
 
-state 208
+state 212
 
   114 @29: .
   115 haz: HAZ @28 LBR bloque RBR MIENTRAS leftp sexp rightp . @29 SEM
 
     $default  reduce using rule 114 (@29)
 
-    @29  go to state 218
+    @29  go to state 224
 
 
-state 209
+state 213
 
   112 por: POR leftp sexp DOU sexp rightp LBR bloque RBR .
 
     $default  reduce using rule 112 (por)
 
 
-state 210
+state 214
 
   118 mientras: MIENTRAS @30 leftp sexp rightp @31 LBR bloque RBR .
 
     $default  reduce using rule 118 (mientras)
 
 
-state 211
+state 215
 
    33 varsss2: . COM varsss
    34        | . LSQ CTE_NUM RSQ varsss2
    34        | LSQ CTE_NUM RSQ . varsss2
    35        | .  [RPA]
 
-    LSQ  shift, and go to state 183
-    COM  shift, and go to state 184
+    LSQ  shift, and go to state 187
+    COM  shift, and go to state 188
 
     $default  reduce using rule 35 (varsss2)
 
-    varsss2  go to state 219
+    varsss2  go to state 225
 
 
-state 212
-
-  121 linea: LINEA leftp CTE_NUM COM CTE_NUM rightp . SEM
-
-    SEM  shift, and go to state 220
-
-
-state 213
+state 216
 
    79 exp: . termino @21 exp1
    86 termino: . factor @24 termino1
@@ -3126,8 +3388,8 @@ state 213
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  123 triangulo: TRIANGULO leftp exp COM exp COM . exp COM exp COM exp COM exp rightp @32 SEM
-  124 leftp: . LPA
+  120 linea: LINEA leftp exp COM exp COM . exp COM exp rightp @32 SEM
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -3136,7 +3398,7 @@ state 213
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    exp       go to state 221
+    exp       go to state 226
     termino   go to state 60
     factor    go to state 61
     var_cte   go to state 62
@@ -3145,88 +3407,198 @@ state 213
     leftp     go to state 65
 
 
-state 214
+state 217
+
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  122 rectangulo: RECTANGULO leftp exp COM exp COM . exp COM exp @33 rightp SEM
+  127 leftp: . LPA
+
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 227
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
+
+
+state 218
+
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  126 triangulo: TRIANGULO leftp exp COM exp COM . exp COM exp COM exp COM exp rightp @35 SEM
+  127 leftp: . LPA
+
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 228
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
+
+
+state 219
+
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  124 elipse: ELIPSE leftp exp COM exp COM . exp COM exp @34 rightp SEM
+  127 leftp: . LPA
+
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 229
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
+
+
+state 220
 
    50 varss3: LSQ CTE_NUM . RSQ varss3
 
-    RSQ  shift, and go to state 222
+    RSQ  shift, and go to state 230
 
 
-state 215
+state 221
 
    49 varss3: COM varss2 .
 
     $default  reduce using rule 49 (varss3)
 
 
-state 216
+state 222
 
    42 funciones: tipo @9 FUNCION ID @10 leftp @11 varss rightp LBR vars @12 bloque . RBR @13 @14 funciones
 
-    RBR  shift, and go to state 223
+    RBR  shift, and go to state 231
 
 
-state 217
+state 223
 
    58 condicion1: SINO @19 . LBR bloque RBR
 
-    LBR  shift, and go to state 224
+    LBR  shift, and go to state 232
 
 
-state 218
+state 224
 
   115 haz: HAZ @28 LBR bloque RBR MIENTRAS leftp sexp rightp @29 . SEM
 
-    SEM  shift, and go to state 225
+    SEM  shift, and go to state 233
 
 
-state 219
+state 225
 
    34 varsss2: LSQ CTE_NUM RSQ varsss2 .
 
     $default  reduce using rule 34 (varsss2)
 
 
-state 220
+state 226
 
-  121 linea: LINEA leftp CTE_NUM COM CTE_NUM rightp SEM .
+  120 linea: LINEA leftp exp COM exp COM exp . COM exp rightp @32 SEM
 
-    $default  reduce using rule 121 (linea)
-
-
-state 221
-
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp . COM exp COM exp COM exp rightp @32 SEM
-
-    COM  shift, and go to state 226
+    COM  shift, and go to state 234
 
 
-state 222
+state 227
+
+  122 rectangulo: RECTANGULO leftp exp COM exp COM exp . COM exp @33 rightp SEM
+
+    COM  shift, and go to state 235
+
+
+state 228
+
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp . COM exp COM exp COM exp rightp @35 SEM
+
+    COM  shift, and go to state 236
+
+
+state 229
+
+  124 elipse: ELIPSE leftp exp COM exp COM exp . COM exp @34 rightp SEM
+
+    COM  shift, and go to state 237
+
+
+state 230
 
    49 varss3: . COM varss2
    50       | . LSQ CTE_NUM RSQ varss3
    50       | LSQ CTE_NUM RSQ . varss3
    51       | .  [RPA]
 
-    LSQ  shift, and go to state 202
-    COM  shift, and go to state 203
+    LSQ  shift, and go to state 206
+    COM  shift, and go to state 207
 
     $default  reduce using rule 51 (varss3)
 
-    varss3  go to state 227
+    varss3  go to state 238
 
 
-state 223
+state 231
 
    40 @13: .
    42 funciones: tipo @9 FUNCION ID @10 leftp @11 varss rightp LBR vars @12 bloque RBR . @13 @14 funciones
 
     $default  reduce using rule 40 (@13)
 
-    @13  go to state 228
+    @13  go to state 239
 
 
-state 224
+state 232
 
    17 bloque: . estatutos bloque
    18       | . ciclos bloque
@@ -3257,7 +3629,7 @@ state 224
 
     $default  reduce using rule 19 (bloque)
 
-    bloque        go to state 229
+    bloque        go to state 240
     estatutos     go to state 39
     funciones1    go to state 40
     asig_llamada  go to state 41
@@ -3269,14 +3641,14 @@ state 224
     mientras      go to state 47
 
 
-state 225
+state 233
 
   115 haz: HAZ @28 LBR bloque RBR MIENTRAS leftp sexp rightp @29 SEM .
 
     $default  reduce using rule 115 (haz)
 
 
-state 226
+state 234
 
    79 exp: . termino @21 exp1
    86 termino: . factor @24 termino1
@@ -3289,8 +3661,8 @@ state 226
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM . exp COM exp COM exp rightp @32 SEM
-  124 leftp: . LPA
+  120 linea: LINEA leftp exp COM exp COM exp COM . exp rightp @32 SEM
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -3299,7 +3671,7 @@ state 226
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    exp       go to state 230
+    exp       go to state 241
     termino   go to state 60
     factor    go to state 61
     var_cte   go to state 62
@@ -3308,38 +3680,164 @@ state 226
     leftp     go to state 65
 
 
-state 227
+state 235
+
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  122 rectangulo: RECTANGULO leftp exp COM exp COM exp COM . exp @33 rightp SEM
+  127 leftp: . LPA
+
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 242
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
+
+
+state 236
+
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM . exp COM exp COM exp rightp @35 SEM
+  127 leftp: . LPA
+
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 243
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
+
+
+state 237
+
+   79 exp: . termino @21 exp1
+   86 termino: . factor @24 termino1
+   92 factor: . leftp sexp rightp
+   93       | . var_cte
+   94 var_cte: . cte_bool
+   95        | . cte_nume
+   96        | . CTE_TEXTO
+   98        | . ID @27 llamada_opt
+   99 cte_nume: . CTE_NUM
+  102 cte_bool: . VERDADERO
+  103         | . FALSO
+  124 elipse: ELIPSE leftp exp COM exp COM exp COM . exp @34 rightp SEM
+  127 leftp: . LPA
+
+    VERDADERO  shift, and go to state 53
+    FALSO      shift, and go to state 54
+    CTE_NUM    shift, and go to state 55
+    CTE_TEXTO  shift, and go to state 56
+    ID         shift, and go to state 57
+    LPA        shift, and go to state 51
+
+    exp       go to state 244
+    termino   go to state 60
+    factor    go to state 61
+    var_cte   go to state 62
+    cte_nume  go to state 63
+    cte_bool  go to state 64
+    leftp     go to state 65
+
+
+state 238
 
    50 varss3: LSQ CTE_NUM RSQ varss3 .
 
     $default  reduce using rule 50 (varss3)
 
 
-state 228
+state 239
 
    41 @14: .
    42 funciones: tipo @9 FUNCION ID @10 leftp @11 varss rightp LBR vars @12 bloque RBR @13 . @14 funciones
 
     $default  reduce using rule 41 (@14)
 
-    @14  go to state 231
+    @14  go to state 245
 
 
-state 229
+state 240
 
    58 condicion1: SINO @19 LBR bloque . RBR
 
-    RBR  shift, and go to state 232
+    RBR  shift, and go to state 246
 
 
-state 230
+state 241
 
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp . COM exp COM exp rightp @32 SEM
+  120 linea: LINEA leftp exp COM exp COM exp COM exp . rightp @32 SEM
+  128 rightp: . RPA
 
-    COM  shift, and go to state 233
+    RPA  shift, and go to state 105
+
+    rightp  go to state 247
 
 
-state 231
+state 242
+
+  121 @33: .
+  122 rectangulo: RECTANGULO leftp exp COM exp COM exp COM exp . @33 rightp SEM
+
+    $default  reduce using rule 121 (@33)
+
+    @33  go to state 248
+
+
+state 243
+
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp . COM exp COM exp rightp @35 SEM
+
+    COM  shift, and go to state 249
+
+
+state 244
+
+  123 @34: .
+  124 elipse: ELIPSE leftp exp COM exp COM exp COM exp . @34 rightp SEM
+
+    $default  reduce using rule 123 (@34)
+
+    @34  go to state 250
+
+
+state 245
 
    13 tipo: . NUM
    14     | . TEXTO
@@ -3357,17 +3855,37 @@ state 231
     $default  reduce using rule 43 (funciones)
 
     tipo       go to state 15
-    funciones  go to state 234
+    funciones  go to state 251
 
 
-state 232
+state 246
 
    58 condicion1: SINO @19 LBR bloque RBR .
 
     $default  reduce using rule 58 (condicion1)
 
 
-state 233
+state 247
+
+  119 @32: .
+  120 linea: LINEA leftp exp COM exp COM exp COM exp rightp . @32 SEM
+
+    $default  reduce using rule 119 (@32)
+
+    @32  go to state 252
+
+
+state 248
+
+  122 rectangulo: RECTANGULO leftp exp COM exp COM exp COM exp @33 . rightp SEM
+  128 rightp: . RPA
+
+    RPA  shift, and go to state 105
+
+    rightp  go to state 253
+
+
+state 249
 
    79 exp: . termino @21 exp1
    86 termino: . factor @24 termino1
@@ -3380,8 +3898,8 @@ state 233
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM . exp COM exp rightp @32 SEM
-  124 leftp: . LPA
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM . exp COM exp rightp @35 SEM
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -3390,7 +3908,7 @@ state 233
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    exp       go to state 235
+    exp       go to state 254
     termino   go to state 60
     factor    go to state 61
     var_cte   go to state 62
@@ -3399,21 +3917,66 @@ state 233
     leftp     go to state 65
 
 
-state 234
+state 250
+
+  124 elipse: ELIPSE leftp exp COM exp COM exp COM exp @34 . rightp SEM
+  128 rightp: . RPA
+
+    RPA  shift, and go to state 105
+
+    rightp  go to state 255
+
+
+state 251
 
    42 funciones: tipo @9 FUNCION ID @10 leftp @11 varss rightp LBR vars @12 bloque RBR @13 @14 funciones .
 
     $default  reduce using rule 42 (funciones)
 
 
-state 235
+state 252
 
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp . COM exp rightp @32 SEM
+  120 linea: LINEA leftp exp COM exp COM exp COM exp rightp @32 . SEM
 
-    COM  shift, and go to state 236
+    SEM  shift, and go to state 256
 
 
-state 236
+state 253
+
+  122 rectangulo: RECTANGULO leftp exp COM exp COM exp COM exp @33 rightp . SEM
+
+    SEM  shift, and go to state 257
+
+
+state 254
+
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp . COM exp rightp @35 SEM
+
+    COM  shift, and go to state 258
+
+
+state 255
+
+  124 elipse: ELIPSE leftp exp COM exp COM exp COM exp @34 rightp . SEM
+
+    SEM  shift, and go to state 259
+
+
+state 256
+
+  120 linea: LINEA leftp exp COM exp COM exp COM exp rightp @32 SEM .
+
+    $default  reduce using rule 120 (linea)
+
+
+state 257
+
+  122 rectangulo: RECTANGULO leftp exp COM exp COM exp COM exp @33 rightp SEM .
+
+    $default  reduce using rule 122 (rectangulo)
+
+
+state 258
 
    79 exp: . termino @21 exp1
    86 termino: . factor @24 termino1
@@ -3426,8 +3989,8 @@ state 236
    99 cte_nume: . CTE_NUM
   102 cte_bool: . VERDADERO
   103         | . FALSO
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM . exp rightp @32 SEM
-  124 leftp: . LPA
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM . exp rightp @35 SEM
+  127 leftp: . LPA
 
     VERDADERO  shift, and go to state 53
     FALSO      shift, and go to state 54
@@ -3436,7 +3999,7 @@ state 236
     ID         shift, and go to state 57
     LPA        shift, and go to state 51
 
-    exp       go to state 237
+    exp       go to state 260
     termino   go to state 60
     factor    go to state 61
     var_cte   go to state 62
@@ -3445,35 +4008,42 @@ state 236
     leftp     go to state 65
 
 
-state 237
+state 259
 
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp . rightp @32 SEM
-  125 rightp: . RPA
+  124 elipse: ELIPSE leftp exp COM exp COM exp COM exp @34 rightp SEM .
+
+    $default  reduce using rule 124 (elipse)
+
+
+state 260
+
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp . rightp @35 SEM
+  128 rightp: . RPA
 
     RPA  shift, and go to state 105
 
-    rightp  go to state 238
+    rightp  go to state 261
 
 
-state 238
+state 261
 
-  122 @32: .
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp . @32 SEM
+  125 @35: .
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp . @35 SEM
 
-    $default  reduce using rule 122 (@32)
+    $default  reduce using rule 125 (@35)
 
-    @32  go to state 239
-
-
-state 239
-
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @32 . SEM
-
-    SEM  shift, and go to state 240
+    @35  go to state 262
 
 
-state 240
+state 262
 
-  123 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @32 SEM .
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 . SEM
 
-    $default  reduce using rule 123 (triangulo)
+    SEM  shift, and go to state 263
+
+
+state 263
+
+  126 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp COM exp COM exp rightp @35 SEM .
+
+    $default  reduce using rule 126 (triangulo)

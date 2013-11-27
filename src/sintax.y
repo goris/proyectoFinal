@@ -298,10 +298,10 @@ dibuja: DIBUJA LBR dibuja1 bloque RBR
 dibuja1: formas
 	  	|
 
-formas: triangulo
-	  | rectangulo
-	  | elipse
-	  | linea
+formas: triangulo dibuja1 
+	  | rectangulo dibuja1
+	  | elipse dibuja1 
+	  | linea dibuja1
 
 por: POR leftp sexp DOU sexp rightp LBR bloque RBR
 
@@ -311,14 +311,18 @@ haz: HAZ { cuadruploEstatuto(3); } LBR bloque RBR
 mientras: MIENTRAS { cuadruploEstatuto(3); } leftp sexp rightp
 	  { cuadruploEstatuto(0); } LBR bloque RBR { cuadruploEstatuto(4); }
 
-rectangulo: RECTANGULO leftp CTE_NUM rightp SEM
+linea: LINEA leftp exp COM exp COM exp COM exp 
+	 rightp { cuadruploEstatuto(13); } SEM
 
-elipse: ELIPSE leftp CTE_NUM rightp SEM
+rectangulo: RECTANGULO leftp exp COM exp COM exp COM exp
+		 { cuadruploEstatuto(14); } rightp SEM
 
-linea: LINEA leftp CTE_NUM COM CTE_NUM rightp SEM
+elipse: ELIPSE leftp exp COM exp COM exp COM exp
+	 { cuadruploEstatuto(15); } rightp SEM
+
 { /* Se usan tres puntos para dibujar el triangulo */}
 triangulo: TRIANGULO leftp exp COM exp COM exp COM exp 
-		COM exp COM exp rightp {cuadruploEstatuto(13);} SEM
+		COM exp COM exp rightp { cuadruploEstatuto(16); } SEM
 
 leftp: LPA { meterPilaOper(11); }
 rightp: RPA { pOper.pop(); }
@@ -356,9 +360,10 @@ int main(int argc, char *argv[]){
 int* traePuntos (int cant) {
 	//std::cout << "TraePuntos" << std::endl;
 	int *puntos = new int[cant];
-	if(pilaO.size() < 5) {
-		std::cout << "Insuficientes valores para generar cuadruplo" 
-		<< std::endl;
+	if(pilaO.size() < cant - 1) {
+		std::cout << "Insuficientes valores para generar cuadruplo " 
+		<< cant << " : " << pilaO.size() << std::endl;
+		imprimePila(pilaO);
 		exit(1);
 	} 
 	std::stack<Node*> aux = pilaO;
@@ -883,14 +888,62 @@ void cuadruploEstatuto(int tipo) {
 				std::cout << "13 Error " << std::endl;
 				exit(1);
 			}
-			int *points = traePuntos(6);
+			int *points = traePuntos(4);
 			Cuadruplo::Cuadruplo cuad13a(21, points[0], points[1], points[2]);
-			Cuadruplo::Cuadruplo cuad13b(21, points[3], points[4], points[5]);
+			Cuadruplo::Cuadruplo cuad13b(21, points[3], 0, "");
 			vec_cuadruplos.push_back(cuad13a);
 			cuad_actual++;
 			vec_cuadruplos.push_back(cuad13b);
 			cuad_actual++;
-
+			break;
+		}
+		case 14: {
+			//std::cout << "Case 13" << std::endl;
+			//std::cout << "21, " << var->loc_mem << "-1, \n";
+			if (pilaO.empty()) {
+				std::cout << "14 Error " << std::endl;
+				exit(1);
+			}
+			int *points = traePuntos(4);
+			Cuadruplo::Cuadruplo cuad14a(22, points[0], points[1], points[2]);
+			Cuadruplo::Cuadruplo cuad14b(22, points[3], 0, "");
+			vec_cuadruplos.push_back(cuad14a);
+			cuad_actual++;
+			vec_cuadruplos.push_back(cuad14b);
+			cuad_actual++;
+			break;
+		}
+		case 15: {
+			//std::cout << "Case 13" << std::endl;
+			//std::cout << "21, " << var->loc_mem << "-1, \n";
+			if (pilaO.empty()) {
+				std::cout << "15 Error " << std::endl;
+				exit(1);
+			}
+			int *points = traePuntos(4);
+			Cuadruplo::Cuadruplo cuad15a(23, points[0], points[1], points[2]);
+			Cuadruplo::Cuadruplo cuad15b(23, points[3], 0, "");
+			vec_cuadruplos.push_back(cuad15a);
+			cuad_actual++;
+			vec_cuadruplos.push_back(cuad15b);
+			cuad_actual++;
+			break;
+		}
+		case 16: {
+			//std::cout << "Case 13" << std::endl;
+			//std::cout << "21, " << var->loc_mem << "-1, \n";
+			if (pilaO.empty()) {
+				std::cout << "16 Error " << std::endl;
+				exit(1);
+			}
+			int *points = traePuntos(6);
+			Cuadruplo::Cuadruplo cuad16a(24, points[0], points[1], points[2]);
+			Cuadruplo::Cuadruplo cuad16b(24, points[3], points[4], points[5]);
+			vec_cuadruplos.push_back(cuad16a);
+			cuad_actual++;
+			vec_cuadruplos.push_back(cuad16b);
+			cuad_actual++;
+			break;
 		}
 	}
 //	std::cout << "sali cuadruploEstatuto" << std::endl;
@@ -1091,7 +1144,7 @@ void creaConstanteNum(){
 	//std::cout << var->nombre << "\t\t\tmem: " << var->loc_mem << std::endl;
 	} else {
 		var = it->second;
-		sstm << "cN" << memset--;
+		sstm << "cN" << memset;
 		var->nombre = sstm.str();
 		var->tipo = 1;
 		var->scope = "constante";
